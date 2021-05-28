@@ -4,21 +4,18 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/cfg"
 	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
 type eventTypeCmd struct {
 	cmd *cobra.Command
-	cfg *cfg.Config
 	sc  *svix.Svix
 }
 
-func newEventTypeCmd(cfg *cfg.Config, s *svix.Svix) *eventTypeCmd {
+func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 	etc := &eventTypeCmd{
-		sc:  s,
-		cfg: cfg,
+		sc: s,
 	}
 	etc.cmd = &cobra.Command{
 		Use:   "event-type",

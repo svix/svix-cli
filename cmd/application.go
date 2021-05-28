@@ -4,21 +4,18 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/cfg"
 	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
 type applicationCmd struct {
 	cmd *cobra.Command
-	cfg *cfg.Config
 	sc  *svix.Svix
 }
 
-func newApplicationCmd(cfg *cfg.Config, s *svix.Svix) *applicationCmd {
+func newApplicationCmd(s *svix.Svix) *applicationCmd {
 	ac := &applicationCmd{
-		sc:  s,
-		cfg: cfg,
+		sc: s,
 	}
 	ac.cmd = &cobra.Command{
 		Use:   "application",

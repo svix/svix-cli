@@ -2,21 +2,18 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/cfg"
 	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
 type authenticationCmd struct {
 	cmd *cobra.Command
-	cfg *cfg.Config
 	sc  *svix.Svix
 }
 
-func newAuthenticationCmd(cfg *cfg.Config, s *svix.Svix) *authenticationCmd {
+func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
 	ac := &authenticationCmd{
-		sc:  s,
-		cfg: cfg,
+		sc: s,
 	}
 	ac.cmd = &cobra.Command{
 		Use:     "authentication",

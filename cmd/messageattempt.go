@@ -4,21 +4,18 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/cfg"
 	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
 type messageAttemptCmd struct {
 	cmd *cobra.Command
-	cfg *cfg.Config
 	sc  *svix.Svix
 }
 
-func newMessageAttemptCmd(cfg *cfg.Config, s *svix.Svix) *messageAttemptCmd {
+func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 	mac := &messageAttemptCmd{
-		sc:  s,
-		cfg: cfg,
+		sc: s,
 	}
 	mac.cmd = &cobra.Command{
 		Use:   "message-attempt",

@@ -7,7 +7,6 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/svixhq/svix-cli/cfg"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
@@ -29,20 +28,24 @@ func init() {
 	// Set Config
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.svix.yaml)")
-	cfg := cfg.New() // TODO initialize
+	// cfg := cfg.New() // TODO initialize
+	key := os.Getenv("SVIX_KEY")
+	if key == "" {
+		fmt.Println("No SVIX_KEY found!")
+		fmt.Println("Try setting your auth token via 'export SVIX_KEY=<AUTH_TOKEN> to get started!")
+	}
 	s := svix.New(os.Getenv("SVIX_KEY"), nil)
 
 	// Global Flags
 	// rootCmd.Flags().BoolP("verbose", "v", false, "Increases output, useful for debugging")
 
 	// Register Commands
-	rootCmd.AddCommand(newConfigureCmd(cfg, s).Cmd())
-	rootCmd.AddCommand(newApplicationCmd(cfg, s).Cmd())
-	rootCmd.AddCommand(newAuthenticationCmd(cfg, s).Cmd())
-	rootCmd.AddCommand(newEventTypeCmd(cfg, s).Cmd())
-	rootCmd.AddCommand(newEndpointCmd(cfg, s).Cmd())
-	rootCmd.AddCommand(newMessageCmd(cfg, s).Cmd())
-	rootCmd.AddCommand(newMessageAttemptCmd(cfg, s).Cmd())
+	rootCmd.AddCommand(newApplicationCmd(s).Cmd())
+	rootCmd.AddCommand(newAuthenticationCmd(s).Cmd())
+	rootCmd.AddCommand(newEventTypeCmd(s).Cmd())
+	rootCmd.AddCommand(newEndpointCmd(s).Cmd())
+	rootCmd.AddCommand(newMessageCmd(s).Cmd())
+	rootCmd.AddCommand(newMessageAttemptCmd(s).Cmd())
 
 }
 

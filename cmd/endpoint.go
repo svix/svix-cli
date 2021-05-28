@@ -5,21 +5,18 @@ import (
 	"strconv"
 
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/cfg"
 	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
 type endpointCmd struct {
 	cmd *cobra.Command
-	cfg *cfg.Config
 	sc  *svix.Svix
 }
 
-func newEndpointCmd(cfg *cfg.Config, s *svix.Svix) *endpointCmd {
+func newEndpointCmd(s *svix.Svix) *endpointCmd {
 	ec := &endpointCmd{
-		sc:  s,
-		cfg: cfg,
+		sc: s,
 	}
 	ec.cmd = &cobra.Command{
 		Use:   "endpoint",

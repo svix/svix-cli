@@ -5,21 +5,18 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/cfg"
 	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
 type messageCmd struct {
 	cmd *cobra.Command
-	cfg *cfg.Config
 	sc  *svix.Svix
 }
 
-func newMessageCmd(cfg *cfg.Config, s *svix.Svix) *messageCmd {
+func newMessageCmd(s *svix.Svix) *messageCmd {
 	mc := &messageCmd{
-		sc:  s,
-		cfg: cfg,
+		sc: s,
 	}
 	mc.cmd = &cobra.Command{
 		Use:   "message",
