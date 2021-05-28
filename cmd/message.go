@@ -47,7 +47,7 @@ func newMessageCmd(cfg *cfg.Config, s *svix.Svix) *messageCmd {
 
 	// create
 	create := &cobra.Command{
-		Use:   "create APP_ID EVENT_TYPE [EVENT_ID] PAYLOAD_JSON_STRING",
+		Use:   "create APP_ID EVENT_TYPE [EVENT_ID] JSON_PAYLOAD",
 		Short: "Create a new messsage",
 		Args:  cobra.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
