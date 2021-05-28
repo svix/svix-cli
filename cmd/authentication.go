@@ -17,7 +17,7 @@ func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
 	}
 	ac.cmd = &cobra.Command{
 		Use:     "authentication",
-		Short:   "Get Dashboard urls",
+		Short:   "Manage authentication tasks such getting dashboard urls",
 		Aliases: []string{"auth"},
 	}
 
@@ -38,8 +38,6 @@ func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
 		},
 	}
 	ac.cmd.AddCommand(dashboard)
-
-	//TODO do we need to use logout from the CLI?
 
 	return ac
 }
