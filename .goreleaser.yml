@@ -25,6 +25,17 @@ checksum:
   name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ .Tag }}-next"
+nfpms:
+  - builds:
+      - svix
+    vendor: Svix
+    homepage: https://www.svix.com
+    maintainer: Svix <support@svix.com>
+    description: Svix CLI utility
+    formats:
+      - deb
+      - rpm
+      - apk
 changelog:
   sort: asc
   filters:
