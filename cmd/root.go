@@ -25,6 +25,7 @@ func init() {
 	if key == "" {
 		fmt.Println("No SVIX_KEY found!")
 		fmt.Println("Try setting your auth token via 'export SVIX_KEY=<AUTH_TOKEN> to get started!")
+		os.Exit(1)
 	}
 	s := svix.New(os.Getenv("SVIX_KEY"), nil)
 
