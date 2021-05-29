@@ -80,7 +80,6 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 			if err != nil {
 				return err
 			}
-			fmt.Println("Endpoint Created!")
 			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},

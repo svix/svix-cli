@@ -57,7 +57,6 @@ func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 			if err != nil {
 				return err
 			}
-			fmt.Println("Event Type Created!")
 			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},

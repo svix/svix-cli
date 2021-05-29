@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
@@ -124,7 +122,6 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 			if err != nil {
 				return err
 			}
-			fmt.Println("Message Resent!")
 			return nil
 		},
 	}

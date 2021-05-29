@@ -77,7 +77,6 @@ func newMessageCmd(s *svix.Svix) *messageCmd {
 			if err != nil {
 				return err
 			}
-			fmt.Println("Message Created!")
 			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},

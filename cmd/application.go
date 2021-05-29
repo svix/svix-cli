@@ -62,7 +62,6 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 			if err != nil {
 				return err
 			}
-			fmt.Println("Application Created!")
 			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},
