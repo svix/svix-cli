@@ -55,6 +55,15 @@ func PrintEndpointOut(ep *svix.EndpointOut) {
 	w.Flush()
 }
 
+func PrintListResponseEndpointOut(l *svix.ListResponseEndpointOut) {
+	w := getTabWriter()
+	fmt.Fprintln(w, "ID\tURL\tDescription\tFilter Types")
+	for _, ep := range l.Data {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", ep.Id, ep.Url, fmtStringPtr(ep.Description), ep.FilterTypes)
+	}
+	w.Flush()
+}
+
 func PrintEndpointSecret(endpointID string, secret *svix.EndpointSecret) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "Endpoint ID\tSecret")

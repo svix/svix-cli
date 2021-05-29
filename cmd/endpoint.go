@@ -25,16 +25,17 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 
 	// list
 	list := &cobra.Command{
-		Use:   "list",
+		Use:   "list APP_ID",
 		Short: "List current endpoints",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
-			l, err := s.Application.List(getFilterOptions(cmd))
+			appID := args[0]
+			l, err := s.Endpoint.List(appID, getFilterOptions(cmd))
 			if err != nil {
 				return err
 			}
 
-			pretty.PrintApplicationList(l)
+			pretty.PrintEndpointOut(l)
 			return nil
 		},
 	}
