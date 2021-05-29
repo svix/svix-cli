@@ -35,7 +35,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 
-			pretty.Print(l)
+			pretty.Print(l, getPrintOptions(cmd))
 			return nil
 		},
 	}
@@ -81,7 +81,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 			fmt.Println("Endpoint Created!")
-			pretty.Print(out)
+			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},
 	}
@@ -101,7 +101,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 
-			pretty.Print(out)
+			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},
 	}
@@ -130,7 +130,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 
-			pretty.Print(out)
+			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},
 	}
@@ -170,7 +170,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 
-			pretty.Print(out)
+			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},
 	}

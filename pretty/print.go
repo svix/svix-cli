@@ -10,7 +10,16 @@ import (
 	svix "github.com/svixhq/svix-libs/go"
 )
 
-func Print(v interface{}) {
+type PrintOptions struct {
+	JSON bool
+}
+
+func Print(v interface{}, opts *PrintOptions) {
+	if opts != nil && opts.JSON {
+		tryPrintJson(v)
+		return
+	}
+
 	switch t := v.(type) {
 	case *svix.ListResponseApplicationOut:
 		printApplicationList(t)
@@ -40,9 +49,7 @@ func Print(v interface{}) {
 		printDashboardAccessOut(t)
 	default:
 		// if all else fails try to print as json
-		if err := printJson(v); err != nil {
-			fmt.Printf("%+v\n", v)
-		}
+		tryPrintJson(t)
 	}
 }
 
@@ -54,13 +61,12 @@ func makeTerminalHyperlink(name, url string) string {
 	return fmt.Sprintf("\u001B]8;;%s\a%s\u001B]8;;\a", url, name)
 }
 
-func printJson(v interface{}) error {
+func tryPrintJson(v interface{}) {
 	b, err := json.Marshal(v)
 	if err != nil {
-		return err
+		fmt.Printf("%+v\n", v)
 	}
 	fmt.Println(string(b))
-	return nil
 }
 
 func fmtStringPtr(s *string) string {

@@ -2,11 +2,22 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
+func getPrintOptions(cmd *cobra.Command) *pretty.PrintOptions {
+	jsonFlag, err := cmd.Flags().GetBool("json")
+	if err != nil || !jsonFlag {
+		return nil
+	}
+	return &pretty.PrintOptions{
+		JSON: true,
+	}
+}
+
 func addFilterFlags(cmd *cobra.Command) {
-	cmd.Flags().StringP("iterator", "i", "", "anchor for call TODO better desc")
+	cmd.Flags().StringP("iterator", "i", "", "anchor id for list call")
 
 	// TODO cobra has no ability to set true pointer flags, always requiring a default value
 	// decide on a way to check if this flag has been explicitly set or not (or we can just leave a sane default max)

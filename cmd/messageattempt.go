@@ -36,7 +36,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 				return err
 			}
 
-			pretty.Print(l)
+			pretty.Print(l, getPrintOptions(cmd))
 			return nil
 		},
 	}
@@ -57,7 +57,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 				return err
 			}
 
-			pretty.Print(l)
+			pretty.Print(l, getPrintOptions(cmd))
 			return nil
 		},
 	}
@@ -80,7 +80,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 				return err
 			}
 
-			pretty.Print(l)
+			pretty.Print(l, getPrintOptions(cmd))
 			return nil
 		},
 	}
@@ -103,7 +103,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 				return err
 			}
 
-			pretty.Print(out)
+			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},
 	}

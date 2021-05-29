@@ -33,7 +33,7 @@ func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
 				return err
 			}
 
-			pretty.Print(da)
+			pretty.Print(da, getPrintOptions(cmd))
 			return nil
 		},
 	}

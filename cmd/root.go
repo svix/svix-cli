@@ -31,6 +31,7 @@ func init() {
 
 	// Global Flags
 	// rootCmd.Flags().BoolP("verbose", "v", false, "Increases output, useful for debugging")
+	rootCmd.PersistentFlags().Bool("json", false, "output results in json if possible")
 
 	// Register Commands
 	rootCmd.AddCommand(newApplicationCmd(s).Cmd())
