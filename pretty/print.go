@@ -8,6 +8,7 @@ import (
 	"time"
 
 	svix "github.com/svixhq/svix-libs/go"
+	prettyJson "github.com/tidwall/pretty"
 )
 
 type PrintOptions struct {
@@ -66,7 +67,7 @@ func tryPrintJson(v interface{}) {
 	if err != nil {
 		fmt.Printf("%+v\n", v)
 	}
-	fmt.Println(string(b))
+	fmt.Println(string(prettyJson.Pretty(b)))
 }
 
 func fmtStringPtr(s *string) string {
