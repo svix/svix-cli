@@ -10,8 +10,57 @@ import (
 	svix "github.com/svixhq/svix-libs/go"
 )
 
+func Print(v interface{}) {
+	switch t := v.(type) {
+	case *svix.ListResponseApplicationOut:
+		printApplicationList(t)
+	case *svix.ApplicationOut:
+		printApplicationOut(t)
+	case *svix.EventTypeInOut:
+		printEventTypeInOut(t)
+	case *svix.EndpointOut:
+		printEndpointOut(t)
+	case *svix.ListResponseEndpointOut:
+		printListResponseEndpointOut(t)
+	case *svix.EndpointSecret:
+		printEndpointSecret(t)
+	case *svix.ListResponseMessageOut:
+		printListResponseMessageOut(t)
+	case *svix.MessageOut:
+		printMessageOut(t)
+	case *svix.ListResponseMessageAttemptOut:
+		printListResponseMessageAttemptOut(t)
+	case *svix.ListResponseMessageEndpointOut:
+		printListResponseMessageEndpointOut(t)
+	case *svix.ListResponseMessageAttemptEndpointOut:
+		printListResponseMessageAttemptEndpointOut(t)
+	case *svix.MessageAttemptOut:
+		printMessageAttemptOut(t)
+	case *svix.DashboardAccessOut:
+		printDashboardAccessOut(t)
+	default:
+		// if all else fails try to print as json
+		if err := printJson(v); err != nil {
+			fmt.Printf("%+v\n", v)
+		}
+	}
+}
+
 func getTabWriter() *tabwriter.Writer {
 	return tabwriter.NewWriter(os.Stdout, 0, 1, 2, ' ', tabwriter.Debug)
+}
+
+func makeTerminalHyperlink(name, url string) string {
+	return fmt.Sprintf("\u001B]8;;%s\a%s\u001B]8;;\a", url, name)
+}
+
+func printJson(v interface{}) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(b))
+	return nil
 }
 
 func fmtStringPtr(s *string) string {
@@ -21,7 +70,7 @@ func fmtStringPtr(s *string) string {
 	return string(*s)
 }
 
-func PrintApplicationList(l *svix.ListResponseApplicationOut) {
+func printApplicationList(l *svix.ListResponseApplicationOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "Name\tID\tUID\tCreated At")
 	for _, app := range l.Data {
@@ -30,7 +79,7 @@ func PrintApplicationList(l *svix.ListResponseApplicationOut) {
 	w.Flush()
 }
 
-func PrintApplicationOut(a *svix.ApplicationOut) {
+func printApplicationOut(a *svix.ApplicationOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "Name\tID\tUID\tCreated At")
 	uid := ""
@@ -41,21 +90,21 @@ func PrintApplicationOut(a *svix.ApplicationOut) {
 	w.Flush()
 }
 
-func PrintEventTypeInOut(et *svix.EventTypeInOut) {
+func printEventTypeInOut(et *svix.EventTypeInOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "Name\tDescription")
 	fmt.Fprintf(w, "%s\t%s\n", et.Name, et.Description)
 	w.Flush()
 }
 
-func PrintEndpointOut(ep *svix.EndpointOut) {
+func printEndpointOut(ep *svix.EndpointOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "ID\tURL\tDescription\tFilter Types")
 	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", ep.Id, ep.Url, fmtStringPtr(ep.Description), ep.FilterTypes)
 	w.Flush()
 }
 
-func PrintListResponseEndpointOut(l *svix.ListResponseEndpointOut) {
+func printListResponseEndpointOut(l *svix.ListResponseEndpointOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "ID\tURL\tDescription\tFilter Types")
 	for _, ep := range l.Data {
@@ -64,14 +113,14 @@ func PrintListResponseEndpointOut(l *svix.ListResponseEndpointOut) {
 	w.Flush()
 }
 
-func PrintEndpointSecret(endpointID string, secret *svix.EndpointSecret) {
+func printEndpointSecret(secret *svix.EndpointSecret) {
 	w := getTabWriter()
-	fmt.Fprintln(w, "Endpoint ID\tSecret")
-	fmt.Fprintf(w, "%s\t%s\n", endpointID, secret.Key)
+	fmt.Fprintln(w, "Endpoint Secret Key")
+	fmt.Fprintf(w, "%s\n", secret.Key)
 	w.Flush()
 }
 
-func PrintListResponseMessageOut(l *svix.ListResponseMessageOut) {
+func printListResponseMessageOut(l *svix.ListResponseMessageOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "ID\tTimestamp\tEvent ID\tPayload")
 	for _, msg := range l.Data {
@@ -84,7 +133,7 @@ func PrintListResponseMessageOut(l *svix.ListResponseMessageOut) {
 	w.Flush()
 }
 
-func PrintMessageOut(msg *svix.MessageOut) {
+func printMessageOut(msg *svix.MessageOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "ID\tTimestamp\tEvent ID\tPayload")
 	jsonPayload, err := json.Marshal(msg.Data)
@@ -95,7 +144,7 @@ func PrintMessageOut(msg *svix.MessageOut) {
 	w.Flush()
 }
 
-func PrintListResponseMessageAttemptOut(l *svix.ListResponseMessageAttemptOut) {
+func printListResponseMessageAttemptOut(l *svix.ListResponseMessageAttemptOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "ID\tTimestamp\tEvent ID\tResponse")
 	for _, attempt := range l.Data {
@@ -104,7 +153,7 @@ func PrintListResponseMessageAttemptOut(l *svix.ListResponseMessageAttemptOut) {
 	w.Flush()
 }
 
-func PrintListResponseMessageEndpointOut(l *svix.ListResponseMessageEndpointOut) {
+func printListResponseMessageEndpointOut(l *svix.ListResponseMessageEndpointOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "ID\tTimestamp\tEvent ID\tResponse")
 	for _, ep := range l.Data {
@@ -113,7 +162,7 @@ func PrintListResponseMessageEndpointOut(l *svix.ListResponseMessageEndpointOut)
 	w.Flush()
 }
 
-func PrintListResponseMessageAttemptEndpointOut(l *svix.ListResponseMessageAttemptEndpointOut) {
+func printListResponseMessageAttemptEndpointOut(l *svix.ListResponseMessageAttemptEndpointOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "ID\tTimestamp\tStatus\tResponse")
 	for _, ep := range l.Data {
@@ -122,19 +171,15 @@ func PrintListResponseMessageAttemptEndpointOut(l *svix.ListResponseMessageAttem
 	w.Flush()
 }
 
-func PrintMessageAttemptOut(ma *svix.MessageAttemptOut) {
+func printMessageAttemptOut(ma *svix.MessageAttemptOut) {
 	w := getTabWriter()
 	fmt.Fprintln(w, "ID\tTimestamp\tEndpoint ID\tStatus\tResponse")
 	fmt.Fprintf(w, "%s\t%s\t%s\t%d\t%s\n", ma.Id, ma.Timestamp, ma.EndpointId, ma.Status, ma.Response)
 	w.Flush()
 }
 
-func PrintDashboardURL(appID, url string) {
-	fmt.Printf(`You can access the Dashboard for %s at the following URL:
+func printDashboardAccessOut(da *svix.DashboardAccessOut) {
+	fmt.Printf(`You can access the Dashboard at the following URL:
 %s
-`, appID, makeTerminalHyperlink(url, url))
-}
-
-func makeTerminalHyperlink(name, url string) string {
-	return fmt.Sprintf("\u001B]8;;%s\a%s\u001B]8;;\a", url, name)
+`, makeTerminalHyperlink(da.Url, da.Url))
 }

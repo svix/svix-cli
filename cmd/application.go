@@ -33,7 +33,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 				return err
 			}
 
-			pretty.PrintApplicationList(l)
+			pretty.Print(l)
 			return nil
 		},
 	}
@@ -63,7 +63,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 				return err
 			}
 			fmt.Println("Application Created!")
-			pretty.PrintApplicationOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}
@@ -83,7 +83,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 				return err
 			}
 
-			pretty.PrintApplicationOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}
@@ -112,7 +112,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 				return err
 			}
 
-			pretty.PrintApplicationOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}

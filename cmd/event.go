@@ -34,7 +34,7 @@ func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 	// 			return err
 	// 		}
 
-	// 		pretty.PrintApplicationList(l)
+	// 		pretty.Print(l)
 	// 		return nil
 	// 	},
 	// }
@@ -58,7 +58,7 @@ func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 				return err
 			}
 			fmt.Println("Event Type Created!")
-			pretty.PrintEventTypeInOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}
@@ -79,7 +79,7 @@ func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 				return err
 			}
 
-			pretty.PrintEventTypeInOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}

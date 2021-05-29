@@ -35,7 +35,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 
-			pretty.PrintEndpointOut(l)
+			pretty.Print(l)
 			return nil
 		},
 	}
@@ -81,7 +81,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 			fmt.Println("Endpoint Created!")
-			pretty.PrintEndpointOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}
@@ -101,7 +101,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 
-			pretty.PrintEndpointOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}
@@ -130,7 +130,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 
-			pretty.PrintApplicationOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}
@@ -170,7 +170,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				return err
 			}
 
-			pretty.PrintEndpointSecret(endpointID, out)
+			pretty.Print(out)
 			return nil
 		},
 	}

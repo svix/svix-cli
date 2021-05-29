@@ -28,12 +28,12 @@ func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
-			l, err := s.Authentication.DashboardAccess(appID)
+			da, err := s.Authentication.DashboardAccess(appID)
 			if err != nil {
 				return err
 			}
 
-			pretty.PrintDashboardURL(appID, l.Url)
+			pretty.Print(da)
 			return nil
 		},
 	}

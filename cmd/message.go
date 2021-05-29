@@ -35,7 +35,7 @@ func newMessageCmd(s *svix.Svix) *messageCmd {
 				return err
 			}
 
-			pretty.PrintListResponseMessageOut(l)
+			pretty.Print(l)
 			return nil
 		},
 	}
@@ -78,7 +78,7 @@ func newMessageCmd(s *svix.Svix) *messageCmd {
 				return err
 			}
 			fmt.Println("Message Created!")
-			pretty.PrintMessageOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}
@@ -97,7 +97,7 @@ func newMessageCmd(s *svix.Svix) *messageCmd {
 				return err
 			}
 
-			pretty.PrintMessageOut(out)
+			pretty.Print(out)
 			return nil
 		},
 	}
