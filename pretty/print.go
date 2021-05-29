@@ -104,6 +104,22 @@ func PrintListResponseMessageEndpointOut(l *svix.ListResponseMessageEndpointOut)
 	w.Flush()
 }
 
+func PrintListResponseMessageAttemptEndpointOut(l *svix.ListResponseMessageAttemptEndpointOut) {
+	w := getTabWriter()
+	fmt.Fprintln(w, "ID\tTimestamp\tStatus\tResponse")
+	for _, ep := range l.Data {
+		fmt.Fprintf(w, "%s\t%s\t%dt%s\n", ep.Id, ep.Timestamp, ep.Status, fmtStringPtr(&ep.Response))
+	}
+	w.Flush()
+}
+
+func PrintMessageAttemptOut(ma *svix.MessageAttemptOut) {
+	w := getTabWriter()
+	fmt.Fprintln(w, "ID\tTimestamp\tEndpoint ID\tStatus\tResponse")
+	fmt.Fprintf(w, "%s\t%s\t%s\t%d\t%s\n", ma.Id, ma.Timestamp, ma.EndpointId, ma.Status, ma.Response)
+	w.Flush()
+}
+
 func PrintDashboardURL(appID, url string) {
 	fmt.Printf(`You can access the Dashboard for %s at the following URL:
 %s
