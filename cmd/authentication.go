@@ -39,6 +39,20 @@ func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
 	}
 	ac.cmd.AddCommand(dashboard)
 
+	// // logout
+	// logout := &cobra.Command{
+	// 	Use:   "logout",
+	// 	Short: "Get a dashboard URL for the given app",
+	// 	RunE: func(cmd *cobra.Command, args []string) error {
+	// 		err := s.Authentication.Logout()
+	// 		if err != nil {
+	// 			return err
+	// 		}
+	// 		return nil
+	// 	},
+	// }
+	// ac.cmd.AddCommand(logout)
+
 	return ac
 }
 
