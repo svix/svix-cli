@@ -186,7 +186,9 @@ func printMessageAttemptOut(ma *svix.MessageAttemptOut) {
 }
 
 func printDashboardAccessOut(da *svix.DashboardAccessOut) {
-	fmt.Printf(`You can access the Dashboard at the following URL:
+	fmt.Printf(`Token: %s
+
+You can access the dashboard at the following URL:
 %s
-`, makeTerminalHyperlink(da.Url, da.Url))
+`, da.Token, makeTerminalHyperlink(da.Url, da.Url))
 }
