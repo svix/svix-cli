@@ -3,18 +3,14 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
-	svix "github.com/svixhq/svix-libs/go"
 )
 
 type messageAttemptCmd struct {
 	cmd *cobra.Command
-	sc  *svix.Svix
 }
 
-func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
-	mac := &messageAttemptCmd{
-		sc: s,
-	}
+func newMessageAttemptCmd() *messageAttemptCmd {
+	mac := &messageAttemptCmd{}
 	mac.cmd = &cobra.Command{
 		Use:   "message-attempt",
 		Short: "List, lookup & resend message attempts",
@@ -29,7 +25,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 			appID := args[0]
 			msgID := args[1]
 
-			l, err := s.MessageAttempt.List(appID, msgID, getFilterOptionsMessageAttempt(cmd))
+			l, err := svixClient.MessageAttempt.List(appID, msgID, getFilterOptionsMessageAttempt(cmd))
 			if err != nil {
 				return err
 			}
@@ -50,7 +46,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 			appID := args[0]
 			msgID := args[1]
 
-			l, err := s.MessageAttempt.ListAttemptedDestinations(appID, msgID, getFilterOptions(cmd))
+			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(appID, msgID, getFilterOptions(cmd))
 			if err != nil {
 				return err
 			}
@@ -73,7 +69,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 			msgID := args[1]
 			endpointID := args[2]
 
-			l, err := s.MessageAttempt.ListAttemptsForEndpoint(appID, msgID, endpointID, *getFilterOptionsMessageAttempt(cmd))
+			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(appID, msgID, endpointID, *getFilterOptionsMessageAttempt(cmd))
 			if err != nil {
 				return err
 			}
@@ -96,7 +92,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 			msgID := args[1]
 			attemptID := args[2]
 
-			out, err := s.MessageAttempt.Get(appID, msgID, attemptID)
+			out, err := svixClient.MessageAttempt.Get(appID, msgID, attemptID)
 			if err != nil {
 				return err
 			}
@@ -118,7 +114,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 			msgID := args[1]
 			endpointID := args[2]
 
-			err := s.MessageAttempt.Resend(appID, msgID, endpointID)
+			err := svixClient.MessageAttempt.Resend(appID, msgID, endpointID)
 			if err != nil {
 				return err
 			}

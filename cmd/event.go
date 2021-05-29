@@ -10,13 +10,10 @@ import (
 
 type eventTypeCmd struct {
 	cmd *cobra.Command
-	sc  *svix.Svix
 }
 
-func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
-	etc := &eventTypeCmd{
-		sc: s,
-	}
+func newEventTypeCmd() *eventTypeCmd {
+	etc := &eventTypeCmd{}
 	etc.cmd = &cobra.Command{
 		Use:   "event-type",
 		Short: "List, create & modify event types",
@@ -29,7 +26,7 @@ func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 	// 	Short: "List current event types",
 	// 	RunE: func(cmd *cobra.Command, args []string) error {
 
-	// 		l, err := s.EventType.List(getFilterOptions(cmd))
+	// 		l, err :=svixClient.EventType.List(getFilterOptions(cmd))
 	// 		if err != nil {
 	// 			return err
 	// 		}
@@ -53,7 +50,7 @@ func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 				Description: args[1],
 			}
 
-			out, err := s.EventType.Create(et)
+			out, err := svixClient.EventType.Create(et)
 			if err != nil {
 				return err
 			}
@@ -73,7 +70,7 @@ func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 				Description: args[1],
 			}
 
-			out, err := s.EventType.Update(eventID, et)
+			out, err := svixClient.EventType.Update(eventID, et)
 			if err != nil {
 				return err
 			}
@@ -92,7 +89,7 @@ func newEventTypeCmd(s *svix.Svix) *eventTypeCmd {
 			// parse args
 			eventID := args[0]
 
-			err := s.EventType.Delete(eventID)
+			err := svixClient.EventType.Delete(eventID)
 			if err != nil {
 				return err
 			}

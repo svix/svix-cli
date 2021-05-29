@@ -10,13 +10,10 @@ import (
 
 type applicationCmd struct {
 	cmd *cobra.Command
-	sc  *svix.Svix
 }
 
-func newApplicationCmd(s *svix.Svix) *applicationCmd {
-	ac := &applicationCmd{
-		sc: s,
-	}
+func newApplicationCmd() *applicationCmd {
+	ac := &applicationCmd{}
 	ac.cmd = &cobra.Command{
 		Use:   "application",
 		Short: "List, create & modify applications",
@@ -28,7 +25,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 		Short: "List current applications",
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			l, err := s.Application.List(getFilterOptions(cmd))
+			l, err := svixClient.Application.List(getFilterOptions(cmd))
 			if err != nil {
 				return err
 			}
@@ -58,7 +55,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 				Uid:  uid,
 			}
 
-			out, err := s.Application.Create(app)
+			out, err := svixClient.Application.Create(app)
 			if err != nil {
 				return err
 			}
@@ -77,7 +74,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 
 			appID := args[0]
 
-			out, err := s.Application.Get(appID)
+			out, err := svixClient.Application.Get(appID)
 			if err != nil {
 				return err
 			}
@@ -106,7 +103,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 				Uid:  uid,
 			}
 
-			out, err := s.Application.Update(appID, app)
+			out, err := svixClient.Application.Update(appID, app)
 			if err != nil {
 				return err
 			}
@@ -125,7 +122,7 @@ func newApplicationCmd(s *svix.Svix) *applicationCmd {
 			// parse args
 			appID := args[0]
 
-			err := s.Application.Delete(appID)
+			err := svixClient.Application.Delete(appID)
 			if err != nil {
 				return err
 			}

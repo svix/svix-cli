@@ -11,13 +11,10 @@ import (
 
 type endpointCmd struct {
 	cmd *cobra.Command
-	sc  *svix.Svix
 }
 
-func newEndpointCmd(s *svix.Svix) *endpointCmd {
-	ec := &endpointCmd{
-		sc: s,
-	}
+func newEndpointCmd() *endpointCmd {
+	ec := &endpointCmd{}
 	ec.cmd = &cobra.Command{
 		Use:   "endpoint",
 		Short: "List, create & modify endpoints",
@@ -30,7 +27,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
-			l, err := s.Endpoint.List(appID, getFilterOptions(cmd))
+			l, err := svixClient.Endpoint.List(appID, getFilterOptions(cmd))
 			if err != nil {
 				return err
 			}
@@ -76,7 +73,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				FilterTypes: filterTypes,
 			}
 
-			out, err := s.Endpoint.Create(appID, ep)
+			out, err := svixClient.Endpoint.Create(appID, ep)
 			if err != nil {
 				return err
 			}
@@ -95,7 +92,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 			appID := args[0]
 			endpointID := args[1]
 
-			out, err := s.Endpoint.Get(appID, endpointID)
+			out, err := svixClient.Endpoint.Get(appID, endpointID)
 			if err != nil {
 				return err
 			}
@@ -124,7 +121,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 				Uid:  uid,
 			}
 
-			out, err := s.Application.Update(appID, app)
+			out, err := svixClient.Application.Update(appID, app)
 			if err != nil {
 				return err
 			}
@@ -144,7 +141,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 			appID := args[0]
 			endpointID := args[1]
 
-			err := s.Endpoint.Delete(appID, endpointID)
+			err := svixClient.Endpoint.Delete(appID, endpointID)
 			if err != nil {
 				return err
 			}
@@ -164,7 +161,7 @@ func newEndpointCmd(s *svix.Svix) *endpointCmd {
 			appID := args[0]
 			endpointID := args[1]
 
-			out, err := s.Endpoint.GetSecret(appID, endpointID)
+			out, err := svixClient.Endpoint.GetSecret(appID, endpointID)
 			if err != nil {
 				return err
 			}

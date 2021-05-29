@@ -3,18 +3,14 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
-	svix "github.com/svixhq/svix-libs/go"
 )
 
 type authenticationCmd struct {
 	cmd *cobra.Command
-	sc  *svix.Svix
 }
 
-func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
-	ac := &authenticationCmd{
-		sc: s,
-	}
+func newAuthenticationCmd() *authenticationCmd {
+	ac := &authenticationCmd{}
 	ac.cmd = &cobra.Command{
 		Use:     "authentication",
 		Short:   "Manage authentication tasks such getting dashboard urls",
@@ -28,7 +24,7 @@ func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
-			da, err := s.Authentication.DashboardAccess(appID)
+			da, err := svixClient.Authentication.DashboardAccess(appID)
 			if err != nil {
 				return err
 			}
@@ -44,7 +40,7 @@ func newAuthenticationCmd(s *svix.Svix) *authenticationCmd {
 	// 	Use:   "logout",
 	// 	Short: "Get a dashboard URL for the given app",
 	// 	RunE: func(cmd *cobra.Command, args []string) error {
-	// 		err := s.Authentication.Logout()
+	// 		err :=svixClient.Authentication.Logout()
 	// 		if err != nil {
 	// 			return err
 	// 		}

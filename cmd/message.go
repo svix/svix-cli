@@ -11,13 +11,10 @@ import (
 
 type messageCmd struct {
 	cmd *cobra.Command
-	sc  *svix.Svix
 }
 
-func newMessageCmd(s *svix.Svix) *messageCmd {
-	mc := &messageCmd{
-		sc: s,
-	}
+func newMessageCmd() *messageCmd {
+	mc := &messageCmd{}
 	mc.cmd = &cobra.Command{
 		Use:   "message",
 		Short: "List & create messages",
@@ -30,7 +27,7 @@ func newMessageCmd(s *svix.Svix) *messageCmd {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
-			l, err := s.Message.List(appID, getFilterOptions(cmd))
+			l, err := svixClient.Message.List(appID, getFilterOptions(cmd))
 			if err != nil {
 				return err
 			}
@@ -73,7 +70,7 @@ func newMessageCmd(s *svix.Svix) *messageCmd {
 				Data:      payload,
 			}
 
-			out, err := s.Message.Create(appID, msg)
+			out, err := svixClient.Message.Create(appID, msg)
 			if err != nil {
 				return err
 			}
@@ -91,7 +88,7 @@ func newMessageCmd(s *svix.Svix) *messageCmd {
 			appID := args[0]
 			msgID := args[1]
 
-			out, err := s.Message.Get(appID, msgID)
+			out, err := svixClient.Message.Get(appID, msgID)
 			if err != nil {
 				return err
 			}
