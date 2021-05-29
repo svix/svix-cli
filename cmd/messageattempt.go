@@ -19,7 +19,7 @@ func newMessageAttemptCmd(s *svix.Svix) *messageAttemptCmd {
 	}
 	mac.cmd = &cobra.Command{
 		Use:   "message-attempt",
-		Short: "List & create messages",
+		Short: "List, lookup & resend message attempts",
 	}
 
 	// list TODO add remaining list endpoints to this single command
