@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -46,12 +47,14 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 
-	// Find home directory.
-	path, err := config.Path()
+	// Setup config file
+	configFolder, err := config.Folder()
 	cobra.CheckErr(err)
 
-	viper.SetConfigType("yaml")
-	viper.SetConfigFile(path)
+	configFile := filepath.Join(configFolder, config.FileName)
+	viper.SetConfigType("toml")
+	viper.SetConfigFile(configFile)
+	viper.SetConfigPermissions(config.FileMode)
 
 	// read in environment variables that match
 	viper.SetEnvPrefix("svix")
