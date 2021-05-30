@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
@@ -32,17 +31,6 @@ func (ic *initCmd) run(cmd *cobra.Command, args []string) {
 	keyPrompt := promptui.Prompt{
 		Label:   "Svix API Key",
 		Default: viper.GetString("key"),
-		Validate: func(input string) error {
-			if !strings.HasPrefix(input, "dhk_") {
-				// TODO should this be enforced?
-				return fmt.Errorf("API keys must start with dhk_")
-			}
-			if len(input) != 36 {
-				// TODO is this true?
-				return fmt.Errorf("API keys should be 36 characters long")
-			}
-			return nil
-		},
 	}
 	apiKey, err := keyPrompt.Run()
 	if err != nil {
