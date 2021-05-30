@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"net/url"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -52,6 +55,7 @@ func initConfig() {
 
 	// read in environment variables that match
 	viper.SetEnvPrefix("svix")
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.AutomaticEnv()
 
 	// If a config file is found, read it in.
@@ -65,5 +69,16 @@ func getSvixClientOrExit() *svix.Svix {
 		fmt.Println("Try running `svix init` to get started!")
 		os.Exit(1)
 	}
-	return svix.New(key, nil)
+
+	opts := &svix.SvixOptions{}
+	rawBaseURL := viper.GetString("base-url")
+	if rawBaseURL != "" {
+		baseURL, err := url.Parse(rawBaseURL)
+		if err != nil {
+			log.Printf("Invalid base-url set: \"%s\"\n", rawBaseURL)
+			os.Exit(1)
+		}
+		opts.BaseURL = baseURL
+	}
+	return svix.New(key, opts)
 }
