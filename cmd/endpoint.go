@@ -44,7 +44,7 @@ func newEndpointCmd() *endpointCmd {
 	// create
 
 	create := &cobra.Command{
-		Use:   "create APP_ID URL VERSION [DESCRIPTION] [FILTER_TYPE FILTER_TYPE ...]",
+		Use:   "create APP_ID URL VERSION [DESCRIPTION] [FILTER_TYPE ...]",
 		Short: "Create a new endpoint",
 		Args:  cobra.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
