@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/svixhq/svix-cli/config"
 	svix "github.com/svixhq/svix-libs/go"
 )
-
-var svixClient *svix.Svix
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -33,6 +31,7 @@ func init() {
 	rootCmd.PersistentFlags().Bool("json", false, "output results in json if possible")
 
 	// Register Commands
+	rootCmd.AddCommand(newInitCmd().Cmd())
 	rootCmd.AddCommand(newApplicationCmd().Cmd())
 	rootCmd.AddCommand(newAuthenticationCmd().Cmd())
 	rootCmd.AddCommand(newEventTypeCmd().Cmd())
@@ -45,27 +44,26 @@ func init() {
 func initConfig() {
 
 	// Find home directory.
-	home, err := homedir.Dir()
+	path, err := config.Path()
 	cobra.CheckErr(err)
 
-	// Search config in home directory with name ".svix" (without extension).
-	viper.AddConfigPath(home)
-	viper.SetConfigName(".svix")
+	viper.SetConfigType("yaml")
+	viper.SetConfigFile(path)
 
 	// read in environment variables that match
 	viper.SetEnvPrefix("svix")
 	viper.AutomaticEnv()
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
+	_ = viper.ReadInConfig()
+}
 
+func getSvixClientOrExit() *svix.Svix {
 	key := viper.GetString("key")
 	if key == "" {
 		fmt.Println("No SVIX_KEY found!")
 		fmt.Println("Try running `svix init` to get started!")
 		os.Exit(1)
 	}
-	svixClient = svix.New(key, nil)
+	return svix.New(key, nil)
 }

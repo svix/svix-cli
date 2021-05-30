@@ -26,6 +26,7 @@ func newEventTypeCmd() *eventTypeCmd {
 	// 	Short: "List current event types",
 	// 	RunE: func(cmd *cobra.Command, args []string) error {
 
+	// 		svixClient := getSvixClientOrExit()
 	// 		l, err :=svixClient.EventType.List(getFilterOptions(cmd))
 	// 		if err != nil {
 	// 			return err
@@ -50,6 +51,7 @@ func newEventTypeCmd() *eventTypeCmd {
 				Description: args[1],
 			}
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.EventType.Create(et)
 			if err != nil {
 				return err
@@ -70,6 +72,7 @@ func newEventTypeCmd() *eventTypeCmd {
 				Description: args[1],
 			}
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.EventType.Update(eventID, et)
 			if err != nil {
 				return err
@@ -89,6 +92,7 @@ func newEventTypeCmd() *eventTypeCmd {
 			// parse args
 			eventID := args[0]
 
+			svixClient := getSvixClientOrExit()
 			err := svixClient.EventType.Delete(eventID)
 			if err != nil {
 				return err

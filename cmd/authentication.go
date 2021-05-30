@@ -24,6 +24,8 @@ func newAuthenticationCmd() *authenticationCmd {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
+
+			svixClient := getSvixClientOrExit()
 			da, err := svixClient.Authentication.DashboardAccess(appID)
 			if err != nil {
 				return err
@@ -40,7 +42,8 @@ func newAuthenticationCmd() *authenticationCmd {
 	// 	Use:   "logout",
 	// 	Short: "Get a dashboard URL for the given app",
 	// 	RunE: func(cmd *cobra.Command, args []string) error {
-	// 		err :=svixClient.Authentication.Logout()
+	// 		svixClient := getSvixClientOrExit()
+	// 		err := svixClient.Authentication.Logout()
 	// 		if err != nil {
 	// 			return err
 	// 		}

@@ -25,6 +25,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			appID := args[0]
 			msgID := args[1]
 
+			svixClient := getSvixClientOrExit()
 			l, err := svixClient.MessageAttempt.List(appID, msgID, getFilterOptionsMessageAttempt(cmd))
 			if err != nil {
 				return err
@@ -46,6 +47,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			appID := args[0]
 			msgID := args[1]
 
+			svixClient := getSvixClientOrExit()
 			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(appID, msgID, getFilterOptions(cmd))
 			if err != nil {
 				return err
@@ -69,6 +71,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			msgID := args[1]
 			endpointID := args[2]
 
+			svixClient := getSvixClientOrExit()
 			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(appID, msgID, endpointID, *getFilterOptionsMessageAttempt(cmd))
 			if err != nil {
 				return err
@@ -92,6 +95,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			msgID := args[1]
 			attemptID := args[2]
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.MessageAttempt.Get(appID, msgID, attemptID)
 			if err != nil {
 				return err
@@ -114,6 +118,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			msgID := args[1]
 			endpointID := args[2]
 
+			svixClient := getSvixClientOrExit()
 			err := svixClient.MessageAttempt.Resend(appID, msgID, endpointID)
 			if err != nil {
 				return err

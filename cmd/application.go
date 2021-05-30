@@ -13,6 +13,7 @@ type applicationCmd struct {
 }
 
 func newApplicationCmd() *applicationCmd {
+
 	ac := &applicationCmd{}
 	ac.cmd = &cobra.Command{
 		Use:   "application",
@@ -25,6 +26,7 @@ func newApplicationCmd() *applicationCmd {
 		Short: "List current applications",
 		RunE: func(cmd *cobra.Command, args []string) error {
 
+			svixClient := getSvixClientOrExit()
 			l, err := svixClient.Application.List(getFilterOptions(cmd))
 			if err != nil {
 				return err
@@ -55,6 +57,7 @@ func newApplicationCmd() *applicationCmd {
 				Uid:  uid,
 			}
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Application.Create(app)
 			if err != nil {
 				return err
@@ -74,6 +77,7 @@ func newApplicationCmd() *applicationCmd {
 
 			appID := args[0]
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Application.Get(appID)
 			if err != nil {
 				return err
@@ -103,6 +107,7 @@ func newApplicationCmd() *applicationCmd {
 				Uid:  uid,
 			}
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Application.Update(appID, app)
 			if err != nil {
 				return err
@@ -122,6 +127,7 @@ func newApplicationCmd() *applicationCmd {
 			// parse args
 			appID := args[0]
 
+			svixClient := getSvixClientOrExit()
 			err := svixClient.Application.Delete(appID)
 			if err != nil {
 				return err

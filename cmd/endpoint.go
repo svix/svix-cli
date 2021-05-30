@@ -27,6 +27,8 @@ func newEndpointCmd() *endpointCmd {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
+
+			svixClient := getSvixClientOrExit()
 			l, err := svixClient.Endpoint.List(appID, getFilterOptions(cmd))
 			if err != nil {
 				return err
@@ -73,6 +75,7 @@ func newEndpointCmd() *endpointCmd {
 				FilterTypes: filterTypes,
 			}
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Endpoint.Create(appID, ep)
 			if err != nil {
 				return err
@@ -92,6 +95,7 @@ func newEndpointCmd() *endpointCmd {
 			appID := args[0]
 			endpointID := args[1]
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Endpoint.Get(appID, endpointID)
 			if err != nil {
 				return err
@@ -121,6 +125,7 @@ func newEndpointCmd() *endpointCmd {
 				Uid:  uid,
 			}
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Application.Update(appID, app)
 			if err != nil {
 				return err
@@ -141,6 +146,7 @@ func newEndpointCmd() *endpointCmd {
 			appID := args[0]
 			endpointID := args[1]
 
+			svixClient := getSvixClientOrExit()
 			err := svixClient.Endpoint.Delete(appID, endpointID)
 			if err != nil {
 				return err
@@ -161,6 +167,7 @@ func newEndpointCmd() *endpointCmd {
 			appID := args[0]
 			endpointID := args[1]
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Endpoint.GetSecret(appID, endpointID)
 			if err != nil {
 				return err

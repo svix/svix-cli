@@ -27,6 +27,8 @@ func newMessageCmd() *messageCmd {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
+
+			svixClient := getSvixClientOrExit()
 			l, err := svixClient.Message.List(appID, getFilterOptions(cmd))
 			if err != nil {
 				return err
@@ -70,6 +72,7 @@ func newMessageCmd() *messageCmd {
 				Data:      payload,
 			}
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Message.Create(appID, msg)
 			if err != nil {
 				return err
@@ -88,6 +91,7 @@ func newMessageCmd() *messageCmd {
 			appID := args[0]
 			msgID := args[1]
 
+			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Message.Get(appID, msgID)
 			if err != nil {
 				return err
