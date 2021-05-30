@@ -9,11 +9,16 @@ import (
 )
 
 func Path() (string, error) {
-	home, err := homedir.Dir()
-	if err != nil {
-		return "", err
+	xdgPath := os.Getenv("XDG_CONFIG_HOME")
+	configPath := xdgPath
+	if configPath == "" {
+		var err error
+		configPath, err = homedir.Dir()
+		if err != nil {
+			return "", err
+		}
 	}
-	return filepath.Join(home, ".svix"), nil
+	return filepath.Join(configPath, ".svix"), nil
 }
 
 func Write(settings interface{}) error {
