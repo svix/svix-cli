@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -63,7 +62,6 @@ func initConfig() {
 
 	// read in environment variables that match
 	viper.SetEnvPrefix("svix")
-	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.AutomaticEnv()
 
 	// If a config file is found, read it in.
@@ -79,11 +77,11 @@ func getSvixClientOrExit() *svix.Svix {
 	}
 
 	opts := &svix.SvixOptions{}
-	rawDebugURL := viper.GetString("debug-url")
+	rawDebugURL := viper.GetString("debug_url")
 	if rawDebugURL != "" {
 		debugURL, err := url.Parse(rawDebugURL)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Invalid debug-url set: \"%s\"\n", rawDebugURL)
+			fmt.Fprintf(os.Stderr, "Invalid debug_url set: \"%s\"\n", rawDebugURL)
 			os.Exit(1)
 		}
 		opts.DebugURL = debugURL
