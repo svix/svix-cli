@@ -73,14 +73,14 @@ func getSvixClientOrExit() *svix.Svix {
 	}
 
 	opts := &svix.SvixOptions{}
-	rawBaseURL := viper.GetString("base-url")
-	if rawBaseURL != "" {
-		baseURL, err := url.Parse(rawBaseURL)
+	rawDebugURL := viper.GetString("debug-url")
+	if rawDebugURL != "" {
+		debugURL, err := url.Parse(rawDebugURL)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Invalid base-url set: \"%s\"\n", rawBaseURL)
+			fmt.Fprintf(os.Stderr, "Invalid debug-url set: \"%s\"\n", rawDebugURL)
 			os.Exit(1)
 		}
-		opts.BaseURL = baseURL
+		opts.DebugURL = debugURL
 	}
 	return svix.New(key, opts)
 }
