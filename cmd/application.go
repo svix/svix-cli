@@ -141,7 +141,3 @@ func newApplicationCmd() *applicationCmd {
 
 	return ac
 }
-
-func (ac *applicationCmd) Cmd() *cobra.Command {
-	return ac.cmd
-}

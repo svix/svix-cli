@@ -181,7 +181,3 @@ func newEndpointCmd() *endpointCmd {
 
 	return ec
 }
-
-func (ec *endpointCmd) Cmd() *cobra.Command {
-	return ec.cmd
-}

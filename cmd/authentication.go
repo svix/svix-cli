@@ -54,7 +54,3 @@ func newAuthenticationCmd() *authenticationCmd {
 
 	return ac
 }
-
-func (ac *authenticationCmd) Cmd() *cobra.Command {
-	return ac.cmd
-}

@@ -3,12 +3,12 @@
 project_name: svix
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
 builds:
-  - env:
+  - id: svix
+    ldflags:
+      - -s -w -X github.com/svixhq/svix-cli/version.Version={{ .Version }}
+    env:
       - CGO_ENABLED=0
     goos:
       - linux

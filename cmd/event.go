@@ -106,7 +106,3 @@ func newEventTypeCmd() *eventTypeCmd {
 
 	return etc
 }
-
-func (etc *eventTypeCmd) Cmd() *cobra.Command {
-	return etc.cmd
-}

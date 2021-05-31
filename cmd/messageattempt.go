@@ -130,7 +130,3 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 
 	return mac
 }
-
-func (mac *messageAttemptCmd) Cmd() *cobra.Command {
-	return mac.cmd
-}

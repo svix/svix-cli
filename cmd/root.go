@@ -11,13 +11,15 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/svixhq/svix-cli/config"
+	"github.com/svixhq/svix-cli/version"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "svix",
-	Short: "A CLI to interact with the Svix API.",
+	Use:     "svix",
+	Short:   "A CLI to interact with the Svix API.",
+	Version: version.Version,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -28,19 +30,23 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	rootCmd.SetVersionTemplate(version.String())
+
+	// Root Flags
+	rootCmd.Flags().BoolP("version", "v", false, "Get the version of the Svix CLI") // overrides default msg
 
 	// Global Flags
-	// rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Increases output, useful for debugging")
 	rootCmd.PersistentFlags().Bool("color", false, "colorize output json")
 
 	// Register Commands
-	rootCmd.AddCommand(newLoginCmd().Cmd())
-	rootCmd.AddCommand(newApplicationCmd().Cmd())
-	rootCmd.AddCommand(newAuthenticationCmd().Cmd())
-	rootCmd.AddCommand(newEventTypeCmd().Cmd())
-	rootCmd.AddCommand(newEndpointCmd().Cmd())
-	rootCmd.AddCommand(newMessageCmd().Cmd())
-	rootCmd.AddCommand(newMessageAttemptCmd().Cmd())
+	rootCmd.AddCommand(newVersionCmd().cmd)
+	rootCmd.AddCommand(newLoginCmd().cmd)
+	rootCmd.AddCommand(newApplicationCmd().cmd)
+	rootCmd.AddCommand(newAuthenticationCmd().cmd)
+	rootCmd.AddCommand(newEventTypeCmd().cmd)
+	rootCmd.AddCommand(newEndpointCmd().cmd)
+	rootCmd.AddCommand(newMessageCmd().cmd)
+	rootCmd.AddCommand(newMessageAttemptCmd().cmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

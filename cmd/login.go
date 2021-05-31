@@ -49,7 +49,3 @@ func (lc *loginCmd) run(cmd *cobra.Command, args []string) {
 	fmt.Printf("All Set! Your config has been written to \"%s\"\n", viper.ConfigFileUsed())
 	fmt.Println("Type `svix --help` to print the Svix CLI documentation!")
 }
-
-func (lc *loginCmd) Cmd() *cobra.Command {
-	return lc.cmd
-}

@@ -105,7 +105,3 @@ func newMessageCmd() *messageCmd {
 
 	return mc
 }
-
-func (mc *messageCmd) Cmd() *cobra.Command {
-	return mc.cmd
-}
