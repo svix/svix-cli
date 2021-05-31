@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
+	"github.com/svixhq/svix-cli/utils"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
@@ -91,6 +92,8 @@ func newEventTypeCmd() *eventTypeCmd {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			eventID := args[0]
+
+			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the the event with id: %s", eventID))
 
 			svixClient := getSvixClientOrExit()
 			err := svixClient.EventType.Delete(eventID)

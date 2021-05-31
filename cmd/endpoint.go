@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
+	"github.com/svixhq/svix-cli/utils"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
@@ -145,6 +146,8 @@ func newEndpointCmd() *endpointCmd {
 			// parse args
 			appID := args[0]
 			endpointID := args[1]
+
+			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the the endpoint with id: %s", endpointID))
 
 			svixClient := getSvixClientOrExit()
 			err := svixClient.Endpoint.Delete(appID, endpointID)
