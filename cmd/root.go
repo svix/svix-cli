@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -68,8 +67,8 @@ func initConfig() {
 func getSvixClientOrExit() *svix.Svix {
 	key := viper.GetString("key")
 	if key == "" {
-		fmt.Println("No SVIX_KEY found!")
-		fmt.Println("Try running `svix init` to get started!")
+		fmt.Fprintln(os.Stderr, "No SVIX_KEY found!")
+		fmt.Fprintln(os.Stderr, "Try running `svix init` to get started!")
 		os.Exit(1)
 	}
 
@@ -78,7 +77,7 @@ func getSvixClientOrExit() *svix.Svix {
 	if rawBaseURL != "" {
 		baseURL, err := url.Parse(rawBaseURL)
 		if err != nil {
-			log.Printf("Invalid base-url set: \"%s\"\n", rawBaseURL)
+			fmt.Fprintf(os.Stderr, "Invalid base-url set: \"%s\"\n", rawBaseURL)
 			os.Exit(1)
 		}
 		opts.BaseURL = baseURL
