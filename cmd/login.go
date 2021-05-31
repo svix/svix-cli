@@ -9,22 +9,22 @@ import (
 	"github.com/svixhq/svix-cli/config"
 )
 
-type initCmd struct {
+type loginCmd struct {
 	cmd *cobra.Command
 }
 
-func newInitCmd() *initCmd {
-	ic := &initCmd{}
-	ic.cmd = &cobra.Command{
+func newLoginCmd() *loginCmd {
+	lc := &loginCmd{}
+	lc.cmd = &cobra.Command{
 		Use:   "init",
 		Short: "Interactively configure your Svix API credentials",
 		Args:  cobra.ExactArgs(0),
-		Run:   ic.run,
+		Run:   lc.run,
 	}
-	return ic
+	return lc
 }
 
-func (ic *initCmd) run(cmd *cobra.Command, args []string) {
+func (lc *loginCmd) run(cmd *cobra.Command, args []string) {
 	fmt.Printf("Welcome to the Svix CLI, enter your API key to get started!\n\n")
 
 	// get api key
@@ -49,6 +49,6 @@ func (ic *initCmd) run(cmd *cobra.Command, args []string) {
 	fmt.Println("Type `svix --help` to print the Svix CLI documentation!")
 }
 
-func (ic *initCmd) Cmd() *cobra.Command {
-	return ic.cmd
+func (lc *loginCmd) Cmd() *cobra.Command {
+	return lc.cmd
 }

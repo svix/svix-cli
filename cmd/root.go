@@ -32,10 +32,10 @@ func init() {
 
 	// Global Flags
 	// rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Increases output, useful for debugging")
-	rootCmd.PersistentFlags().Bool("json", false, "output results in json if possible")
+	rootCmd.PersistentFlags().Bool("color", false, "colorize output json")
 
 	// Register Commands
-	rootCmd.AddCommand(newInitCmd().Cmd())
+	rootCmd.AddCommand(newLoginCmd().Cmd())
 	rootCmd.AddCommand(newApplicationCmd().Cmd())
 	rootCmd.AddCommand(newAuthenticationCmd().Cmd())
 	rootCmd.AddCommand(newEventTypeCmd().Cmd())

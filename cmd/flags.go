@@ -7,12 +7,12 @@ import (
 )
 
 func getPrintOptions(cmd *cobra.Command) *pretty.PrintOptions {
-	jsonFlag, err := cmd.Flags().GetBool("json")
-	if err != nil || !jsonFlag {
+	colorFlag, err := cmd.Flags().GetBool("color")
+	if err != nil || !colorFlag {
 		return nil
 	}
 	return &pretty.PrintOptions{
-		JSON: true,
+		Color: true,
 	}
 }
 
