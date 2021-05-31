@@ -69,7 +69,7 @@ func newMessageCmd() *messageCmd {
 			msg := &svix.MessageIn{
 				EventType: eventType,
 				EventId:   &eventID,
-				Data:      payload,
+				Payload:   payload,
 			}
 
 			svixClient := getSvixClientOrExit()
