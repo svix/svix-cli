@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
 	"github.com/svixhq/svix-cli/utils"
+	"github.com/svixhq/svix-cli/validators"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
@@ -25,7 +26,7 @@ func newEndpointCmd() *endpointCmd {
 	list := &cobra.Command{
 		Use:   "list APP_ID",
 		Short: "List current endpoints",
-		Args:  cobra.ExactArgs(1),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 
@@ -47,7 +48,7 @@ func newEndpointCmd() *endpointCmd {
 	create := &cobra.Command{
 		Use:   "create APP_ID URL VERSION [DESCRIPTION] [FILTER_TYPE ...]",
 		Short: "Create a new endpoint",
-		Args:  cobra.MinimumNArgs(3),
+		Args:  validators.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]
@@ -91,7 +92,7 @@ func newEndpointCmd() *endpointCmd {
 	get := &cobra.Command{
 		Use:   "get APP_ID ENDPOINT_ID",
 		Short: "Get an endpoint by id",
-		Args:  cobra.ExactArgs(2),
+		Args:  validators.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 			endpointID := args[1]
@@ -111,7 +112,7 @@ func newEndpointCmd() *endpointCmd {
 	update := &cobra.Command{
 		Use:   "update APP_ID NAME [UID]",
 		Short: "Update an application by id",
-		Args:  cobra.RangeArgs(2, 3),
+		Args:  validators.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]
@@ -141,7 +142,7 @@ func newEndpointCmd() *endpointCmd {
 	delete := &cobra.Command{
 		Use:   "delete APP_ID ENDPOINT_ID",
 		Short: "Delete an endpoint by id",
-		Args:  cobra.ExactArgs(2),
+		Args:  validators.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]
@@ -164,7 +165,7 @@ func newEndpointCmd() *endpointCmd {
 	secret := &cobra.Command{
 		Use:   "secret APP_ID ENDPOINT_ID",
 		Short: "get an endpoint's secret by id",
-		Args:  cobra.ExactArgs(2),
+		Args:  validators.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]

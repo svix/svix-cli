@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
+	"github.com/svixhq/svix-cli/validators"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
@@ -24,7 +25,7 @@ func newMessageCmd() *messageCmd {
 	list := &cobra.Command{
 		Use:   "list",
 		Short: "List current messages",
-		Args:  cobra.ExactArgs(1),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 
@@ -45,7 +46,7 @@ func newMessageCmd() *messageCmd {
 	create := &cobra.Command{
 		Use:   "create APP_ID EVENT_TYPE [EVENT_ID] JSON_PAYLOAD",
 		Short: "Create a new messsage",
-		Args:  cobra.RangeArgs(2, 3),
+		Args:  validators.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]
@@ -86,7 +87,7 @@ func newMessageCmd() *messageCmd {
 	get := &cobra.Command{
 		Use:   "get APP_ID MSG_ID",
 		Short: "get message by id",
-		Args:  cobra.ExactArgs(1),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 			msgID := args[1]

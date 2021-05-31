@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
+	"github.com/svixhq/svix-cli/validators"
 )
 
 type messageAttemptCmd struct {
@@ -20,7 +21,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 	list := &cobra.Command{
 		Use:   "list APP_ID MSG_ID",
 		Short: "List attempted messages by id",
-		Args:  cobra.ExactArgs(2),
+		Args:  validators.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 			msgID := args[1]
@@ -42,7 +43,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 	listDestinations := &cobra.Command{
 		Use:   "list-destinations APP_ID MSG_ID",
 		Short: "List attempted destinations",
-		Args:  cobra.ExactArgs(2),
+		Args:  validators.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 			msgID := args[1]
@@ -65,7 +66,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 	listEndpoint := &cobra.Command{
 		Use:   "list-endpoint APP_ID MSG_ID ENDPOINT_ID",
 		Short: "List attempts for endpoint",
-		Args:  cobra.ExactArgs(3),
+		Args:  validators.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 			msgID := args[1]
@@ -88,7 +89,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 	get := &cobra.Command{
 		Use:   "get APP_ID MSG_ID ATTEMPT_ID",
 		Short: "Get attempt by id",
-		Args:  cobra.ExactArgs(3),
+		Args:  validators.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]
@@ -111,7 +112,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 	resend := &cobra.Command{
 		Use:   "resend APP_ID MSG_ID ENDPOINT_ID",
 		Short: "resends a webhook message by id",
-		Args:  cobra.ExactArgs(3),
+		Args:  validators.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]

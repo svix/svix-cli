@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/svixhq/svix-cli/config"
+	"github.com/svixhq/svix-cli/validators"
 )
 
 type loginCmd struct {
@@ -19,7 +20,7 @@ func newLoginCmd() *loginCmd {
 	lc.cmd = &cobra.Command{
 		Use:   "init",
 		Short: "Interactively configure your Svix API credentials",
-		Args:  cobra.ExactArgs(0),
+		Args:  validators.NoArgs(),
 		Run:   lc.run,
 	}
 	return lc

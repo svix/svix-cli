@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
 	"github.com/svixhq/svix-cli/utils"
+	"github.com/svixhq/svix-cli/validators"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
@@ -44,7 +45,7 @@ func newApplicationCmd() *applicationCmd {
 	create := &cobra.Command{
 		Use:   "create NAME [UID]",
 		Short: "Create a new application",
-		Args:  cobra.RangeArgs(1, 2),
+		Args:  validators.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			name := args[0]
@@ -73,7 +74,7 @@ func newApplicationCmd() *applicationCmd {
 	get := &cobra.Command{
 		Use:   "get APP_ID",
 		Short: "Get an application by id",
-		Args:  cobra.ExactArgs(1),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			appID := args[0]
@@ -93,7 +94,7 @@ func newApplicationCmd() *applicationCmd {
 	update := &cobra.Command{
 		Use:   "update APP_ID NAME [UID]",
 		Short: "Update an application by id",
-		Args:  cobra.RangeArgs(2, 3),
+		Args:  validators.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]
@@ -123,7 +124,7 @@ func newApplicationCmd() *applicationCmd {
 	delete := &cobra.Command{
 		Use:   "delete APP_ID",
 		Short: "Delete an application by id",
-		Args:  cobra.ExactArgs(1),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]

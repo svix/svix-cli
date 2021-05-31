@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
+	"github.com/svixhq/svix-cli/validators"
 )
 
 type authenticationCmd struct {
@@ -21,7 +22,7 @@ func newAuthenticationCmd() *authenticationCmd {
 	dashboard := &cobra.Command{
 		Use:   "dashboard APP_ID",
 		Short: "Get a dashboard URL for the given app",
-		Args:  cobra.ExactArgs(1),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 

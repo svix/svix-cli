@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
 	"github.com/svixhq/svix-cli/utils"
+	"github.com/svixhq/svix-cli/validators"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
@@ -44,7 +45,7 @@ func newEventTypeCmd() *eventTypeCmd {
 	create := &cobra.Command{
 		Use:   "create NAME DESCRIPTION",
 		Short: "Create a new event type",
-		Args:  cobra.ExactArgs(3),
+		Args:  validators.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			et := &svix.EventTypeInOut{
@@ -66,7 +67,7 @@ func newEventTypeCmd() *eventTypeCmd {
 	update := &cobra.Command{
 		Use:   "update EVENT_ID DESCRIPTION",
 		Short: "Update an event type by id",
-		Args:  cobra.ExactArgs(2),
+		Args:  validators.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			eventID := args[0]
 			et := &svix.EventTypeUpdate{
@@ -88,7 +89,7 @@ func newEventTypeCmd() *eventTypeCmd {
 	delete := &cobra.Command{
 		Use:   "delete EVENT_ID",
 		Short: "Delete an event type by id",
-		Args:  cobra.ExactArgs(1),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			eventID := args[0]
