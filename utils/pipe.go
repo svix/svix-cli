@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"encoding/json"
 	"io"
 	"os"
 )
@@ -19,19 +18,17 @@ func IsPipeWithData(f *os.File) (bool, error) {
 	return true, nil
 }
 
-func TryMarshallPipe(v interface{}) error {
+func ReadPipe() ([]byte, error) {
 	isPipe, err := IsPipeWithData(os.Stdin)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if isPipe {
 		in, err := io.ReadAll(os.Stdin)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		if err := json.Unmarshal(in, v); err != nil {
-			return err
-		}
+		return in, nil
 	}
-	return nil
+	return []byte{}, nil
 }

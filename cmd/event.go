@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -42,12 +43,20 @@ func newEventTypeCmd() *eventTypeCmd {
 
 	// create
 	create := &cobra.Command{
-		Use:   "create",
+		Use:   "create [JSON_PAYLOAD]",
 		Short: "Create a new event type",
-		Args:  validators.NoArgs(),
+		Args:  validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			et := &svix.EventTypeInOut{}
-			err := utils.TryMarshallPipe(et)
+			var in []byte
+			if len(args) > 0 {
+				in = []byte(args[0])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				cobra.CheckErr(err)
+			}
+			var et *svix.EventTypeInOut
+			err := json.Unmarshal(in, &et)
 			cobra.CheckErr(err)
 
 			// get flags
@@ -78,13 +87,21 @@ func newEventTypeCmd() *eventTypeCmd {
 	update := &cobra.Command{
 		Use:   "update EVENT_TYPE_NAME",
 		Short: "Update an event type by name",
-		Args:  validators.ExactArgs(1),
+		Args:  validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// get poisitonal args
 			eventName := args[0]
 
-			et := &svix.EventTypeUpdate{}
-			err := utils.TryMarshallPipe(et)
+			var in []byte
+			if len(args) > 1 {
+				in = []byte(args[1])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				cobra.CheckErr(err)
+			}
+			var et *svix.EventTypeUpdate
+			err := json.Unmarshal(in, &et)
 			cobra.CheckErr(err)
 
 			// get flags

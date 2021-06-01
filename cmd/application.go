@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -43,12 +44,20 @@ func newApplicationCmd() *applicationCmd {
 
 	// create
 	create := &cobra.Command{
-		Use:   "create",
+		Use:   "create [JSON_PAYLOAD]",
 		Short: "Create a new application",
-		Args:  validators.NoArgs(),
+		Args:  validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			app := &svix.ApplicationIn{}
-			err := utils.TryMarshallPipe(app)
+			var in []byte
+			if len(args) > 0 {
+				in = []byte(args[0])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				cobra.CheckErr(err)
+			}
+			var app *svix.ApplicationIn
+			err := json.Unmarshal(in, &app)
 			cobra.CheckErr(err)
 
 			// get flags
@@ -105,13 +114,21 @@ func newApplicationCmd() *applicationCmd {
 	update := &cobra.Command{
 		Use:   "update APP_ID",
 		Short: "Update an application by id",
-		Args:  validators.ExactArgs(1),
+		Args:  validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse positional args
 			appID := args[0]
 
-			app := &svix.ApplicationIn{}
-			err := utils.TryMarshallPipe(app)
+			var in []byte
+			if len(args) > 1 {
+				in = []byte(args[1])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				cobra.CheckErr(err)
+			}
+			var app *svix.ApplicationIn
+			err := json.Unmarshal(in, &app)
 			cobra.CheckErr(err)
 
 			// get flags

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -45,15 +46,23 @@ func newEndpointCmd() *endpointCmd {
 	// create
 
 	create := &cobra.Command{
-		Use:   "create APP_ID",
+		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new endpoint",
-		Args:  validators.ExactArgs(1),
+		Args:  validators.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse positional args
 			appID := args[0]
 
-			ep := &svix.EndpointIn{}
-			err := utils.TryMarshallPipe(ep)
+			var in []byte
+			if len(args) > 1 {
+				in = []byte(args[2])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				cobra.CheckErr(err)
+			}
+			var ep *svix.EndpointIn
+			err := json.Unmarshal(in, &ep)
 			cobra.CheckErr(err)
 
 			// get flags
@@ -109,16 +118,24 @@ func newEndpointCmd() *endpointCmd {
 	ec.cmd.AddCommand(get)
 
 	update := &cobra.Command{
-		Use:   "update APP_ID ENDPOINT_ID",
+		Use:   "update APP_ID ENDPOINT_ID [JSON_PAYLOAD]",
 		Short: "Update an application by id",
-		Args:  validators.ExactArgs(2),
+		Args:  validators.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]
 			endpointID := args[1]
 
-			ep := &svix.EndpointIn{}
-			err := utils.TryMarshallPipe(ep)
+			var in []byte
+			if len(args) > 2 {
+				in = []byte(args[2])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				cobra.CheckErr(err)
+			}
+			var ep *svix.EndpointIn
+			err := json.Unmarshal(in, &ep)
 			cobra.CheckErr(err)
 
 			// get flags

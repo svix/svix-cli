@@ -45,15 +45,22 @@ func newMessageCmd() *messageCmd {
 
 	// create
 	create := &cobra.Command{
-		Use:   "create APP_ID",
+		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new messsage",
-		Args:  validators.ExactArgs(1),
+		Args:  validators.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// get positional args
 			appID := args[0]
-
-			msg := &svix.MessageIn{}
-			err := utils.TryMarshallPipe(msg)
+			var in []byte
+			if len(args) > 1 {
+				in = []byte(args[1])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				cobra.CheckErr(err)
+			}
+			var msg *svix.MessageIn
+			err := json.Unmarshal(in, &msg)
 			cobra.CheckErr(err)
 
 			// get flags
