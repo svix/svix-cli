@@ -51,6 +51,7 @@ For a more information, checkout our [API reference](https://docs.svix.com)
 
 #### Building the current commit
 
-This project uses (goreleaser)[https://github.com/goreleaser/goreleaser/].
-1) Install goreleaser via the steps (here)[https://goreleaser.com/install/]
-2) Build current commit via `goreleaser release --snapshot --skip-publish`
+This project uses [goreleaser](https://github.com/goreleaser/goreleaser/)
+ 1) Install [go](https://golang.org/doc/install)
+ 2) Install goreleaser via the steps [here](https://goreleaser.com/install/)
+ 3) Build current commit via `goreleaser release --snapshot --skip-publish`
