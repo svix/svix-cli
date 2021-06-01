@@ -56,9 +56,11 @@ func newApplicationCmd() *applicationCmd {
 				in, err = utils.ReadPipe()
 				cobra.CheckErr(err)
 			}
-			var app *svix.ApplicationIn
-			err := json.Unmarshal(in, &app)
-			cobra.CheckErr(err)
+			var app svix.ApplicationIn
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &app)
+				cobra.CheckErr(err)
+			}
 
 			// get flags
 			if cmd.Flags().Changed("name") {
@@ -78,7 +80,7 @@ func newApplicationCmd() *applicationCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Application.Create(app)
+			out, err := svixClient.Application.Create(&app)
 			if err != nil {
 				return err
 			}
@@ -127,9 +129,11 @@ func newApplicationCmd() *applicationCmd {
 				in, err = utils.ReadPipe()
 				cobra.CheckErr(err)
 			}
-			var app *svix.ApplicationIn
-			err := json.Unmarshal(in, &app)
-			cobra.CheckErr(err)
+			var app svix.ApplicationIn
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &app)
+				cobra.CheckErr(err)
+			}
 
 			// get flags
 			if cmd.Flags().Changed("name") {
@@ -144,7 +148,7 @@ func newApplicationCmd() *applicationCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Application.Update(appID, app)
+			out, err := svixClient.Application.Update(appID, &app)
 			if err != nil {
 				return err
 			}

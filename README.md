@@ -30,6 +30,20 @@ sivx [command]
 svix [command] --help
 ```
 
+## Quick Start
+
+```sh
+svix init # interactively configure your Svix API credentials
+
+# Create an Application with the name "Demo
+svix create application '{ "name": "demo" }'
+# or pipe in some json
+echo '{ "name": "demo" }' | svix create application
+# or use the convinence cli flags
+svix create application --name demo
+
+```
+
 ## Commands
 
 The Svix CLI supports the following commands:

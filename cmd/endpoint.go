@@ -61,9 +61,11 @@ func newEndpointCmd() *endpointCmd {
 				in, err = utils.ReadPipe()
 				cobra.CheckErr(err)
 			}
-			var ep *svix.EndpointIn
-			err := json.Unmarshal(in, &ep)
-			cobra.CheckErr(err)
+			var ep svix.EndpointIn
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &ep)
+				cobra.CheckErr(err)
+			}
 
 			// get flags
 			if cmd.Flags().Changed("url") {
@@ -83,7 +85,7 @@ func newEndpointCmd() *endpointCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.Create(appID, ep)
+			out, err := svixClient.Endpoint.Create(appID, &ep)
 			if err != nil {
 				return err
 			}
@@ -134,9 +136,11 @@ func newEndpointCmd() *endpointCmd {
 				in, err = utils.ReadPipe()
 				cobra.CheckErr(err)
 			}
-			var ep *svix.EndpointIn
-			err := json.Unmarshal(in, &ep)
-			cobra.CheckErr(err)
+			var ep svix.EndpointIn
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &ep)
+				cobra.CheckErr(err)
+			}
 
 			// get flags
 			if cmd.Flags().Changed("url") {
@@ -156,7 +160,7 @@ func newEndpointCmd() *endpointCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.Update(appID, endpointID, ep)
+			out, err := svixClient.Endpoint.Update(appID, endpointID, &ep)
 			if err != nil {
 				return err
 			}

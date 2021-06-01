@@ -55,9 +55,11 @@ func newEventTypeCmd() *eventTypeCmd {
 				in, err = utils.ReadPipe()
 				cobra.CheckErr(err)
 			}
-			var et *svix.EventTypeInOut
-			err := json.Unmarshal(in, &et)
-			cobra.CheckErr(err)
+			var et svix.EventTypeInOut
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &et)
+				cobra.CheckErr(err)
+			}
 
 			// get flags
 			if cmd.Flags().Changed("name") {
@@ -72,7 +74,7 @@ func newEventTypeCmd() *eventTypeCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.EventType.Create(et)
+			out, err := svixClient.EventType.Create(&et)
 			if err != nil {
 				return err
 			}
@@ -100,9 +102,11 @@ func newEventTypeCmd() *eventTypeCmd {
 				in, err = utils.ReadPipe()
 				cobra.CheckErr(err)
 			}
-			var et *svix.EventTypeUpdate
-			err := json.Unmarshal(in, &et)
-			cobra.CheckErr(err)
+			var et svix.EventTypeUpdate
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &et)
+				cobra.CheckErr(err)
+			}
 
 			// get flags
 			if cmd.Flags().Changed("description") {
@@ -112,7 +116,7 @@ func newEventTypeCmd() *eventTypeCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.EventType.Update(eventName, et)
+			out, err := svixClient.EventType.Update(eventName, &et)
 			if err != nil {
 				return err
 			}

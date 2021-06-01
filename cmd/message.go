@@ -59,9 +59,11 @@ func newMessageCmd() *messageCmd {
 				in, err = utils.ReadPipe()
 				cobra.CheckErr(err)
 			}
-			var msg *svix.MessageIn
-			err := json.Unmarshal(in, &msg)
-			cobra.CheckErr(err)
+			var msg svix.MessageIn
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &msg)
+				cobra.CheckErr(err)
+			}
 
 			// get flags
 			if cmd.Flags().Changed("eventType") {
@@ -87,7 +89,7 @@ func newMessageCmd() *messageCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Message.Create(appID, msg)
+			out, err := svixClient.Message.Create(appID, &msg)
 			if err != nil {
 				return err
 			}
