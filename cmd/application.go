@@ -53,10 +53,12 @@ func newApplicationCmd() *applicationCmd {
 
 			// get flags
 			nameFlag, err := cmd.Flags().GetString("name")
+			cobra.CheckErr(err)
 			if nameFlag != "" {
 				app.Name = nameFlag
 			}
 			uidFlag, err := cmd.Flags().GetString("uid")
+			cobra.CheckErr(err)
 			if uidFlag != "" {
 				app.Uid = &uidFlag
 			}
@@ -109,10 +111,12 @@ func newApplicationCmd() *applicationCmd {
 
 			// get flags
 			nameFlag, err := cmd.Flags().GetString("name")
+			cobra.CheckErr(err)
 			if nameFlag != "" {
 				app.Name = nameFlag
 			}
 			uidFlag, err := cmd.Flags().GetString("uid")
+			cobra.CheckErr(err)
 			if uidFlag != "" {
 				app.Uid = &uidFlag
 			}
