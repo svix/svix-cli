@@ -59,6 +59,7 @@ The Svix CLI supports the following commands:
  - event-type      List, create & modify event types
  - message         List & create messages
  - message-attempt List, lookup & resend message attempts
+ - verify          Verify the signature of a webhook message
  - version         Get the version of the Svix CLI
  - help            Help about any command
 

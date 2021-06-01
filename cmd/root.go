@@ -46,6 +46,7 @@ func init() {
 	rootCmd.AddCommand(newEndpointCmd().cmd)
 	rootCmd.AddCommand(newMessageCmd().cmd)
 	rootCmd.AddCommand(newMessageAttemptCmd().cmd)
+	rootCmd.AddCommand(newVerifyCmd().cmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

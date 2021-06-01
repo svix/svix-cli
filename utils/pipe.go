@@ -3,6 +3,7 @@ package utils
 import (
 	"io"
 	"os"
+	"strings"
 )
 
 func IsPipeWithData(f *os.File) (bool, error) {
@@ -28,7 +29,7 @@ func ReadPipe() ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		return in, nil
+		return []byte(strings.Trim(string(in), " \r\n")), nil
 	}
 	return []byte{}, nil
 }
