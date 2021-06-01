@@ -24,7 +24,7 @@ func newMessageCmd() *messageCmd {
 
 	// list
 	list := &cobra.Command{
-		Use:   "list",
+		Use:   "list APP_ID",
 		Short: "List current messages",
 		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -47,7 +47,7 @@ func newMessageCmd() *messageCmd {
 	create := &cobra.Command{
 		Use:   "create APP_ID",
 		Short: "Create a new messsage",
-		Args:  validators.RangeArgs(2, 3),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// get positional args
 			appID := args[0]
@@ -96,7 +96,7 @@ func newMessageCmd() *messageCmd {
 	get := &cobra.Command{
 		Use:   "get APP_ID MSG_ID",
 		Short: "get message by id",
-		Args:  validators.ExactArgs(1),
+		Args:  validators.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			appID := args[0]
 			msgID := args[1]
