@@ -87,7 +87,7 @@ func newEventTypeCmd() *eventTypeCmd {
 	etc.cmd.AddCommand(create)
 
 	update := &cobra.Command{
-		Use:   "update EVENT_TYPE_NAME",
+		Use:   "update EVENT_TYPE_NAME [JSON_PAYLOAD]",
 		Short: "Update an event type by name",
 		Args:  validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {

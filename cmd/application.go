@@ -114,7 +114,7 @@ func newApplicationCmd() *applicationCmd {
 	ac.cmd.AddCommand(get)
 
 	update := &cobra.Command{
-		Use:   "update APP_ID",
+		Use:   "update APP_ID [JSON_PAYLOAD]",
 		Short: "Update an application by id",
 		Args:  validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
