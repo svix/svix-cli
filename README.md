@@ -26,7 +26,10 @@ Installing the Svix CLI provides access to the `svix` command.
 ```sh
 sivx [command]
 
-# Add the `--help` flag for information about the available commands
+# Run `svix help` for information about the available commands
+svix help
+
+# or add the `--help` flag to any command for a more detailed description and list of flags
 svix [command] --help
 ```
 
@@ -35,13 +38,15 @@ svix [command] --help
 ```sh
 svix init # interactively configure your Svix API credentials
 
-# Create an Application with the name "Demo
-svix create application '{ "name": "demo" }'
+# Create an Application with the name "Demo"
+svix application create '{ "name": "demo" }'
 # or pipe in some json
-echo '{ "name": "demo" }' | svix create application
+echo '{ "name": "demo" }' | svix application create
 # or use the convinence cli flags
-svix create application --name demo
+svix application create --name demo
 
+# List Applications
+svix application list --limit 2 --iterator some_iterator 
 ```
 
 ## Commands
