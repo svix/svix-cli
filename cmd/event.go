@@ -21,36 +21,45 @@ func newEventTypeCmd() *eventTypeCmd {
 		Short: "List, create & modify event types",
 	}
 
-	// TODO add function once svix-libs v0.14.0 is released
-	// // list
-	// list := &cobra.Command{
-	// 	Use:   "list",
-	// 	Short: "List current event types",
-	// 	RunE: func(cmd *cobra.Command, args []string) error {
+	// list
+	list := &cobra.Command{
+		Use:   "list",
+		Short: "List current event types",
+		RunE: func(cmd *cobra.Command, args []string) error {
 
-	// 		svixClient := getSvixClientOrExit()
-	// 		l, err :=svixClient.EventType.List(getFilterOptions(cmd))
-	// 		if err != nil {
-	// 			return err
-	// 		}
+			svixClient := getSvixClientOrExit()
+			l, err := svixClient.EventType.List(getFilterOptions(cmd))
+			if err != nil {
+				return err
+			}
 
-	// 		pretty.Print(l, getPrintOptions(cmd))
-	// 		return nil
-	// 	},
-	// }
-	// addFilterFlags(list)
-	// etc.cmd.AddCommand(list)
+			pretty.Print(l, getPrintOptions(cmd))
+			return nil
+		},
+	}
+	addFilterFlags(list)
+	etc.cmd.AddCommand(list)
 
 	// create
 	create := &cobra.Command{
-		Use:   "create NAME DESCRIPTION",
+		Use:   "create",
 		Short: "Create a new event type",
-		Args:  validators.ExactArgs(3),
+		Args:  validators.NoArgs(),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// parse args
-			et := &svix.EventTypeInOut{
-				Name:        args[0],
-				Description: args[1],
+			et := &svix.EventTypeInOut{}
+			err := utils.TryMarshallPipe(et)
+			cobra.CheckErr(err)
+
+			// get flags
+			nameFlag, err := cmd.Flags().GetString("name")
+			cobra.CheckErr(err)
+			if nameFlag != "" {
+				et.Name = nameFlag
+			}
+			descFlag, err := cmd.Flags().GetString("description")
+			cobra.CheckErr(err)
+			if descFlag != "" {
+				et.Description = descFlag
 			}
 
 			svixClient := getSvixClientOrExit()
@@ -62,28 +71,39 @@ func newEventTypeCmd() *eventTypeCmd {
 			return nil
 		},
 	}
+	create.Flags().String("name", "", "")
+	create.Flags().String("description", "", "")
 	etc.cmd.AddCommand(create)
 
 	update := &cobra.Command{
-		Use:   "update EVENT_ID DESCRIPTION",
-		Short: "Update an event type by id",
-		Args:  validators.ExactArgs(2),
+		Use:   "update EVENT_TYPE_NAME",
+		Short: "Update an event type by name",
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			eventID := args[0]
-			et := &svix.EventTypeUpdate{
-				Description: args[1],
+			// get poisitonal args
+			eventName := args[0]
+
+			et := &svix.EventTypeUpdate{}
+			err := utils.TryMarshallPipe(et)
+			cobra.CheckErr(err)
+
+			// get flags
+			descFlag, err := cmd.Flags().GetString("description")
+			cobra.CheckErr(err)
+			if descFlag != "" {
+				et.Description = descFlag
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.EventType.Update(eventID, et)
+			out, err := svixClient.EventType.Update(eventName, et)
 			if err != nil {
 				return err
 			}
-
 			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},
 	}
+	update.Flags().String("description", "", "")
 	etc.cmd.AddCommand(update)
 
 	delete := &cobra.Command{

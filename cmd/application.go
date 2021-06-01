@@ -43,20 +43,22 @@ func newApplicationCmd() *applicationCmd {
 
 	// create
 	create := &cobra.Command{
-		Use:   "create NAME [UID]",
+		Use:   "create",
 		Short: "Create a new application",
-		Args:  validators.RangeArgs(1, 2),
+		Args:  validators.NoArgs(),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// parse args
-			name := args[0]
-			var uid *string
-			if len(args) >= 2 {
-				uid = &args[1]
-			}
+			app := &svix.ApplicationIn{}
+			err := utils.TryMarshallPipe(app)
+			cobra.CheckErr(err)
 
-			app := &svix.ApplicationIn{
-				Name: name,
-				Uid:  uid,
+			// get flags
+			nameFlag, err := cmd.Flags().GetString("name")
+			if nameFlag != "" {
+				app.Name = nameFlag
+			}
+			uidFlag, err := cmd.Flags().GetString("uid")
+			if uidFlag != "" {
+				app.Uid = &uidFlag
 			}
 
 			svixClient := getSvixClientOrExit()
@@ -68,6 +70,8 @@ func newApplicationCmd() *applicationCmd {
 			return nil
 		},
 	}
+	create.Flags().String("name", "", "Name of the Application")
+	create.Flags().String("uid", "", "UID of the application (optional)")
 	ac.cmd.AddCommand(create)
 
 	// get
@@ -92,21 +96,25 @@ func newApplicationCmd() *applicationCmd {
 	ac.cmd.AddCommand(get)
 
 	update := &cobra.Command{
-		Use:   "update APP_ID NAME [UID]",
+		Use:   "update APP_ID",
 		Short: "Update an application by id",
-		Args:  validators.RangeArgs(2, 3),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// parse args
+			// parse positional args
 			appID := args[0]
-			name := args[1]
-			var uid *string
-			if len(args) >= 2 {
-				uid = &args[2]
-			}
 
-			app := &svix.ApplicationIn{
-				Name: name,
-				Uid:  uid,
+			app := &svix.ApplicationIn{}
+			err := utils.TryMarshallPipe(app)
+			cobra.CheckErr(err)
+
+			// get flags
+			nameFlag, err := cmd.Flags().GetString("name")
+			if nameFlag != "" {
+				app.Name = nameFlag
+			}
+			uidFlag, err := cmd.Flags().GetString("uid")
+			if uidFlag != "" {
+				app.Uid = &uidFlag
 			}
 
 			svixClient := getSvixClientOrExit()
@@ -119,6 +127,8 @@ func newApplicationCmd() *applicationCmd {
 			return nil
 		},
 	}
+	update.Flags().String("name", "", "Name of the Application")
+	update.Flags().String("uid", "", "UID of the application (optional)")
 	ac.cmd.AddCommand(update)
 
 	delete := &cobra.Command{

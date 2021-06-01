@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
+	"github.com/svixhq/svix-cli/utils"
 	"github.com/svixhq/svix-cli/validators"
 	svix "github.com/svixhq/svix-libs/go"
 )
@@ -44,33 +45,38 @@ func newMessageCmd() *messageCmd {
 
 	// create
 	create := &cobra.Command{
-		Use:   "create APP_ID EVENT_TYPE [EVENT_ID] JSON_PAYLOAD",
+		Use:   "create APP_ID",
 		Short: "Create a new messsage",
 		Args:  validators.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// parse args
+			// get positional args
 			appID := args[0]
-			eventType := args[1]
-			var eventID string
-			var payloadStr string
-			if len(args) > 3 {
-				eventID = args[2]
-				payloadStr = args[3]
-			} else {
-				payloadStr = args[2]
-			}
 
-			// unmarshal payload
-			var payload map[string]interface{}
-			err := json.Unmarshal([]byte(payloadStr), &payload)
-			if err != nil {
-				return fmt.Errorf("invalid payload json")
-			}
+			msg := &svix.MessageIn{}
+			err := utils.TryMarshallPipe(msg)
+			cobra.CheckErr(err)
 
-			msg := &svix.MessageIn{
-				EventType: eventType,
-				EventId:   &eventID,
-				Payload:   payload,
+			// get flags
+			eventTypeFlag, err := cmd.Flags().GetString("eventType")
+			cobra.CheckErr(err)
+			if eventTypeFlag != "" {
+				msg.EventType = eventTypeFlag
+			}
+			eventIdFlag, err := cmd.Flags().GetString("eventId")
+			cobra.CheckErr(err)
+			if eventIdFlag != "" {
+				msg.EventId = &eventIdFlag
+			}
+			payloadFlag, err := cmd.Flags().GetString("payload")
+			cobra.CheckErr(err)
+			if payloadFlag != "" {
+				// unmarshal payload
+				var payload map[string]interface{}
+				err := json.Unmarshal([]byte(payloadFlag), &payload)
+				if err != nil {
+					return fmt.Errorf("invalid payload json supplied via flag")
+				}
+				msg.Payload = payload
 			}
 
 			svixClient := getSvixClientOrExit()
@@ -82,6 +88,9 @@ func newMessageCmd() *messageCmd {
 			return nil
 		},
 	}
+	create.Flags().String("eventType", "", "")
+	create.Flags().String("eventId", "", "")
+	create.Flags().String("payload", "", "json message payload")
 	mc.cmd.AddCommand(create)
 
 	get := &cobra.Command{

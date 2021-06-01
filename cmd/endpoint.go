@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/svixhq/svix-cli/pretty"
@@ -46,35 +45,32 @@ func newEndpointCmd() *endpointCmd {
 	// create
 
 	create := &cobra.Command{
-		Use:   "create APP_ID URL VERSION [DESCRIPTION] [FILTER_TYPE ...]",
+		Use:   "create APP_ID",
 		Short: "Create a new endpoint",
-		Args:  validators.MinimumNArgs(3),
+		Args:  validators.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// parse args
+			// parse positional args
 			appID := args[0]
-			url := args[1]
 
-			version, err := strconv.ParseInt(args[2], 10, 32)
-			if err != nil {
-				return fmt.Errorf("version must be a valid int32")
+			ep := &svix.EndpointIn{}
+			err := utils.TryMarshallPipe(ep)
+			cobra.CheckErr(err)
+
+			// get flags
+			urlFlag, err := cmd.Flags().GetString("url")
+			cobra.CheckErr(err)
+			if urlFlag != "" {
+				ep.Url = urlFlag
 			}
-
-			var desc *string
-			if len(args) >= 3 {
-				desc = &args[1]
+			versionFlag, err := cmd.Flags().GetInt32("version")
+			cobra.CheckErr(err)
+			if versionFlag != 0 {
+				ep.Version = versionFlag
 			}
-
-			var filterTypes *[]string
-			if len(args) >= 4 {
-				filters := args[4:]
-				filterTypes = &filters
-			}
-
-			ep := &svix.EndpointIn{
-				Url:         url,
-				Version:     int32(version),
-				Description: desc,
-				FilterTypes: filterTypes,
+			filterTypesFlag, err := cmd.Flags().GetStringArray("filterTypes")
+			cobra.CheckErr(err)
+			if len(filterTypesFlag) > 0 {
+				ep.FilterTypes = &filterTypesFlag
 			}
 
 			svixClient := getSvixClientOrExit()
@@ -86,6 +82,9 @@ func newEndpointCmd() *endpointCmd {
 			return nil
 		},
 	}
+	create.Flags().String("url", "", "")
+	create.Flags().Int32("version", 0, "")
+	create.Flags().StringArray("filterTypes", []string{}, "")
 	ec.cmd.AddCommand(create)
 
 	// get
@@ -110,33 +109,47 @@ func newEndpointCmd() *endpointCmd {
 	ec.cmd.AddCommand(get)
 
 	update := &cobra.Command{
-		Use:   "update APP_ID NAME [UID]",
+		Use:   "update APP_ID ENDPOINT_ID",
 		Short: "Update an application by id",
-		Args:  validators.RangeArgs(2, 3),
+		Args:  validators.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]
-			name := args[1]
-			var uid *string
-			if len(args) >= 2 {
-				uid = &args[2]
-			}
+			endpointID := args[1]
 
-			app := &svix.ApplicationIn{
-				Name: name,
-				Uid:  uid,
+			ep := &svix.EndpointIn{}
+			err := utils.TryMarshallPipe(ep)
+			cobra.CheckErr(err)
+
+			// get flags
+			urlFlag, err := cmd.Flags().GetString("url")
+			cobra.CheckErr(err)
+			if urlFlag != "" {
+				ep.Url = urlFlag
+			}
+			versionFlag, err := cmd.Flags().GetInt32("version")
+			cobra.CheckErr(err)
+			if versionFlag != 0 {
+				ep.Version = versionFlag
+			}
+			filterTypesFlag, err := cmd.Flags().GetStringArray("filterTypes")
+			cobra.CheckErr(err)
+			if len(filterTypesFlag) > 0 {
+				ep.FilterTypes = &filterTypesFlag
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Application.Update(appID, app)
+			out, err := svixClient.Endpoint.Update(appID, endpointID, ep)
 			if err != nil {
 				return err
 			}
-
 			pretty.Print(out, getPrintOptions(cmd))
 			return nil
 		},
 	}
+	update.Flags().String("url", "", "")
+	update.Flags().Int32("version", 0, "")
+	update.Flags().StringArray("filterTypes", []string{}, "")
 	ec.cmd.AddCommand(update)
 
 	delete := &cobra.Command{
