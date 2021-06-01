@@ -51,14 +51,14 @@ func newEventTypeCmd() *eventTypeCmd {
 			cobra.CheckErr(err)
 
 			// get flags
-			nameFlag, err := cmd.Flags().GetString("name")
-			cobra.CheckErr(err)
-			if nameFlag != "" {
+			if cmd.Flags().Changed("name") {
+				nameFlag, err := cmd.Flags().GetString("name")
+				cobra.CheckErr(err)
 				et.Name = nameFlag
 			}
-			descFlag, err := cmd.Flags().GetString("description")
-			cobra.CheckErr(err)
-			if descFlag != "" {
+			if cmd.Flags().Changed("description") {
+				descFlag, err := cmd.Flags().GetString("description")
+				cobra.CheckErr(err)
 				et.Description = descFlag
 			}
 
@@ -88,9 +88,9 @@ func newEventTypeCmd() *eventTypeCmd {
 			cobra.CheckErr(err)
 
 			// get flags
-			descFlag, err := cmd.Flags().GetString("description")
-			cobra.CheckErr(err)
-			if descFlag != "" {
+			if cmd.Flags().Changed("description") {
+				descFlag, err := cmd.Flags().GetString("description")
+				cobra.CheckErr(err)
 				et.Description = descFlag
 			}
 

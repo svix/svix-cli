@@ -57,19 +57,19 @@ func newEndpointCmd() *endpointCmd {
 			cobra.CheckErr(err)
 
 			// get flags
-			urlFlag, err := cmd.Flags().GetString("url")
-			cobra.CheckErr(err)
-			if urlFlag != "" {
+			if cmd.Flags().Changed("url") {
+				urlFlag, err := cmd.Flags().GetString("url")
+				cobra.CheckErr(err)
 				ep.Url = urlFlag
 			}
-			versionFlag, err := cmd.Flags().GetInt32("version")
-			cobra.CheckErr(err)
-			if versionFlag != 0 {
+			if cmd.Flags().Changed("version") {
+				versionFlag, err := cmd.Flags().GetInt32("version")
+				cobra.CheckErr(err)
 				ep.Version = versionFlag
 			}
-			filterTypesFlag, err := cmd.Flags().GetStringArray("filterTypes")
-			cobra.CheckErr(err)
-			if len(filterTypesFlag) > 0 {
+			if cmd.Flags().Changed("filterTypes") {
+				filterTypesFlag, err := cmd.Flags().GetStringArray("filterTypes")
+				cobra.CheckErr(err)
 				ep.FilterTypes = &filterTypesFlag
 			}
 
@@ -122,19 +122,19 @@ func newEndpointCmd() *endpointCmd {
 			cobra.CheckErr(err)
 
 			// get flags
-			urlFlag, err := cmd.Flags().GetString("url")
-			cobra.CheckErr(err)
-			if urlFlag != "" {
+			if cmd.Flags().Changed("url") {
+				urlFlag, err := cmd.Flags().GetString("url")
+				cobra.CheckErr(err)
 				ep.Url = urlFlag
 			}
-			versionFlag, err := cmd.Flags().GetInt32("version")
-			cobra.CheckErr(err)
-			if versionFlag != 0 {
+			if cmd.Flags().Changed("version") {
+				versionFlag, err := cmd.Flags().GetInt32("version")
+				cobra.CheckErr(err)
 				ep.Version = versionFlag
 			}
-			filterTypesFlag, err := cmd.Flags().GetStringArray("filterTypes")
-			cobra.CheckErr(err)
-			if len(filterTypesFlag) > 0 {
+			if cmd.Flags().Changed("filterTypes") {
+				filterTypesFlag, err := cmd.Flags().GetStringArray("filterTypes")
+				cobra.CheckErr(err)
 				ep.FilterTypes = &filterTypesFlag
 			}
 

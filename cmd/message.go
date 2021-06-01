@@ -57,22 +57,22 @@ func newMessageCmd() *messageCmd {
 			cobra.CheckErr(err)
 
 			// get flags
-			eventTypeFlag, err := cmd.Flags().GetString("eventType")
-			cobra.CheckErr(err)
-			if eventTypeFlag != "" {
+			if cmd.Flags().Changed("eventType") {
+				eventTypeFlag, err := cmd.Flags().GetString("eventType")
+				cobra.CheckErr(err)
 				msg.EventType = eventTypeFlag
 			}
-			eventIdFlag, err := cmd.Flags().GetString("eventId")
-			cobra.CheckErr(err)
-			if eventIdFlag != "" {
+			if cmd.Flags().Changed("eventId") {
+				eventIdFlag, err := cmd.Flags().GetString("eventId")
+				cobra.CheckErr(err)
 				msg.EventId = &eventIdFlag
 			}
-			payloadFlag, err := cmd.Flags().GetString("payload")
-			cobra.CheckErr(err)
-			if payloadFlag != "" {
+			if cmd.Flags().Changed("payload") {
+				payloadFlag, err := cmd.Flags().GetString("payload")
+				cobra.CheckErr(err)
 				// unmarshal payload
 				var payload map[string]interface{}
-				err := json.Unmarshal([]byte(payloadFlag), &payload)
+				err = json.Unmarshal([]byte(payloadFlag), &payload)
 				if err != nil {
 					return fmt.Errorf("invalid payload json supplied via flag")
 				}

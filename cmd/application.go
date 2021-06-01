@@ -52,15 +52,20 @@ func newApplicationCmd() *applicationCmd {
 			cobra.CheckErr(err)
 
 			// get flags
-			nameFlag, err := cmd.Flags().GetString("name")
-			cobra.CheckErr(err)
-			if nameFlag != "" {
+			if cmd.Flags().Changed("name") {
+				nameFlag, err := cmd.Flags().GetString("name")
+				cobra.CheckErr(err)
 				app.Name = nameFlag
 			}
-			uidFlag, err := cmd.Flags().GetString("uid")
-			cobra.CheckErr(err)
-			if uidFlag != "" {
+			if cmd.Flags().Changed("uid") {
+				uidFlag, err := cmd.Flags().GetString("uid")
+				cobra.CheckErr(err)
 				app.Uid = &uidFlag
+			}
+
+			// validate args
+			if app.Name == "" {
+				return fmt.Errorf("name required")
 			}
 
 			svixClient := getSvixClientOrExit()
@@ -110,14 +115,14 @@ func newApplicationCmd() *applicationCmd {
 			cobra.CheckErr(err)
 
 			// get flags
-			nameFlag, err := cmd.Flags().GetString("name")
-			cobra.CheckErr(err)
-			if nameFlag != "" {
+			if cmd.Flags().Changed("name") {
+				nameFlag, err := cmd.Flags().GetString("name")
+				cobra.CheckErr(err)
 				app.Name = nameFlag
 			}
-			uidFlag, err := cmd.Flags().GetString("uid")
-			cobra.CheckErr(err)
-			if uidFlag != "" {
+			if cmd.Flags().Changed("uid") {
+				uidFlag, err := cmd.Flags().GetString("uid")
+				cobra.CheckErr(err)
 				app.Uid = &uidFlag
 			}
 
