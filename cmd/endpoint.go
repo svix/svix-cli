@@ -69,7 +69,7 @@ Example Schema:
 
 			var in []byte
 			if len(args) > 1 {
-				in = []byte(args[2])
+				in = []byte(args[1])
 			} else {
 				var err error
 				in, err = utils.ReadPipe()

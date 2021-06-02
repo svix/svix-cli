@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.6.1
+* fix bug in `endpoint create` which caused a panic
+
 ## Version 0.6.0
 * Change verify to use flags for non payload data instead of positional arguments
 
