@@ -8,7 +8,7 @@ A CLI to interact with the Svix API.
 
 **With the Svix CLI, you can:**
 
-- Interact with the Stix CLI
+- Interact with the Svix CLI
 - Validate Webhook payloads
 
 
