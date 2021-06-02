@@ -42,7 +42,7 @@ svix [command] --help
 # Set your Auth Token temporarily via the SVIX_AUTH_TOKEN environment variable
 export SVIX_AUTH_TOKEN=<MY-AUTH-TOKEN>
 # or to persistently store your auth token in a config file run
-svix config # interactively configure your Svix API credentials
+svix login # interactively configure your Svix API credentials
 
 # Create an Application with the name "Demo"
 svix application create '{ "name": "demo" }'
