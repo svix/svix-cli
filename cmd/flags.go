@@ -8,13 +8,13 @@ import (
 )
 
 func getPrintOptions(cmd *cobra.Command) *pretty.PrintOptions {
-	colorFlag := viper.GetBool("color")
+	colorFlag := viper.GetBool("no-color")
 	if !colorFlag {
-		return nil
+		return &pretty.PrintOptions{
+			Color: true,
+		}
 	}
-	return &pretty.PrintOptions{
-		Color: true,
-	}
+	return nil
 }
 
 func addFilterFlags(cmd *cobra.Command) {
