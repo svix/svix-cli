@@ -36,7 +36,7 @@ func init() {
 
 	// Global Flags
 	rootCmd.PersistentFlags().Bool("color", false, "colorize output json")
-	viper.BindPFlag("color", rootCmd.PersistentFlags().Lookup("color")) // allow color flag to be set in config
+	cobra.CheckErr(viper.BindPFlag("color", rootCmd.PersistentFlags().Lookup("color"))) // allow color flag to be set in config
 
 	// Register Commands
 	rootCmd.AddCommand(newVersionCmd().cmd)
