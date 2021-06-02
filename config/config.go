@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/BurntSushi/toml"
 	"github.com/mitchellh/go-homedir"
@@ -13,8 +14,13 @@ const FileName = "config.toml"
 const FileMode = os.FileMode(0600)
 
 func Folder() (string, error) {
-	xdgPath := os.Getenv("XDG_CONFIG_HOME")
-	configPath := xdgPath
+	var configPath string
+	switch runtime.GOOS {
+	case "windows":
+		configPath = os.Getenv("APPDATA")
+	default:
+		configPath = os.Getenv("XDG_CONFIG_HOME")
+	}
 	if configPath == "" {
 		var err error
 		home, err := homedir.Dir()
