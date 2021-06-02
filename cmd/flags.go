@@ -19,9 +19,6 @@ func getPrintOptions(cmd *cobra.Command) *pretty.PrintOptions {
 
 func addFilterFlags(cmd *cobra.Command) {
 	cmd.Flags().StringP("iterator", "i", "", "anchor id for list call")
-
-	// TODO cobra has no ability to set true pointer flags, always requiring a default value
-	// decide on a way to check if this flag has been explicitly set or not (or we can just leave a sane default max)
 	cmd.Flags().Int32P("limit", "l", 50, "max items per request")
 }
 
@@ -33,7 +30,7 @@ func getFilterOptions(cmd *cobra.Command) *svix.FetchOptions {
 	}
 
 	iteratorFlag, _ := cmd.Flags().GetString("iterator")
-	if iteratorFlag != "" {
+	if cmd.Flags().Changed("iterator") {
 		opts.Iterator = &iteratorFlag
 	}
 	return opts
@@ -51,7 +48,7 @@ func getFilterOptionsMessageAttempt(cmd *cobra.Command) *svix.FetchOptionsMessag
 	}
 
 	statusFlag, _ := cmd.Flags().GetString("status")
-	if statusFlag != "" {
+	if cmd.Flags().Changed("status") {
 		opts.Iterator = &statusFlag
 	}
 	return opts
