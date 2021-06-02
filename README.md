@@ -1,6 +1,6 @@
 # SvixCLI
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/svixhq/svix-cli)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/svixhq/svix-cli) [![GolangCI][golangci-lint-img]][golangci-lint] [![Go Report Card][report-card-img]][report-card]
 
 A CLI to interact with the Svix API.
 
@@ -83,3 +83,9 @@ This project uses [goreleaser](https://github.com/goreleaser/goreleaser/)
  1) Install [go](https://golang.org/doc/install).
  2) Install goreleaser via the steps [here](https://goreleaser.com/install/).
  3) Build current commit via `goreleaser release --snapshot --skip-publish`.
+
+[release-img]: https://img.shields.io/github/v/release/svixhq/svix-cli
+[golangci-lint-img]: https://github.com/svixhq/svix-cli/workflows/go-lint/badge.svg
+[golangci-lint]: https://github.com/svixhq/svix-cli/actions?query=workflow%3Ago-lint
+[report-card-img]: https://goreportcard.com/badge/github.com/svixhq/svix-cli
+[report-card]: https://goreportcard.com/report/github.com/svixhq/svix-cli
