@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/svixhq/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
 func getPrintOptions(cmd *cobra.Command) *pretty.PrintOptions {
-	colorFlag, err := cmd.Flags().GetBool("color")
-	if err != nil || !colorFlag {
+	colorFlag := viper.GetBool("color")
+	if !colorFlag {
 		return nil
 	}
 	return &pretty.PrintOptions{
