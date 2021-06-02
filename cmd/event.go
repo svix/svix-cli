@@ -42,6 +42,8 @@ func newEventTypeCmd() *eventTypeCmd {
 	etc.cmd.AddCommand(list)
 
 	// create
+	nameFlagName := "data-name"
+	descriptionFlagName := "data-description"
 	create := &cobra.Command{
 		Use:   "create [JSON_PAYLOAD]",
 		Short: "Create a new event type",
@@ -70,13 +72,13 @@ Example Schema:
 			}
 
 			// get flags
-			if cmd.Flags().Changed("name") {
-				nameFlag, err := cmd.Flags().GetString("name")
+			if cmd.Flags().Changed(nameFlagName) {
+				nameFlag, err := cmd.Flags().GetString(nameFlagName)
 				cobra.CheckErr(err)
 				et.Name = nameFlag
 			}
-			if cmd.Flags().Changed("description") {
-				descFlag, err := cmd.Flags().GetString("description")
+			if cmd.Flags().Changed(descriptionFlagName) {
+				descFlag, err := cmd.Flags().GetString(descriptionFlagName)
 				cobra.CheckErr(err)
 				et.Description = descFlag
 			}
@@ -90,8 +92,8 @@ Example Schema:
 			return nil
 		},
 	}
-	create.Flags().String("name", "", "")
-	create.Flags().String("description", "", "")
+	create.Flags().String(nameFlagName, "", "")
+	create.Flags().String(descriptionFlagName, "", "")
 	etc.cmd.AddCommand(create)
 
 	update := &cobra.Command{
@@ -124,8 +126,8 @@ Example Schema:
 			}
 
 			// get flags
-			if cmd.Flags().Changed("description") {
-				descFlag, err := cmd.Flags().GetString("description")
+			if cmd.Flags().Changed(descriptionFlagName) {
+				descFlag, err := cmd.Flags().GetString(descriptionFlagName)
 				cobra.CheckErr(err)
 				et.Description = descFlag
 			}
@@ -139,7 +141,7 @@ Example Schema:
 			return nil
 		},
 	}
-	update.Flags().String("description", "", "")
+	update.Flags().String(descriptionFlagName, "", "")
 	etc.cmd.AddCommand(update)
 
 	delete := &cobra.Command{

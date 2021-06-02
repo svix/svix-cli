@@ -43,6 +43,8 @@ func newApplicationCmd() *applicationCmd {
 	ac.cmd.AddCommand(list)
 
 	// create
+	nameFlagName := "data-name"
+	uidFlagName := "data-uid"
 	create := &cobra.Command{
 		Use:   "create [JSON_PAYLOAD]",
 		Short: "Create a new application",
@@ -71,13 +73,13 @@ Example Schema:
 			}
 
 			// get flags
-			if cmd.Flags().Changed("name") {
-				nameFlag, err := cmd.Flags().GetString("name")
+			if cmd.Flags().Changed(nameFlagName) {
+				nameFlag, err := cmd.Flags().GetString(nameFlagName)
 				cobra.CheckErr(err)
 				app.Name = nameFlag
 			}
-			if cmd.Flags().Changed("uid") {
-				uidFlag, err := cmd.Flags().GetString("uid")
+			if cmd.Flags().Changed(uidFlagName) {
+				uidFlag, err := cmd.Flags().GetString(uidFlagName)
 				cobra.CheckErr(err)
 				app.Uid = &uidFlag
 			}
@@ -96,8 +98,8 @@ Example Schema:
 			return nil
 		},
 	}
-	create.Flags().String("name", "", "Name of the Application")
-	create.Flags().String("uid", "", "UID of the application (optional)")
+	create.Flags().String(nameFlagName, "", "Name of the Application")
+	create.Flags().String(uidFlagName, "", "UID of the application (optional)")
 	ac.cmd.AddCommand(create)
 
 	// get
@@ -124,7 +126,15 @@ Example Schema:
 	update := &cobra.Command{
 		Use:   "update APP_ID [JSON_PAYLOAD]",
 		Short: "Update an application by id",
-		Args:  validators.RangeArgs(0, 1),
+		Long: `Update an application by id
+
+Example Schema:
+{
+  "uid": "string",
+  "name": "string"
+}
+`,
+		Args: validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse positional args
 			appID := args[0]
@@ -144,13 +154,13 @@ Example Schema:
 			}
 
 			// get flags
-			if cmd.Flags().Changed("name") {
-				nameFlag, err := cmd.Flags().GetString("name")
+			if cmd.Flags().Changed(nameFlagName) {
+				nameFlag, err := cmd.Flags().GetString(nameFlagName)
 				cobra.CheckErr(err)
 				app.Name = nameFlag
 			}
-			if cmd.Flags().Changed("uid") {
-				uidFlag, err := cmd.Flags().GetString("uid")
+			if cmd.Flags().Changed(uidFlagName) {
+				uidFlag, err := cmd.Flags().GetString(uidFlagName)
 				cobra.CheckErr(err)
 				app.Uid = &uidFlag
 			}
@@ -165,8 +175,8 @@ Example Schema:
 			return nil
 		},
 	}
-	update.Flags().String("name", "", "Name of the Application")
-	update.Flags().String("uid", "", "UID of the application (optional)")
+	update.Flags().String(nameFlagName, "", "Name of the Application")
+	update.Flags().String(uidFlagName, "", "UID of the application (optional)")
 	ac.cmd.AddCommand(update)
 
 	delete := &cobra.Command{

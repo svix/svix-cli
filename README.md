@@ -49,7 +49,7 @@ svix application create '{ "name": "demo" }'
 # or pipe in some json
 echo '{ "name": "demo" }' | svix application create
 # or use the convinence cli flags
-svix application create --name demo
+svix application create --data-name demo
 
 # List Applications
 svix application list --limit 2 --iterator some_iterator 

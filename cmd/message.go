@@ -44,6 +44,9 @@ func newMessageCmd() *messageCmd {
 	mc.cmd.AddCommand(list)
 
 	// create
+	eventTypeFlagName := "data-eventType"
+	eventIdFlagName := "data-eventId"
+	payloadFlagName := "data-payload"
 	create := &cobra.Command{
 		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new messsage",
@@ -78,18 +81,18 @@ Example Schema:
 			}
 
 			// get flags
-			if cmd.Flags().Changed("eventType") {
-				eventTypeFlag, err := cmd.Flags().GetString("eventType")
+			if cmd.Flags().Changed(eventTypeFlagName) {
+				eventTypeFlag, err := cmd.Flags().GetString(eventTypeFlagName)
 				cobra.CheckErr(err)
 				msg.EventType = eventTypeFlag
 			}
-			if cmd.Flags().Changed("eventId") {
-				eventIdFlag, err := cmd.Flags().GetString("eventId")
+			if cmd.Flags().Changed(eventIdFlagName) {
+				eventIdFlag, err := cmd.Flags().GetString(eventIdFlagName)
 				cobra.CheckErr(err)
 				msg.EventId = &eventIdFlag
 			}
-			if cmd.Flags().Changed("payload") {
-				payloadFlag, err := cmd.Flags().GetString("payload")
+			if cmd.Flags().Changed(payloadFlagName) {
+				payloadFlag, err := cmd.Flags().GetString(payloadFlagName)
 				cobra.CheckErr(err)
 				// unmarshal payload
 				var payload map[string]interface{}
@@ -109,9 +112,9 @@ Example Schema:
 			return nil
 		},
 	}
-	create.Flags().String("eventType", "", "")
-	create.Flags().String("eventId", "", "")
-	create.Flags().String("payload", "", "json message payload")
+	create.Flags().String(eventTypeFlagName, "", "")
+	create.Flags().String(eventIdFlagName, "", "")
+	create.Flags().String(payloadFlagName, "", "json message payload")
 	mc.cmd.AddCommand(create)
 
 	get := &cobra.Command{

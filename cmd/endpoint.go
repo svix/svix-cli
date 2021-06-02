@@ -44,6 +44,9 @@ func newEndpointCmd() *endpointCmd {
 	ec.cmd.AddCommand(list)
 
 	// create
+	urlFlagName := "data-url"
+	versionFlagName := "data-version"
+	filterTypesFlagName := "data-filterTypes"
 	create := &cobra.Command{
 		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new endpoint",
@@ -79,18 +82,18 @@ Example Schema:
 			}
 
 			// get flags
-			if cmd.Flags().Changed("url") {
-				urlFlag, err := cmd.Flags().GetString("url")
+			if cmd.Flags().Changed(urlFlagName) {
+				urlFlag, err := cmd.Flags().GetString(urlFlagName)
 				cobra.CheckErr(err)
 				ep.Url = urlFlag
 			}
-			if cmd.Flags().Changed("version") {
-				versionFlag, err := cmd.Flags().GetInt32("version")
+			if cmd.Flags().Changed(versionFlagName) {
+				versionFlag, err := cmd.Flags().GetInt32(versionFlagName)
 				cobra.CheckErr(err)
 				ep.Version = versionFlag
 			}
-			if cmd.Flags().Changed("filterTypes") {
-				filterTypesFlag, err := cmd.Flags().GetStringArray("filterTypes")
+			if cmd.Flags().Changed(filterTypesFlagName) {
+				filterTypesFlag, err := cmd.Flags().GetStringArray(filterTypesFlagName)
 				cobra.CheckErr(err)
 				ep.FilterTypes = &filterTypesFlag
 			}
@@ -104,9 +107,9 @@ Example Schema:
 			return nil
 		},
 	}
-	create.Flags().String("url", "", "")
-	create.Flags().Int32("version", 0, "")
-	create.Flags().StringArray("filterTypes", []string{}, "")
+	create.Flags().String(urlFlagName, "", "")
+	create.Flags().Int32(versionFlagName, 0, "")
+	create.Flags().StringArray(filterTypesFlagName, []string{}, "")
 	ec.cmd.AddCommand(create)
 
 	// get
@@ -166,18 +169,18 @@ Example Schema:
 			}
 
 			// get flags
-			if cmd.Flags().Changed("url") {
-				urlFlag, err := cmd.Flags().GetString("url")
+			if cmd.Flags().Changed(urlFlagName) {
+				urlFlag, err := cmd.Flags().GetString(urlFlagName)
 				cobra.CheckErr(err)
 				ep.Url = urlFlag
 			}
-			if cmd.Flags().Changed("version") {
-				versionFlag, err := cmd.Flags().GetInt32("version")
+			if cmd.Flags().Changed(versionFlagName) {
+				versionFlag, err := cmd.Flags().GetInt32(versionFlagName)
 				cobra.CheckErr(err)
 				ep.Version = versionFlag
 			}
-			if cmd.Flags().Changed("filterTypes") {
-				filterTypesFlag, err := cmd.Flags().GetStringArray("filterTypes")
+			if cmd.Flags().Changed(filterTypesFlagName) {
+				filterTypesFlag, err := cmd.Flags().GetStringArray(filterTypesFlagName)
 				cobra.CheckErr(err)
 				ep.FilterTypes = &filterTypesFlag
 			}
@@ -191,9 +194,9 @@ Example Schema:
 			return nil
 		},
 	}
-	update.Flags().String("url", "", "")
-	update.Flags().Int32("version", 0, "")
-	update.Flags().StringArray("filterTypes", []string{}, "")
+	update.Flags().String(urlFlagName, "", "")
+	update.Flags().Int32(versionFlagName, 0, "")
+	update.Flags().StringArray(filterTypesFlagName, []string{}, "")
 	ec.cmd.AddCommand(update)
 
 	delete := &cobra.Command{
