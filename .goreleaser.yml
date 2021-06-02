@@ -1,0 +1,44 @@
+# This is an example .goreleaser.yml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+project_name: svix
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: svix
+    ldflags:
+      - -s -w -X github.com/svixhq/svix-cli/version.Version={{ .Version }}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+nfpms:
+  - builds:
+      - svix
+    vendor: Svix
+    homepage: https://www.svix.com
+    maintainer: Svix <support@svix.com>
+    description: Svix CLI utility
+    formats:
+      - deb
+      - rpm
+      - apk
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
