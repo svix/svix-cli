@@ -7,16 +7,11 @@ import (
 )
 
 func IsPipeWithData(f *os.File) (bool, error) {
-	info, err := f.Stat()
+	isTTY, hasData, err := IsTTY(f)
 	if err != nil {
 		return false, err
 	}
-
-	if info.Mode()&os.ModeCharDevice != 0 || // stdin is not a Unix character device
-		info.Size() <= 0 { // stdin has no bytes
-		return false, nil
-	}
-	return true, nil
+	return !isTTY && hasData, nil
 }
 
 func ReadPipe() ([]byte, error) {
@@ -32,4 +27,15 @@ func ReadPipe() ([]byte, error) {
 		return []byte(strings.Trim(string(in), " \r\n")), nil
 	}
 	return []byte{}, nil
+}
+
+func IsTTY(f *os.File) (isTTY bool, hasBytes bool, err error) {
+	info, err := f.Stat()
+	if err != nil {
+		return false, false, err
+	}
+
+	isTTY = info.Mode()&os.ModeCharDevice != 0
+	hasBytes = info.Size() > 0
+	return isTTY, hasBytes, nil
 }
