@@ -18,7 +18,7 @@ type loginCmd struct {
 func newLoginCmd() *loginCmd {
 	lc := &loginCmd{}
 	lc.cmd = &cobra.Command{
-		Use:   "init",
+		Use:   "login",
 		Short: "Interactively configure your Svix API credentials",
 		Args:  validators.NoArgs(),
 		Run:   lc.run,
@@ -27,23 +27,23 @@ func newLoginCmd() *loginCmd {
 }
 
 func (lc *loginCmd) run(cmd *cobra.Command, args []string) {
-	fmt.Printf("Welcome to the Svix CLI, enter your API key to get started!\n\n")
+	fmt.Printf("Welcome to the Svix CLI, enter your auth token to get started!\n\n")
 
-	// get api key
+	// get auth token
 	keyPrompt := promptui.Prompt{
-		Label:   "Svix API Key",
-		Default: viper.GetString("key"),
+		Label:   "Svix Auth Token",
+		Default: viper.GetString("auth_token"),
 	}
-	apiKey, err := keyPrompt.Run()
+	token, err := keyPrompt.Run()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Initialization failed %v\n", err)
 		os.Exit(1)
 	}
-	viper.Set("key", apiKey)
+	viper.Set("auth_token", token)
 
 	if err := config.Write(viper.AllSettings()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
-		fmt.Fprintln(os.Stderr, "Failed to configure the Svix CLI, please try again or try setting your api key manually 'SVIX_KEY' environment variable.")
+		fmt.Fprintln(os.Stderr, "Failed to configure the Svix CLI, please try again or try setting your auth token manually 'SVIX_AUTH_TOKEN' environment variable.")
 		os.Exit(1)
 	}
 

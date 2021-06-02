@@ -70,10 +70,10 @@ func initConfig() {
 }
 
 func getSvixClientOrExit() *svix.Svix {
-	key := viper.GetString("key")
-	if key == "" {
-		fmt.Fprintln(os.Stderr, "No SVIX_KEY found!")
-		fmt.Fprintln(os.Stderr, "Try running `svix init` to get started!")
+	token := viper.GetString("auth_token")
+	if token == "" {
+		fmt.Fprintln(os.Stderr, "No SVIX_AUTH_TOKEN found!")
+		fmt.Fprintln(os.Stderr, "Try running `svix login` to get started!")
 		os.Exit(1)
 	}
 
@@ -87,5 +87,5 @@ func getSvixClientOrExit() *svix.Svix {
 		}
 		opts.DebugURL = debugURL
 	}
-	return svix.New(key, opts)
+	return svix.New(token, opts)
 }

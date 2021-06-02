@@ -44,7 +44,6 @@ func newEndpointCmd() *endpointCmd {
 	ec.cmd.AddCommand(list)
 
 	// create
-
 	create := &cobra.Command{
 		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new endpoint",

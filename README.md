@@ -39,7 +39,10 @@ svix [command] --help
 ## Quick Start
 
 ```sh
-svix init # interactively configure your Svix API credentials
+# Set your Auth Token temporarily via the SVIX_AUTH_TOKEN environment variable
+export SVIX_AUTH_TOKEN=<MY-AUTH-TOKEN>
+# or to persistently store your auth token in a config file run
+svix config # interactively configure your Svix API credentials
 
 # Create an Application with the name "Demo"
 svix application create '{ "name": "demo" }'
@@ -58,7 +61,7 @@ svix application list --limit 2 --iterator some_iterator
 The Svix CLI supports the following commands:
 | Command         | Description                                             |
 | --------------- | ------------------------------------------------------- |
-| init            | Interactively configure your Svix API credentials       |
+| login           | Interactively configure your Svix API credentials       |
 | application     | List, create & modify applications                      |
 | authentication  | Manage authentication tasks such getting dashboard urls |
 | endpoint        | List, create & modify endpoints                         |
