@@ -1,6 +1,8 @@
 # Svix CLI
 
-[![GitHub release (latest by date)][release-img]][release] [![GolangCI][golangci-lint-img]][golangci-lint] [![Go Report Card][report-card-img]][report-card]
+[![GitHub release (latest by date)][release-img]][release]
+[![GolangCI][golangci-lint-img]][golangci-lint]
+[![Go Report Card][report-card-img]][report-card]
 
 A CLI to interact with the Svix API.
 
