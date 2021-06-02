@@ -4,10 +4,11 @@
 
 A CLI to interact with the Svix API.
 
-**With the CLI, you can:**
+**With the Svix CLI, you can:**
 
 - Interact with the Stix CLI
 - Validate Webhook payloads
+
 
 ## Installation
 
@@ -18,6 +19,7 @@ For now, you can download the binary executable and use it straight away without
 2) Inside you'll find the `svix` executable which you can run directly (Note: you may need to allow execution via `chmod +x <PATH_TO_SVIX_EXE>`),
 
 On macOS or Linux, you can move this file to `/usr/local/bin` or `/usr/bin` locations to have it be runnable from anywhere; or place it anywhere and add it to your path (ex. `export PATH=$PATH:<PATH_TO_SVIX_EXE>`) Otherwise, simply `cd` to the folder where you extracted the tar.gz file and run it with ./svix.
+
 
 ## Usage
 
@@ -32,6 +34,7 @@ svix help
 # or add the `--help` flag to any command for a more detailed description and list of flags
 svix [command] --help
 ```
+
 
 ## Quick Start
 
@@ -49,29 +52,34 @@ svix application create --name demo
 svix application list --limit 2 --iterator some_iterator 
 ```
 
+
 ## Commands
 
 The Svix CLI supports the following commands:
- - init            Interactively configure your Svix API credentials
- - application     List, create & modify applications
- - authentication  Manage authentication tasks such getting dashboard urls
- - endpoint        List, create & modify endpoints
- - event-type      List, create & modify event types
- - message         List & create messages
- - message-attempt List, lookup & resend message attempts
- - verify          Verify the signature of a webhook message
- - version         Get the version of the Svix CLI
- - help            Help about any command
+| Command         | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| init            | Interactively configure your Svix API credentials       |
+| application     | List, create & modify applications                      |
+| authentication  | Manage authentication tasks such getting dashboard urls |
+| endpoint        | List, create & modify endpoints                         |
+| event-type      | List, create & modify event types                       |
+| message         | List & create messages                                  |
+| message-attempt | List, lookup & resend message attempts                  |
+| verify          | Verify the signature of a webhook message               |
+| version         | Get the version of the Svix CLI                         |
+| help            | Help about any command                                  |
+
 
 ## Documentation
 
-For a more information, checkout our [API reference](https://docs.svix.com)
+For a more information, checkout our [API reference](https://docs.svix.com).
+
 
 ### Development
 
 #### Building the current commit
 
 This project uses [goreleaser](https://github.com/goreleaser/goreleaser/)
- 1) Install [go](https://golang.org/doc/install)
- 2) Install goreleaser via the steps [here](https://goreleaser.com/install/)
- 3) Build current commit via `goreleaser release --snapshot --skip-publish`
+ 1) Install [go](https://golang.org/doc/install).
+ 2) Install goreleaser via the steps [here](https://goreleaser.com/install/).
+ 3) Build current commit via `goreleaser release --snapshot --skip-publish`.
