@@ -47,7 +47,19 @@ func newMessageCmd() *messageCmd {
 	create := &cobra.Command{
 		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new messsage",
-		Args:  validators.RangeArgs(1, 2),
+		Long: `Create a new messsage
+
+Example Schema:
+{
+  "eventType": "user.signup",
+  "eventId": "evt_pNZKtWg8Azow",
+  "payload": {
+    "username": "test_user",
+    "email": "test@example.com"
+  }
+}
+`,
+		Args: validators.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// get positional args
 			appID := args[0]

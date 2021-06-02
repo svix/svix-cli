@@ -45,7 +45,15 @@ func newEventTypeCmd() *eventTypeCmd {
 	create := &cobra.Command{
 		Use:   "create [JSON_PAYLOAD]",
 		Short: "Create a new event type",
-		Args:  validators.RangeArgs(0, 1),
+		Long: `Create a new event type
+
+Example Schema:
+{
+  "description": "string",
+  "name": "user.signup"
+}
+`,
+		Args: validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var in []byte
 			if len(args) > 0 {
@@ -89,7 +97,14 @@ func newEventTypeCmd() *eventTypeCmd {
 	update := &cobra.Command{
 		Use:   "update EVENT_TYPE_NAME [JSON_PAYLOAD]",
 		Short: "Update an event type by name",
-		Args:  validators.RangeArgs(0, 1),
+		Long: `Update an event type by name
+
+Example Schema:
+{
+  "description": "string"
+}
+	`,
+		Args: validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// get poisitonal args
 			eventName := args[0]

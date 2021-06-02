@@ -47,7 +47,19 @@ func newEndpointCmd() *endpointCmd {
 	create := &cobra.Command{
 		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new endpoint",
-		Args:  validators.RangeArgs(1, 2),
+		Long: `Create a new endpoint
+
+Example Schema:
+{
+	"url": "string",
+	"version": 0,
+	"description": "",
+	"filterTypes": [
+	  "string"
+	]
+  }
+`,
+		Args: validators.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse positional args
 			appID := args[0]
@@ -121,7 +133,19 @@ func newEndpointCmd() *endpointCmd {
 	update := &cobra.Command{
 		Use:   "update APP_ID ENDPOINT_ID [JSON_PAYLOAD]",
 		Short: "Update an application by id",
-		Args:  validators.RangeArgs(2, 3),
+		Long: `Update an application by id
+
+Example Schema:
+{
+  "url": "string",
+  "version": 0,
+  "description": "",
+  "filterTypes": [
+    "string"
+  ]
+}
+`,
+		Args: validators.RangeArgs(2, 3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// parse args
 			appID := args[0]

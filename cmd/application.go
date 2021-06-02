@@ -46,7 +46,15 @@ func newApplicationCmd() *applicationCmd {
 	create := &cobra.Command{
 		Use:   "create [JSON_PAYLOAD]",
 		Short: "Create a new application",
-		Args:  validators.RangeArgs(0, 1),
+		Long: `Creates a new application
+
+Example Schema:
+{
+  "uid": "string",
+  "name": "string"
+}
+`,
+		Args: validators.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var in []byte
 			if len(args) > 0 {
