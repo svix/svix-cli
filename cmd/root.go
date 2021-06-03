@@ -52,6 +52,7 @@ func init() {
 	rootCmd.AddCommand(newMessageCmd().cmd)
 	rootCmd.AddCommand(newMessageAttemptCmd().cmd)
 	rootCmd.AddCommand(newVerifyCmd().cmd)
+	rootCmd.AddCommand(newCompletionCmd().cmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

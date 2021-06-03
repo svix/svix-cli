@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.8.0
+* add `completion` function to generate shell completion scripts
+
+## Version 0.7.0
+* enable colorized output by default if stdout is a TTY
+
 ## Version 0.6.1
 * fix bug in `endpoint create` which caused a panic
 

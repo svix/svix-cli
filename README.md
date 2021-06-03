@@ -71,6 +71,7 @@ The Svix CLI supports the following commands:
 | message         | List & create messages                                  |
 | message-attempt | List, lookup & resend message attempts                  |
 | verify          | Verify the signature of a webhook message               |
+| completion      | Generate completion script                              |
 | version         | Get the version of the Svix CLI                         |
 | help            | Help about any command                                  |
 
