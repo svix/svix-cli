@@ -37,7 +37,6 @@ func init() {
 
 	// Global Flags
 	isTTY, _, err := utils.IsTTY(os.Stdout)
-	fmt.Fprintln(os.Stderr, isTTY)
 	cobra.CheckErr(err)
 	rootCmd.PersistentFlags().Bool("color", isTTY, "colorize output json")              // on by default if TTY, off if not
 	cobra.CheckErr(viper.BindPFlag("color", rootCmd.PersistentFlags().Lookup("color"))) // allow color flag to be set in config
