@@ -36,6 +36,27 @@ nfpms:
       - deb
       - rpm
       - apk
+brews:
+  - tap:
+      owner: svixhq
+      name: homebrew-svix
+    commit_author:
+      name: svix-ci
+      email: support@svix.com
+    homepage: https://www.svix.com
+    description: Svix CLI utility
+    install: |
+      bin.install "svix"
+    caveats: "Thanks for installing the Svix CLI! If this is your first time using the CLI, checkout our docs at https://docs.svix.com."
+scoop:
+  bucket:
+    owner: svixhq
+    name: scoop-svix
+  commit_author:
+    name: svix-ci
+    email: support@svix.com
+  homepage: https://www.svix.com
+  description: Svix CLI utility
 changelog:
   sort: asc
   filters:
