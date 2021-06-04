@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.8.1
+* remove erroneous printing to stderr
+* official release to brew and scoop
+
 ## Version 0.8.0
 * add `completion` function to generate shell completion scripts
 

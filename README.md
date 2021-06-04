@@ -14,9 +14,26 @@ A CLI to interact with the Svix API.
 
 ## Installation
 
-Homebrew Tap & Scoop Bucket Coming soon.
+### macOS
 
-For now, you can download the binary executable and use it straight away without having to install any additional dependencies.
+The Svix CLI is available on macOS via [Homebrew](https://brew.sh/):
+
+```sh
+brew install svixhq/svix/svix
+```
+
+### Windows
+
+The Svix CLI is available on Windows via the [Scoop](https://scoop.sh/) package manager:
+
+```sh
+scoop bucket add svix https://github.com/svixhq/scoop-svix.git
+scoop install svix
+```
+
+### Other
+
+If you are on another platform such as linux or just rather not use a package manager, you can download a binary from our Github releases and use it straight away without having to install any additional dependencies.
 1) Find the latest release, download the tar.gz file for your given operating system and extract it.
 2) Inside you'll find the `svix` executable which you can run directly (Note: you may need to allow execution via `chmod +x <PATH_TO_SVIX_EXE>`),
 
@@ -76,6 +93,15 @@ The Svix CLI supports the following commands:
 | help            | Help about any command                                  |
 
 
+## Shell Completions
+
+Shell completion scripts are provided for Bash, Zsh, fish, & PowerShell.
+
+To generate a script for your shell type `svix completion <SHELL NAME>`.
+
+For detailed instructions on configuring completions for your shell run `svix completion --help`.
+
+
 ## Documentation
 
 For a more information, checkout our [API reference](https://docs.svix.com).
@@ -85,7 +111,7 @@ For a more information, checkout our [API reference](https://docs.svix.com).
 
 #### Building the current commit
 
-This project uses [goreleaser](https://github.com/goreleaser/goreleaser/)
+This project uses [goreleaser](https://github.com/goreleaser/goreleaser/).
  1) Install [go](https://golang.org/doc/install).
  2) Install goreleaser via the steps [here](https://goreleaser.com/install/).
  3) Build current commit via `goreleaser release --snapshot --skip-publish`.
