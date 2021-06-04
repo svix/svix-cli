@@ -23,6 +23,6 @@ func Print(v interface{}, opts *PrintOptions) {
 	fmt.Println(string(b))
 }
 
-// func makeTerminalHyperlink(name, url string) string {
-// 	return fmt.Sprintf("\u001B]8;;%s\a%s\u001B]8;;\a", url, name)
-// }
+func MakeTerminalLink(name, url string) string {
+	return fmt.Sprintf("\u001B]8;;%s\a%s\u001B]8;;\a", url, name)
+}

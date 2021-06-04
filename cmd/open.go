@@ -3,46 +3,55 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
+	"github.com/svixhq/svix-cli/pretty"
 	"github.com/svixhq/svix-cli/validators"
 )
 
-const docsURL = "https://docs.svix.com/"
-const apidocsURL = "https://api.svix.com/docs"
+var openableURLs = map[string]string{
+	"docs": "https://docs.svix.com/",
+	"api":  "https://api.svix.com/docs",
+}
 
-func newOpenCmd() *versionCmd {
-	return &versionCmd{
+type openCmd struct {
+	cmd *cobra.Command
+}
+
+func keys(m map[string]string) []string {
+	keys := make([]string, 0, len(m))
+	for key := range m {
+		keys = append(keys, key)
+	}
+	return keys
+}
+
+func newOpenCmd() *openCmd {
+	keys := keys(openableURLs)
+	oc := &openCmd{
 		cmd: &cobra.Command{
-			Use:       "open [docs|api]",
-			ValidArgs: []string{"docs", "api"},
+			Use:       fmt.Sprintf("open [%s]", strings.Join(keys, "|")),
+			ValidArgs: keys,
 			Args:      validators.ExactValidArgs(1),
-			Short:     "Open in browser",
-			Long: `Opens information in default browser:
+			Short:     "Quickly open Svix pages in your browser",
+			Long: `Quickly open Svix pages in your browser:
 docs - opens the Svix documentation
 api  - opens the Svix API documentation
 			`,
 			Run: func(cmd *cobra.Command, args []string) {
-				url := ""
-				switch args[0] {
-				case "docs":
-					url = docsURL
-				case "api":
-					url = apidocsURL
-				}
+				url := openableURLs[args[0]]
 				err := open.Run(url)
 				if err != nil {
-					fmt.Fprintln(os.Stderr, err.Error())
-					fmt.Fprintln(os.Stderr, "Failed to open default application for", makeTerminalHyperlink(url, url))
+					fmt.Fprintf(os.Stderr, `Failed to open %s in your default browser
+To open it manually navigate to:
+%s
+`, args[0], pretty.MakeTerminalLink(url, url))
 					os.Exit(1)
 				}
 			},
 		},
 	}
-}
-
-// TODO: Enable this function in pretty package and switch to using that above
-func makeTerminalHyperlink(name, url string) string {
-	return fmt.Sprintf("\u001B]8;;%s\a%s\u001B]8;;\a", url, name)
+	return oc
 }
