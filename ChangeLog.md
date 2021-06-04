@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.9.0
+* adds `open` command for quickly opening Svix's documentation in your browser (thanks @codepope!)
+
 ## Version 0.8.1
 * remove erroneous printing to stderr
 * official release to brew and scoop
