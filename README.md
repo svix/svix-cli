@@ -78,19 +78,19 @@ svix application list --limit 2 --iterator some_iterator
 ## Commands
 
 The Svix CLI supports the following commands:
-| Command         | Description                                             |
-| --------------- | ------------------------------------------------------- |
-| login           | Interactively configure your Svix API credentials       |
-| application     | List, create & modify applications                      |
-| authentication  | Manage authentication tasks such getting dashboard urls |
-| endpoint        | List, create & modify endpoints                         |
-| event-type      | List, create & modify event types                       |
-| message         | List & create messages                                  |
-| message-attempt | List, lookup & resend message attempts                  |
-| verify          | Verify the signature of a webhook message               |
-| completion      | Generate completion script                              |
-| version         | Get the version of the Svix CLI                         |
-| help            | Help about any command                                  |
+| Command         | Description                                                |
+| --------------- | ---------------------------------------------------------- |
+| login           | Interactively configure your Svix API credentials          |
+| application     | List, create & modify applications                         |
+| authentication  | Manage authentication tasks such as getting dashboard URLs |
+| endpoint        | List, create & modify endpoints                            |
+| event-type      | List, create & modify event types                          |
+| message         | List & create messages                                     |
+| message-attempt | List, lookup & resend message attempts                     |
+| verify          | Verify the signature of a webhook message                  |
+| completion      | Generate completion script                                 |
+| version         | Get the version of the Svix CLI                            |
+| help            | Help about any command                                     |
 
 
 ## Shell Completions
