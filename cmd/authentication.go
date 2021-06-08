@@ -14,7 +14,7 @@ func newAuthenticationCmd() *authenticationCmd {
 	ac := &authenticationCmd{}
 	ac.cmd = &cobra.Command{
 		Use:     "authentication",
-		Short:   "Manage authentication tasks such getting dashboard urls",
+		Short:   "Manage authentication tasks such as getting dashboard URLs",
 		Aliases: []string{"auth"},
 	}
 
