@@ -65,7 +65,7 @@ Example Schema:
 				in, err = utils.ReadPipe()
 				cobra.CheckErr(err)
 			}
-			var et svix.EventTypeInOut
+			var et svix.EventTypeIn
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &et)
 				cobra.CheckErr(err)
