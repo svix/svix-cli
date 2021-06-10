@@ -7,8 +7,8 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/svixhq/svix-cli/config"
-	"github.com/svixhq/svix-cli/validators"
+	"github.com/svix/svix-cli/config"
+	"github.com/svix/svix-cli/validators"
 )
 
 type loginCmd struct {

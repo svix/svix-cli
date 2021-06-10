@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/utils"
-	"github.com/svixhq/svix-cli/validators"
+	"github.com/svix/svix-cli/utils"
+	"github.com/svix/svix-cli/validators"
 	svix "github.com/svixhq/svix-libs/go"
 )
 
