@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/svix/svix-cli/utils"
 	"github.com/svix/svix-cli/validators"
-	svix "github.com/svixhq/svix-libs/go"
+	svix "github.com/svix/svix-libs/go"
 )
 
 type verifyCmd struct {
