@@ -9,9 +9,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/svixhq/svix-cli/config"
-	"github.com/svixhq/svix-cli/utils"
-	"github.com/svixhq/svix-cli/version"
+	"github.com/svix/svix-cli/config"
+	"github.com/svix/svix-cli/utils"
+	"github.com/svix/svix-cli/version"
 	svix "github.com/svixhq/svix-libs/go"
 )
 

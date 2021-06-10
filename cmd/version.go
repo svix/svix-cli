@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/validators"
-	"github.com/svixhq/svix-cli/version"
+	"github.com/svix/svix-cli/validators"
+	"github.com/svix/svix-cli/version"
 )
 
 type versionCmd struct {

@@ -7,8 +7,8 @@ import (
 
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/pretty"
-	"github.com/svixhq/svix-cli/validators"
+	"github.com/svix/svix-cli/pretty"
+	"github.com/svix/svix-cli/validators"
 )
 
 var openableURLs = map[string]string{

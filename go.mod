@@ -1,4 +1,4 @@
-module github.com/svixhq/svix-cli
+module github.com/svix/svix-cli
 
 go 1.16
 

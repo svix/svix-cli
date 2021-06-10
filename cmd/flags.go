@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/svixhq/svix-cli/pretty"
+	"github.com/svix/svix-cli/pretty"
 	svix "github.com/svixhq/svix-libs/go"
 )
 

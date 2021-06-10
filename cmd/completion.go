@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/svixhq/svix-cli/validators"
+	"github.com/svix/svix-cli/validators"
 )
 
 type completionCmd struct {
