@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/svix/svix-cli/pretty"
-	svix "github.com/svixhq/svix-libs/go"
+	svix "github.com/svix/svix-libs/go"
 )
 
 func getPrintOptions(cmd *cobra.Command) *pretty.PrintOptions {
