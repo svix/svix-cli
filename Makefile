@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 CC = go
 CFLAGS = build -o
 OUT_DIR = dist
@@ -20,9 +19,6 @@ PROJ_NAME = svix
 build: clean deps build-local test
 release: build releaser compress
 .:  release run
-
-help: 
-	tail -15 Makefile
 
 clean:
 	$(RM) $(OUT_DIR)/$(PROJ_NAME) && $(RM) $(OUT_DIR)/$(PROJ_NAME).tar.* && $(RM) $(PROJ_NAME).tar.*
@@ -44,6 +40,9 @@ compress:
 
 releaser:
 	$(bash curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh)
+
+help: 
+	tail -15 Makefile
 
 .PHONY: . deps build test compress run clean all release docs releaser
 
