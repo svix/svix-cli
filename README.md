@@ -38,7 +38,7 @@ snap install svix-cli
 ```
 The latest binary release
 ```bash
-bash <(curl -sL https://github.com/svix/svix-cli/releases/download/latest/svix-cli.tar.gz | tar xz && mv svix-cli /usr/bin/)
+bash <(curl -sL https://github.com/svix/svix-cli/releases/download/latest/svix.tar.gz | tar xz && mv svix-cli /usr/bin/)
 ```
 
 ### Other
