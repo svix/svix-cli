@@ -1,0 +1,28 @@
+name: validate
+on: 
+  pull_request:
+    types: [ edited, assigned, opened, synchronize, reopened ]
+  push:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        goVer: [1.16.x]
+
+    steps:
+      - name: Set up Go ${{ matrix.goVer }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.goVer }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: Make
+        run: make
