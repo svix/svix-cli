@@ -1,8 +1,7 @@
 name: validate
 on: 
   pull_request:
-    types: [ assigned, opened, synchronize, reopened ]
-
+    types: [ edited, assigned, opened, synchronize, reopened ]
   push:
     branches: [ main ]
 
@@ -19,5 +18,11 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.goVer }}
-      - run: "go test ./..."
-      
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+        
+        run: 
+          make
