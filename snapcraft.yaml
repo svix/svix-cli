@@ -8,7 +8,7 @@ description: |
 confinement: devmode
 base: core18
 parts:
-  test-httplab:
+  svix-cli:
     plugin: go
     go-importpath: github.com/svix/svix-cli
     source: .
@@ -16,5 +16,5 @@ parts:
     build-packages:
       - gcc
 apps:
-  test-httplab:
+  svix-cli:
     command: bin/svix-cli
