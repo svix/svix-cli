@@ -31,8 +31,17 @@ scoop bucket add svix https://github.com/svix/scoop-svix.git
 scoop install svix
 ```
 
-### Other
+### Linux
+Via `snap`
+```sh
+snap install svix-cli
+```
+The latest binary release
+```bash
+bash <(curl -sL https://github.com/svix/svix-cli/releases/download/latest/svix-cli.tar.gz | tar xz && mv svix-cli /usr/bin/)
+```
 
+### Other
 If you are on another platform such as linux or just rather not use a package manager, you can download a binary from our Github releases and use it straight away without having to install any additional dependencies.
 1) Find the latest release, download the tar.gz file for your given operating system and extract it.
 2) Inside you'll find the `svix` executable which you can run directly (Note: you may need to allow execution via `chmod +x <PATH_TO_SVIX_EXE>`),
@@ -54,6 +63,7 @@ svix help
 svix [command] --help
 ```
 
+curl -sL  | tar zx && sudo mv ./light-ca /usr/bin/light-ca
 
 ## Quick Start
 
@@ -116,6 +126,15 @@ This project uses [goreleaser](https://github.com/goreleaser/goreleaser/).
  1) Install [go](https://golang.org/doc/install).
  2) Install goreleaser via the steps [here](https://goreleaser.com/install/).
  3) Build current commit via `goreleaser release --snapshot --skip-publish --rm-dist`.
+
+Alternatively, use make:
+```
+make
+```
+For more info:
+```
+make help
+```
 
 [release-img]: https://img.shields.io/github/v/release/svix/svix-cli
 [release]: https://github.com/svix/svix-cli/releases
