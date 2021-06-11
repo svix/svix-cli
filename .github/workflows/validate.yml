@@ -1,0 +1,32 @@
+name: validate
+on: 
+  pull_request:
+    types: [ edited, assigned, opened, synchronize, reopened ]
+  push:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        goVer: [1.16.x]
+
+    steps:
+
+      - name: Set up Go ${{ matrix.goVer }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.goVer }}
+
+      # Checks out this ^HEAD from a PR
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: make
+        run: |
+          make
+      
