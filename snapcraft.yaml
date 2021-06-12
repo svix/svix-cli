@@ -1,19 +1,18 @@
-name: svix
+name: svix-cli
 version: git
 summary: A CLI to interact with the Svix API.
 description: |
   Svix makes it easy to send webhook from your service while ensuring robust deliverability and a great developer experience for your users. 
   You can think of it as webhooks as a service. https://docs.svix.com/
 confinement: strict
-base: core20
+base: core18
 parts:
-  svix:
+  svix-cli:
     plugin: go
-    go-importpath: github.com/svix/svix-cli
     source: .
     source-type: git
     build-packages:
       - gcc
 apps:
-  svix:
+  svix-cli:
     command: bin/svix-cli
