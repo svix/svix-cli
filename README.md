@@ -32,8 +32,8 @@ scoop install svix
 ```
 
 ### Linux
-Via `snap`
-```sh
+Via snap
+```bash
 snap install svix-cli
 ```
 The latest binary release
@@ -41,6 +41,20 @@ The latest binary release
 bash <(curl -sL https://github.com/svix/svix-cli/releases/download/latest/svix.tar.gz | tar xz && mv svix-cli /usr/bin/)
 ```
 
+### From source
+Install
+```bash
+git clone https://github.com/svix-cli/svix-cli.git
+cd svix-cli
+```
+Build
+```
+make
+```
+For more information on building
+```bash
+make help
+```
 ### Other
 If you are on another platform such as linux or just rather not use a package manager, you can download a binary from our Github releases and use it straight away without having to install any additional dependencies.
 1) Find the latest release, download the tar.gz file for your given operating system and extract it.

@@ -1,8 +1,7 @@
 name: svix-cli
 version: git
-summary: Svix makes it easy to send webhooks
+summary: A CLI to interact with the Svix API.
 description: |
-  A CLI to interact with the Svix API.
   Svix makes it easy to send webhook from your service while ensuring robust deliverability and a great developer experience for your users. 
   You can think of it as webhooks as a service. https://docs.svix.com/
 confinement: devmode
