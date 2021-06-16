@@ -14,15 +14,19 @@ jobs:
         goVer: [1.16.x]
 
     steps:
+
       - name: Set up Go ${{ matrix.goVer }}
         uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.goVer }}
 
-      - name: Checkout
+      # Checks out this ^HEAD from a PR
+      - name: checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: make
+        run: |
+          make
       
-      - name: Make
-        run: make
