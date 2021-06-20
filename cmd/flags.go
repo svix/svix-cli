@@ -7,12 +7,12 @@ import (
 	svix "github.com/svix/svix-libs/go"
 )
 
-func getPrintOptions(cmd *cobra.Command) *pretty.PrintOptions {
+func getPrinterOptions(cmd *cobra.Command) *pretty.PrinterOptions {
 	colorFlag := viper.GetBool("color")
 	if !colorFlag {
 		return nil
 	}
-	return &pretty.PrintOptions{
+	return &pretty.PrinterOptions{
 		Color: true,
 	}
 }

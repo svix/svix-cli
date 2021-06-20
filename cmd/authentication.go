@@ -23,17 +23,15 @@ func newAuthenticationCmd() *authenticationCmd {
 		Use:   "dashboard APP_ID",
 		Short: "Get a dashboard URL for the given app",
 		Args:  validators.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
 			appID := args[0]
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			svixClient := getSvixClientOrExit()
 			da, err := svixClient.Authentication.DashboardAccess(appID)
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(da, getPrintOptions(cmd))
-			return nil
+			printer.Print(da)
 		},
 	}
 	ac.cmd.AddCommand(dashboard)
@@ -42,13 +40,10 @@ func newAuthenticationCmd() *authenticationCmd {
 	// logout := &cobra.Command{
 	// 	Use:   "logout",
 	// 	Short: "Get a dashboard URL for the given app",
-	// 	RunE: func(cmd *cobra.Command, args []string) error {
+	// 	Run: func(cmd *cobra.Command, args []string) {
 	// 		svixClient := getSvixClientOrExit()
 	// 		err := svixClient.Authentication.Logout()
-	// 		if err != nil {
-	// 			return err
-	// 		}
-	// 		return nil
+	// 		printer.CheckErr(err)
 	// 	},
 	// }
 	// ac.cmd.AddCommand(logout)
