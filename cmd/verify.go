@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/spf13/cobra"
+	"github.com/svix/svix-cli/pretty"
 	"github.com/svix/svix-cli/utils"
 	"github.com/svix/svix-cli/validators"
 	svix "github.com/svix/svix-libs/go"
@@ -24,7 +25,9 @@ func newVerifyCmd() *verifyCmd {
 		Use:   "verify [JSON_PAYLOAD]",
 		Short: "Verify the signature of a webhook message",
 		Args:  validators.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			// parse args
 			var payload []byte
 			if len(args) > 0 {
@@ -32,29 +35,31 @@ func newVerifyCmd() *verifyCmd {
 			} else {
 				var err error
 				payload, err = utils.ReadPipe()
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 
 			// ensure all flags are set
+			var err error
 			if !cmd.Flags().Changed(secretFlagName) {
-				return fmt.Errorf("Secret required for verification!")
+				err = fmt.Errorf("Secret required for verification!")
 			} else if !cmd.Flags().Changed(signatureFlagName) {
-				return fmt.Errorf("Signature required for verification!")
+				err = fmt.Errorf("Signature required for verification!")
 			} else if !cmd.Flags().Changed(timestampFlagName) {
-				return fmt.Errorf("Timestamp required for verification!")
+				err = fmt.Errorf("Timestamp required for verification!")
 			} else if !cmd.Flags().Changed(msgIdFlagName) {
-				return fmt.Errorf("Message ID required for verifcation")
+				err = fmt.Errorf("Message ID required for verifcation")
 			}
+			printer.CheckErr(err)
 
 			// get flags
 			secret, err := cmd.Flags().GetString(secretFlagName)
-			cobra.CheckErr(err)
+			printer.CheckErr(err)
 			msgID, err := cmd.Flags().GetString(msgIdFlagName)
-			cobra.CheckErr(err)
+			printer.CheckErr(err)
 			timestamp, err := cmd.Flags().GetString(timestampFlagName)
-			cobra.CheckErr(err)
+			printer.CheckErr(err)
 			signature, err := cmd.Flags().GetString(signatureFlagName)
-			cobra.CheckErr(err)
+			printer.CheckErr(err)
 
 			headers := http.Header{}
 			headers.Set("svix-id", msgID)
@@ -62,11 +67,10 @@ func newVerifyCmd() *verifyCmd {
 			headers.Set("svix-signature", signature)
 
 			wh, err := svix.NewWebhook(secret)
-			cobra.CheckErr(err)
+			printer.CheckErr(err)
 			err = wh.Verify(payload, headers)
-			cobra.CheckErr(err)
+			printer.CheckErr(err)
 			fmt.Println("Message Signature Is Valid!")
-			return nil
 		},
 	}
 	ac.cmd.Flags().String(secretFlagName, "", "")

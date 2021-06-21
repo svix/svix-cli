@@ -27,16 +27,13 @@ func newApplicationCmd() *applicationCmd {
 	list := &cobra.Command{
 		Use:   "list",
 		Short: "List current applications",
-		RunE: func(cmd *cobra.Command, args []string) error {
-
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 			svixClient := getSvixClientOrExit()
 			l, err := svixClient.Application.List(getFilterOptions(cmd))
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(l, getPrintOptions(cmd))
-			return nil
+			printer.Print(l)
 		},
 	}
 	addFilterFlags(list)
@@ -57,45 +54,44 @@ Example Schema:
 }
 `,
 		Args: validators.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 			var in []byte
 			if len(args) > 0 {
 				in = []byte(args[0])
 			} else {
 				var err error
 				in, err = utils.ReadPipe()
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 			var app svix.ApplicationIn
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &app)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 
 			// get flags
 			if cmd.Flags().Changed(nameFlagName) {
 				nameFlag, err := cmd.Flags().GetString(nameFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				app.Name = nameFlag
 			}
 			if cmd.Flags().Changed(uidFlagName) {
 				uidFlag, err := cmd.Flags().GetString(uidFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				app.Uid = &uidFlag
 			}
 
 			// validate args
 			if app.Name == "" {
-				return fmt.Errorf("name required")
+				printer.CheckErr(fmt.Errorf("name required"))
 			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Application.Create(&app)
-			if err != nil {
-				return err
-			}
-			pretty.Print(out, getPrintOptions(cmd))
-			return nil
+			printer.CheckErr(err)
+
+			printer.Print(out)
 		},
 	}
 	create.Flags().String(nameFlagName, "", "Name of the Application")
@@ -107,18 +103,16 @@ Example Schema:
 		Use:   "get APP_ID",
 		Short: "Get an application by id",
 		Args:  validators.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			appID := args[0]
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Application.Get(appID)
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(out, getPrintOptions(cmd))
-			return nil
+			printer.Print(out)
 		},
 	}
 	ac.cmd.AddCommand(get)
@@ -135,7 +129,9 @@ Example Schema:
 }
 `,
 		Args: validators.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			// parse positional args
 			appID := args[0]
 
@@ -145,34 +141,31 @@ Example Schema:
 			} else {
 				var err error
 				in, err = utils.ReadPipe()
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 			var app svix.ApplicationIn
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &app)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 
 			// get flags
 			if cmd.Flags().Changed(nameFlagName) {
 				nameFlag, err := cmd.Flags().GetString(nameFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				app.Name = nameFlag
 			}
 			if cmd.Flags().Changed(uidFlagName) {
 				uidFlag, err := cmd.Flags().GetString(uidFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				app.Uid = &uidFlag
 			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Application.Update(appID, &app)
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(out, getPrintOptions(cmd))
-			return nil
+			printer.Print(out)
 		},
 	}
 	update.Flags().String(nameFlagName, "", "Name of the Application")
@@ -183,7 +176,9 @@ Example Schema:
 		Use:   "delete APP_ID",
 		Short: "Delete an application by id",
 		Args:  validators.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			// parse args
 			appID := args[0]
 
@@ -192,12 +187,9 @@ Example Schema:
 			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the app with id: %s", appID))
 
 			err := svixClient.Application.Delete(appID)
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
 			fmt.Printf("Application \"%s\" Deleted!\n", appID)
-			return nil
 		},
 	}
 	ac.cmd.AddCommand(delete)

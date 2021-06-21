@@ -26,16 +26,14 @@ func newEventTypeCmd() *eventTypeCmd {
 	list := &cobra.Command{
 		Use:   "list",
 		Short: "List current event types",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			svixClient := getSvixClientOrExit()
 			l, err := svixClient.EventType.List(getFilterOptions(cmd))
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(l, getPrintOptions(cmd))
-			return nil
+			printer.Print(l)
 		},
 	}
 	addFilterFlags(list)
@@ -56,40 +54,40 @@ Example Schema:
 }
 `,
 		Args: validators.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			var in []byte
 			if len(args) > 0 {
 				in = []byte(args[0])
 			} else {
 				var err error
 				in, err = utils.ReadPipe()
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 			var et svix.EventTypeIn
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &et)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 
 			// get flags
 			if cmd.Flags().Changed(nameFlagName) {
 				nameFlag, err := cmd.Flags().GetString(nameFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				et.Name = nameFlag
 			}
 			if cmd.Flags().Changed(descriptionFlagName) {
 				descFlag, err := cmd.Flags().GetString(descriptionFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				et.Description = descFlag
 			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.EventType.Create(&et)
-			if err != nil {
-				return err
-			}
-			pretty.Print(out, getPrintOptions(cmd))
-			return nil
+			printer.CheckErr(err)
+
+			printer.Print(out)
 		},
 	}
 	create.Flags().String(nameFlagName, "", "")
@@ -107,7 +105,9 @@ Example Schema:
 }
 	`,
 		Args: validators.RangeArgs(0, 1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			// get poisitonal args
 			eventName := args[0]
 
@@ -117,28 +117,26 @@ Example Schema:
 			} else {
 				var err error
 				in, err = utils.ReadPipe()
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 			var et svix.EventTypeUpdate
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &et)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 
 			// get flags
 			if cmd.Flags().Changed(descriptionFlagName) {
 				descFlag, err := cmd.Flags().GetString(descriptionFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				et.Description = descFlag
 			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.EventType.Update(eventName, &et)
-			if err != nil {
-				return err
-			}
-			pretty.Print(out, getPrintOptions(cmd))
-			return nil
+			printer.CheckErr(err)
+
+			printer.Print(out)
 		},
 	}
 	update.Flags().String(descriptionFlagName, "", "")
@@ -148,7 +146,9 @@ Example Schema:
 		Use:   "delete EVENT_ID",
 		Short: "Delete an event type by id",
 		Args:  validators.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			// parse args
 			eventID := args[0]
 
@@ -156,12 +156,9 @@ Example Schema:
 
 			svixClient := getSvixClientOrExit()
 			err := svixClient.EventType.Delete(eventID)
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
 			fmt.Printf("Event Type \"%s\" Deleted!\n", eventID)
-			return nil
 		},
 	}
 	etc.cmd.AddCommand(delete)

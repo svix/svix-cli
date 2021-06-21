@@ -27,17 +27,16 @@ func newMessageCmd() *messageCmd {
 		Use:   "list APP_ID",
 		Short: "List current messages",
 		Args:  validators.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			appID := args[0]
 
 			svixClient := getSvixClientOrExit()
 			l, err := svixClient.Message.List(appID, getFilterOptions(cmd))
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(l, getPrintOptions(cmd))
-			return nil
+			printer.Print(l)
 		},
 	}
 	addFilterFlags(list)
@@ -63,7 +62,9 @@ Example Schema:
 }
 `,
 		Args: validators.RangeArgs(1, 2),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			// get positional args
 			appID := args[0]
 			var in []byte
@@ -72,44 +73,42 @@ Example Schema:
 			} else {
 				var err error
 				in, err = utils.ReadPipe()
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 			var msg svix.MessageIn
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &msg)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 			}
 
 			// get flags
 			if cmd.Flags().Changed(eventTypeFlagName) {
 				eventTypeFlag, err := cmd.Flags().GetString(eventTypeFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				msg.EventType = eventTypeFlag
 			}
 			if cmd.Flags().Changed(eventIdFlagName) {
 				eventIdFlag, err := cmd.Flags().GetString(eventIdFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				msg.EventId = &eventIdFlag
 			}
 			if cmd.Flags().Changed(payloadFlagName) {
 				payloadFlag, err := cmd.Flags().GetString(payloadFlagName)
-				cobra.CheckErr(err)
+				printer.CheckErr(err)
 				// unmarshal payload
 				var payload map[string]interface{}
 				err = json.Unmarshal([]byte(payloadFlag), &payload)
 				if err != nil {
-					return fmt.Errorf("invalid payload json supplied via flag")
+					printer.CheckErr(fmt.Errorf("invalid payload json supplied via flag"))
 				}
 				msg.Payload = payload
 			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Message.Create(appID, &msg)
-			if err != nil {
-				return err
-			}
-			pretty.Print(out, getPrintOptions(cmd))
-			return nil
+			printer.CheckErr(err)
+
+			printer.Print(out)
 		},
 	}
 	create.Flags().String(eventTypeFlagName, "", "")
@@ -121,18 +120,17 @@ Example Schema:
 		Use:   "get APP_ID MSG_ID",
 		Short: "get message by id",
 		Args:  validators.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			appID := args[0]
 			msgID := args[1]
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Message.Get(appID, msgID)
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(out, getPrintOptions(cmd))
-			return nil
+			printer.Print(out)
 		},
 	}
 	mc.cmd.AddCommand(get)

@@ -22,18 +22,17 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 		Use:   "list APP_ID MSG_ID",
 		Short: "List attempted messages by id",
 		Args:  validators.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			appID := args[0]
 			msgID := args[1]
 
 			svixClient := getSvixClientOrExit()
 			l, err := svixClient.MessageAttempt.List(appID, msgID, getFilterOptionsMessageAttempt(cmd))
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(l, getPrintOptions(cmd))
-			return nil
+			printer.Print(l)
 		},
 	}
 	addMessageAttemptFilterFlags(list)
@@ -44,18 +43,17 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 		Use:   "list-destinations APP_ID MSG_ID",
 		Short: "List attempted destinations",
 		Args:  validators.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			appID := args[0]
 			msgID := args[1]
 
 			svixClient := getSvixClientOrExit()
 			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(appID, msgID, getFilterOptions(cmd))
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(l, getPrintOptions(cmd))
-			return nil
+			printer.Print(l)
 		},
 	}
 	addFilterFlags(listDestinations)
@@ -67,19 +65,18 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 		Use:   "list-endpoint APP_ID MSG_ID ENDPOINT_ID",
 		Short: "List attempts for endpoint",
 		Args:  validators.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			appID := args[0]
 			msgID := args[1]
 			endpointID := args[2]
 
 			svixClient := getSvixClientOrExit()
 			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(appID, msgID, endpointID, *getFilterOptionsMessageAttempt(cmd))
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(l, getPrintOptions(cmd))
-			return nil
+			printer.Print(l)
 		},
 	}
 	addMessageAttemptFilterFlags(listEndpoint)
@@ -90,7 +87,9 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 		Use:   "get APP_ID MSG_ID ATTEMPT_ID",
 		Short: "Get attempt by id",
 		Args:  validators.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			// parse args
 			appID := args[0]
 			msgID := args[1]
@@ -98,12 +97,9 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.MessageAttempt.Get(appID, msgID, attemptID)
-			if err != nil {
-				return err
-			}
+			printer.CheckErr(err)
 
-			pretty.Print(out, getPrintOptions(cmd))
-			return nil
+			printer.Print(out)
 		},
 	}
 	mac.cmd.AddCommand(get)
@@ -113,7 +109,9 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 		Use:   "resend APP_ID MSG_ID ENDPOINT_ID",
 		Short: "resends a webhook message by id",
 		Args:  validators.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			// parse args
 			appID := args[0]
 			msgID := args[1]
@@ -121,10 +119,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 
 			svixClient := getSvixClientOrExit()
 			err := svixClient.MessageAttempt.Resend(appID, msgID, endpointID)
-			if err != nil {
-				return err
-			}
-			return nil
+			printer.CheckErr(err)
 		},
 	}
 	mac.cmd.AddCommand(resend)
