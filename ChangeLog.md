@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.10.0
+* print response body to stdin on api errors
+
 ## Version 0.9.0
 * adds `open` command for quickly opening Svix's documentation in your browser (thanks @codepope!)
 
