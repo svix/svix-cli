@@ -57,6 +57,22 @@ scoop:
     email: support@svix.com
   homepage: https://www.svix.com
   description: Svix CLI utility
+snapcrafts:
+  -
+    name: svix
+    publish: true
+    summary: Svix CLI utility
+    description: |
+      Svix makes it easy to send webhook from your service while ensuring robust deliverability and a great developer experience for your users.
+      You can think of it as webhooks as a service. https://docs.svix.com/
+    grade: stable
+    confinement: strict
+    license: GPL-3.0
+    base: core20
+
+    apps:
+      svix:
+        plugs: ["network"]
 changelog:
   sort: asc
   filters:

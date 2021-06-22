@@ -113,9 +113,11 @@ For a more information, checkout our [API reference](https://docs.svix.com).
 #### Building the current commit
 
 This project uses [goreleaser](https://github.com/goreleaser/goreleaser/).
+
  1) Install [go](https://golang.org/doc/install).
- 2) Install goreleaser via the steps [here](https://goreleaser.com/install/).
- 3) Build current commit via `goreleaser release --snapshot --skip-publish --rm-dist`.
+ 2) Install [snapcraft](https://snapcraft.io/docs/installing-snapcraft).
+ 3) Install goreleaser via the steps [here](https://goreleaser.com/install/).
+ 4) Build current commit via `goreleaser release --snapshot --skip-publish --rm-dist`.
 
 [release-img]: https://img.shields.io/github/v/release/svix/svix-cli
 [release]: https://github.com/svix/svix-cli/releases
