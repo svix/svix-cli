@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.11.0
+* add `listen` command for testing webhook recievers locally
+* intitial snap release!
+
 ## Version 0.10.0
 * print response body to stdin on api errors
 
