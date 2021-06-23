@@ -21,7 +21,7 @@ func newListenCmd() *listenCmd {
 		Short: "Forward webhook requests a local url",
 		Long: `listen creates an on-the-fly publicly accessible URL for use when testing webhooks.
 
-The cli then acts as a proxy forwarding any requests to the given localURL.
+The cli then acts as a proxy forwarding any requests to the given local URL.
 This is useful for testing your webhook server locally without having to open a port or
 change any nat configuration on your network.
 
