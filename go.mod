@@ -4,6 +4,8 @@ go 1.16
 
 require (
 	github.com/BurntSushi/toml v0.3.1
+	github.com/fatih/color v1.7.0
+	github.com/gorilla/websocket v1.4.2
 	github.com/manifoldco/promptui v0.8.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966

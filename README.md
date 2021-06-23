@@ -74,6 +74,30 @@ svix application create --data-name demo
 svix application list --limit 2 --iterator some_iterator 
 ```
 
+## Using the `listen` command
+
+The `listen` command creates an on-the-fly publicly accessible URL for use when testing webhooks.
+
+The cli then acts as a proxy, forwarding any requests to the given local URL.
+This is useful for testing your webhook server locally without having to open a port or
+change any nat configuration on your network.
+
+Example:
+
+`svix listen http://localhost:8000/webhook/`
+
+Output:
+
+```sh
+Webhook relay is now listening at
+https://api.relay.svix.com/api/v1/receive/q1FB7XNKZTO4s0Tzh5BDTZ7_oktf1NBo/
+
+All requests on this endpoint will be forwarded to your local url:
+http://localhost:8080/webhook/
+```
+
+The above command will return you a unique URL and forward any POST requests it receives
+to `http://localhost:8000/webhook/`.
 
 ## Commands
 
@@ -88,6 +112,7 @@ The Svix CLI supports the following commands:
 | message         | List & create messages                                     |
 | message-attempt | List, lookup & resend message attempts                     |
 | verify          | Verify the signature of a webhook message                  |
+| listen          | Forward webhook requests a local url                       |
 | open            | Quickly open Svix pages in your browser                    |
 | completion      | Generate completion script                                 |
 | version         | Get the version of the Svix CLI                            |
