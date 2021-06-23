@@ -1,7 +1,7 @@
 # Changelog
 
 ## Version 0.11.0
-* add `listen` command for testing webhook recievers locally
+* add `listen` command for testing webhook receivers locally
 * intitial snap release!
 
 ## Version 0.10.0
