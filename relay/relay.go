@@ -147,10 +147,10 @@ func (c *Client) connect(ctx context.Context) error {
 		return err
 	}
 	url := fmt.Sprintf(c.receiveURLTemplate, startMsg.Data.ConnectionID)
-	fmt.Printf(`Webook relay now listening at
+	fmt.Printf(`Webhook relay is now listening at
 %s
 
-All requests on this endpoint will be forwarded to your local url:
+All requests on this endpoint will be forwarded to your local URL:
 %s
 `, pretty.MakeTerminalLink(url, url), c.localURL)
 

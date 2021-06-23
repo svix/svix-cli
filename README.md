@@ -83,7 +83,18 @@ This is useful for testing your webhook server locally without having to open a 
 change any nat configuration on your network.
 
 Example:
-    `svix listen http://localhost:8000/webhook/`
+
+`svix listen http://localhost:8000/webhook/`
+
+Output:
+
+```sh
+Webhook relay is now listening at
+https://api.relay.svix.com/api/v1/receive/q1FB7XNKZTO4s0Tzh5BDTZ7_oktf1NBo/
+
+All requests on this endpoint will be forwarded to your local url:
+http://localhost:8080/webhook/
+```
 
 The above command will return you a unique URL and forward any POST requests it receives
 to `http://localhost:8000/webhook/`.
