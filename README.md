@@ -39,9 +39,15 @@ The Svix CLI is available on Linux via the [snap](https://snapcraft.io/) package
 snap install svix
 ```
 
+And via the [Arch User Repository (AUR)](https://wiki.archlinux.org/title/Arch_User_Repository):
+
+```sh
+pacman -S svix-cli
+```
+
 ### Manual Install (No package manager)
 
-If you use a flavor of Linux that doesn't support snap or just rather not use a package manager, you can download a binary from our Github releases and use it straight away without having to install any additional dependencies.
+If you use a flavor of Linux that doesn't support one of the package managers in the previous section, or just rather not use a package manager, you can download a binary from our Github releases and use it straight away without having to install any additional dependencies.
 1) Find the latest release, download the tar.gz file for your given operating system and extract it.
 2) Inside you'll find the `svix` executable which you can run directly (Note: you may need to allow execution via `chmod +x <PATH_TO_SVIX_EXE>`),
 
