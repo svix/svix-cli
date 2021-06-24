@@ -32,18 +32,11 @@ scoop install svix
 ```
 
 ### Linux
+The Svix CLI is available on Linux via:
 
-The Svix CLI is available on Linux via the [snap](https://snapcraft.io/) package manager:
+* The [Snap Store](https://snapcraft.io): `snap install svix`
+* The [Arch User Repository (AUR)](https://wiki.archlinux.org/title/Arch_User_Repository): `yay -S svix-cli`
 
-```sh
-snap install svix
-```
-
-And via the [Arch User Repository (AUR)](https://wiki.archlinux.org/title/Arch_User_Repository):
-
-```sh
-pacman -S svix-cli
-```
 
 ### Manual Install (No package manager)
 
