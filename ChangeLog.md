@@ -2,6 +2,7 @@
 
 ## Version 0.11.0
 * add `listen` command for testing webhook receivers locally
+* bump svix-libs to v0.18.0, allows webhook verifying with prefixed secrets
 * initial snap release!
 
 ## Version 0.10.0
