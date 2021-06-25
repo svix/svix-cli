@@ -6,23 +6,27 @@ import (
 
 type MessageType string
 
+const version = 1
+
 const (
 	MessageTypeStart = "start"
 	MessageTypeEvent = "event"
 )
 
 type IncomingMessageStart struct {
-	Type MessageType              `json:"type"`
-	Data IncomingMessageStartData `json:"data"`
+	Type    MessageType              `json:"type"`
+	Version int                      `json:"version"`
+	Data    IncomingMessageStartData `json:"data"`
 }
 
 type IncomingMessageStartData struct {
-	ConnectionID string `json:"connection_id"`
+	Token string `json:"token"`
 }
 
 type IncomingMessage struct {
-	Type MessageType     `json:"type"`
-	Data json.RawMessage `json:"data"`
+	Type    MessageType     `json:"type"`
+	Version int             `json:"version"`
+	Data    json.RawMessage `json:"data"`
 }
 
 type IncomingMessageEventData struct {
@@ -31,9 +35,20 @@ type IncomingMessageEventData struct {
 	Body    string            `json:"body"`
 }
 
+type OutgoingMessageStart struct {
+	Type    MessageType              `json:"type"`
+	Version int                      `json:"version"`
+	Data    OutgoingMessageStartData `json:"data"`
+}
+
+type OutgoingMessageStartData struct {
+	Token string `json:"token"`
+}
+
 type OutgoingMessageEvent struct {
-	Type MessageType              `json:"type"`
-	Data OutgoingMessageEventData `json:"data"`
+	Type    MessageType              `json:"type"`
+	Version int                      `json:"version"`
+	Data    OutgoingMessageEventData `json:"data"`
 }
 
 type OutgoingMessageEventData struct {

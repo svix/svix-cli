@@ -7,6 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/svix/svix-cli/config"
+	"github.com/svix/svix-cli/pretty"
 	"github.com/svix/svix-cli/relay"
 )
 
@@ -32,12 +34,24 @@ The above command will return you a unique URL and forward any POST requests it 
 to http://localhost:8000/webhook/`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
 			urlStr := args[0]
 			url, err := url.Parse(urlStr)
 			if err != nil {
 				return fmt.Errorf("invalid local url %s", urlStr)
 			}
-			client := relay.NewClient(url, &relay.ClientOptions{
+			var token string
+			if viper.IsSet("relay_token") {
+				token = viper.GetString("relay_token")
+			} else {
+				token = relay.GenerateToken()
+				viper.Set("relay_token", token)
+				err := config.Write(viper.AllSettings())
+				printer.CheckErr(err)
+			}
+
+			client := relay.NewClient(token, url, &relay.ClientOptions{
 				DisableSecurity: viper.GetBool("relay_disable_security"),
 				RelayDebugUrl:   viper.GetString("relay_debug_url"),
 			})

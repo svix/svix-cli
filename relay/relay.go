@@ -29,6 +29,7 @@ const (
 )
 
 type Client struct {
+	token              string
 	websocketURL       string
 	localURL           *url.URL
 	receiveURLTemplate string
@@ -49,7 +50,7 @@ type ClientOptions struct {
 	RelayDebugUrl   string
 }
 
-func NewClient(localURL *url.URL, opts *ClientOptions) *Client {
+func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 	wsProto := "wss"
 	httpProto := "https"
 	apiHost := defaultAPIHost
@@ -64,6 +65,7 @@ func NewClient(localURL *url.URL, opts *ClientOptions) *Client {
 	}
 
 	return &Client{
+		token:              token,
 		websocketURL:       fmt.Sprintf("%s://%s/%s/listen/", wsProto, apiHost, apiPrefix),
 		localURL:           localURL,
 		receiveURLTemplate: fmt.Sprintf("%s://%s/%s/receive/%%s/", httpProto, apiHost, apiPrefix),
@@ -92,7 +94,6 @@ func (c *Client) Listen(ctx context.Context) {
 		fmt.Printf("relay already listening\n")
 		return
 	}
-
 	err := c.connect(ctx)
 	if err != nil {
 		color.Red("Failed to connect to Webhook Relay:\n%s\n", err.Error())
@@ -137,16 +138,34 @@ func (c *Client) connect(ctx context.Context) error {
 	}
 	c.conn = conn
 
+	startMsgOut := &OutgoingMessageStart{
+		Type:    MessageTypeStart,
+		Version: version,
+		Data: OutgoingMessageStartData{
+			Token: c.token,
+		},
+	}
+
+	err = c.conn.WriteJSON(startMsgOut)
+	if err != nil {
+		return err
+	}
+
 	_, msg, err := c.conn.ReadMessage()
 	if err != nil {
+		if sErr, ok := err.(*websocket.CloseError); ok {
+			if sErr.Code == websocket.ClosePolicyViolation {
+				return fmt.Errorf("invalid token or already listening")
+			}
+		}
 		return err
 	}
-	var startMsg IncomingMessageStart
-	err = json.Unmarshal(msg, &startMsg)
+	var startMsgIn IncomingMessageStart
+	err = json.Unmarshal(msg, &startMsgIn)
 	if err != nil {
 		return err
 	}
-	url := fmt.Sprintf(c.receiveURLTemplate, startMsg.Data.ConnectionID)
+	url := fmt.Sprintf(c.receiveURLTemplate, startMsgIn.Data.Token)
 	fmt.Printf(`Webhook relay is now listening at
 %s
 
@@ -219,7 +238,6 @@ func (c *Client) sendLoop() {
 				return
 			}
 		case <-c.done:
-			fmt.Println("send done")
 			// ignore error
 			return
 		}
@@ -294,7 +312,8 @@ func (c *Client) processResponse(id string, res *http.Response) {
 	defer res.Body.Close()
 
 	msg := &OutgoingMessageEvent{
-		Type: MessageTypeEvent,
+		Type:    MessageTypeEvent,
+		Version: version,
 		Data: OutgoingMessageEventData{
 			ID:      id,
 			Status:  res.StatusCode,
