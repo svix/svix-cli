@@ -1,6 +1,7 @@
 package pretty
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -30,10 +31,20 @@ func (p *Printer) Print(v interface{}) {
 		b = msg
 	default:
 		var err error
-		b, err = json.Marshal(v)
+		var buf bytes.Buffer
+
+		// disable html escaping
+		// otherwise & gets transformed to \u0026
+		// so url can become invalid
+		enc := json.NewEncoder(&buf)
+		enc.SetEscapeHTML(false)
+
+		err = enc.Encode(v)
 		if err != nil {
 			fmt.Printf("%+v\n", v)
+			return
 		}
+		b = buf.Bytes()
 	}
 
 	b = prettyJson.Pretty(b)
