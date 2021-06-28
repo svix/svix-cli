@@ -45,7 +45,8 @@ to http://localhost:8000/webhook/`,
 			if viper.IsSet("relay_token") {
 				token = viper.GetString("relay_token")
 			} else {
-				token = relay.GenerateToken()
+				token, err = relay.GenerateToken()
+				printer.CheckErr(err)
 				viper.Set("relay_token", token)
 				err := config.Write(viper.AllSettings())
 				printer.CheckErr(err)
