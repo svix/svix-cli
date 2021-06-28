@@ -36,8 +36,11 @@ type Client struct {
 	dialer             *websocket.Dialer
 	httpClient         *http.Client
 
-	conn    *websocket.Conn
-	done    chan struct{}
+	conn              *websocket.Conn
+	connResetInterval time.Duration
+	stopRead          chan struct{}
+	stopWrite         chan struct{}
+
 	errChan chan error
 
 	sendChan chan *OutgoingMessageEvent
@@ -79,8 +82,10 @@ func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 			},
 			Timeout: defaultTimeout,
 		},
+		connResetInterval: time.Minute,
+		stopRead:          make(chan struct{}),
+		stopWrite:         make(chan struct{}),
 
-		done:    make(chan struct{}),
 		errChan: make(chan error),
 
 		// TODO should these be buffered?
@@ -94,33 +99,37 @@ func (c *Client) Listen(ctx context.Context) {
 		fmt.Printf("relay already listening\n")
 		return
 	}
-	err := c.connect(ctx)
-	if err != nil {
-		color.Red("Failed to connect to Webhook Relay:\n%s\n", err.Error())
-		c.close()
-		return
-	}
 
-	select {
-	case <-ctx.Done():
-		close(c.sendChan)
-		close(c.recChan)
-		close(c.done)
-		return
-	case <-c.done:
-		close(c.sendChan)
-		close(c.recChan)
-		close(c.done)
-		return
-	case err := <-c.errChan:
-		color.Red("A fatal error occured, please setup a new connection\nDetail: %s\n",
-			err.Error(),
-		)
-		close(c.sendChan)
-		close(c.recChan)
-		close(c.done)
-		c.wg.Wait()
-		return
+	for {
+		err := c.connect(ctx)
+		if err != nil {
+			color.Red("Failed to connect to Webhook Relay:\n%s\n", err.Error())
+			c.close()
+			return
+		}
+
+		select {
+		case <-ctx.Done():
+			close(c.sendChan)
+			close(c.recChan)
+
+			close(c.stopRead)
+			close(c.stopWrite)
+			return
+		case <-c.errChan:
+			close(c.stopRead)
+			close(c.stopWrite)
+			c.wg.Wait()
+		case <-time.After(c.connResetInterval):
+			close(c.stopRead)
+			close(c.stopWrite)
+
+			if c.conn != nil {
+				c.conn.Close()
+			}
+
+			c.wg.Wait()
+		}
 	}
 }
 func (c *Client) close() {
@@ -130,13 +139,20 @@ func (c *Client) close() {
 	}
 }
 
+func (c *Client) changeConnection(conn *websocket.Conn) {
+	c.conn = conn
+	c.errChan = make(chan error)
+	c.stopRead = make(chan struct{})
+	c.stopWrite = make(chan struct{})
+}
+
 func (c *Client) connect(ctx context.Context) error {
 	var err error
 	conn, _, err := c.dialer.Dial(c.websocketURL, nil)
 	if err != nil {
 		return err
 	}
-	c.conn = conn
+	c.changeConnection(conn)
 
 	startMsgOut := &OutgoingMessageStart{
 		Type:    MessageTypeStart,
@@ -199,8 +215,9 @@ func (c *Client) recLoop() {
 		_, packet, err := c.conn.ReadMessage()
 		if err != nil {
 			select {
-			case <-c.done:
-				continue
+			case <-c.stopRead:
+				// dont send error if
+				// stop was requested
 			default:
 				c.errChan <- err
 			}
@@ -227,6 +244,8 @@ func (c *Client) sendLoop() {
 
 			err := c.conn.WriteJSON(msg)
 			if err != nil {
+				// resend message when we reconnect
+				c.SendMessage(msg)
 				c.errChan <- err
 				return
 			}
@@ -237,7 +256,7 @@ func (c *Client) sendLoop() {
 				c.errChan <- err
 				return
 			}
-		case <-c.done:
+		case <-c.stopWrite:
 			// ignore error
 			return
 		}
