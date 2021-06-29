@@ -32,19 +32,26 @@ scoop install svix
 ```
 
 ### Linux
+
 The Svix CLI is available on Linux via:
 
 * The [Snap Store](https://snapcraft.io): `snap install svix`
 * The [Arch User Repository (AUR)](https://wiki.archlinux.org/title/Arch_User_Repository): `yay -S svix-cli`
+* For Ubuntu/Debian: get the `deb` package from [our Github releases page](https://github.com/svix/svix-cli/releases)
+* For Fedora/CentOS: get the `rpm` package from [our Github releases page](https://github.com/svix/svix-cli/releases)
 
 
-### Manual Install (No package manager)
+### Pre-built executables
 
-If you use a flavor of Linux that doesn't support one of the package managers in the previous section, or just rather not use a package manager, you can download a binary from our Github releases and use it straight away without having to install any additional dependencies.
-1) Find the latest release, download the tar.gz file for your given operating system and extract it.
-2) Inside you'll find the `svix` executable which you can run directly (Note: you may need to allow execution via `chmod +x <PATH_TO_SVIX_EXE>`),
+You can download and use our pre-built executables directly from [our releases page](https://github.com/svix/svix-cli/releases), and use them as is without having to install anything.
 
-On macOS or Linux, you can move this file to `/usr/local/bin` or `/usr/bin` locations to have it be runnable from anywhere; or place it anywhere and add it to your path (ex. `export PATH=$PATH:<PATH_TO_SVIX_EXE>`) Otherwise, simply `cd` to the folder where you extracted the tar.gz file and run it with ./svix.
+1. Download and extract the `tar.gz` archive for your operating system.
+2. Run the `svix` executable from the command line: `./svix help`.
+
+Note: you may need to allow execution by running `chmod +x svix`.
+
+
+You can also put the binaries anywhere in your `PATH` so you can run the command from anywhere without needing to provide its full path. On macOS or Linux you can achieve this by moving the executable to `/usr/local/bin` or `/usr/bin`.
 
 
 ## Usage
