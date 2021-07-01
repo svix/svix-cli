@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.11.0
+* Add `listen` command for testing webhook receivers locally
+* Bump svix-libs to v0.18.0, allows webhook verifying with prefixed secrets
+* Don't html escape when printing json output, fixes dashboard urls
+* Initial snap release!
+
 ## Version 0.10.0
 * print response body to stdin on api errors
 
