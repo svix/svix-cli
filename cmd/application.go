@@ -128,7 +128,7 @@ Example Schema:
   "name": "string"
 }
 `,
-		Args: validators.RangeArgs(0, 1),
+		Args: validators.RangeArgs(1, 2),
 		Run: func(cmd *cobra.Command, args []string) {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
