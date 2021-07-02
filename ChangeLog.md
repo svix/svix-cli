@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.11.1
+* Fix bug where application update expected the wrong number of arguments
+
 ## Version 0.11.0
 * Add `listen` command for testing webhook receivers locally
 * Bump svix-libs to v0.18.0, allows webhook verifying with prefixed secrets
