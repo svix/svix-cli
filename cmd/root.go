@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"flag"
 	"fmt"
 	"net/url"
 	"os"
@@ -10,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/svix/svix-cli/config"
-	"github.com/svix/svix-cli/utils"
+	"github.com/svix/svix-cli/flags"
 	"github.com/svix/svix-cli/version"
 	svix "github.com/svix/svix-libs/go"
 )
@@ -36,9 +37,10 @@ func init() {
 	rootCmd.Flags().BoolP("version", "v", false, "Get the version of the Svix CLI") // overrides default msg
 
 	// Global Flags
-	isTTY, _, err := utils.IsTTY(os.Stdout)
-	cobra.CheckErr(err)
-	rootCmd.PersistentFlags().Bool("color", isTTY, "colorize output json")              // on by default if TTY, off if not
+	color := "auto"
+	colorFlag := flags.NewEnum(&color, "auto", "always", "never")
+	flag.Var(colorFlag, "color", "auto|always|never")
+	rootCmd.PersistentFlags().AddGoFlag(flag.Lookup("color"))
 	cobra.CheckErr(viper.BindPFlag("color", rootCmd.PersistentFlags().Lookup("color"))) // allow color flag to be set in config
 
 	// Register Commands

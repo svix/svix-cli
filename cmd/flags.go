@@ -1,19 +1,33 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/svix/svix-cli/pretty"
+	"github.com/svix/svix-cli/utils"
 	svix "github.com/svix/svix-libs/go"
 )
 
 func getPrinterOptions(cmd *cobra.Command) *pretty.PrinterOptions {
-	colorFlag := viper.GetBool("color")
-	if !colorFlag {
-		return nil
+	colorFlag := viper.GetString("color")
+	color := false
+	switch colorFlag {
+	case "always":
+		color = true
+	case "never":
+		color = false
+	default:
+		isTTY, _, err := utils.IsTTY(os.Stdout)
+		if err == nil {
+			// just defaults to false if an error occurs
+			color = isTTY
+		}
 	}
+
 	return &pretty.PrinterOptions{
-		Color: true,
+		Color: color,
 	}
 }
 
