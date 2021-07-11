@@ -53,7 +53,6 @@ func init() {
 	rootCmd.AddCommand(newMessageCmd().cmd)
 	rootCmd.AddCommand(newMessageAttemptCmd().cmd)
 	rootCmd.AddCommand(newVerifyCmd().cmd)
-	rootCmd.AddCommand(newCompletionCmd().cmd)
 	rootCmd.AddCommand(newOpenCmd().cmd)
 	rootCmd.AddCommand(newListenCmd().cmd)
 	rootCmd.AddCommand(newImportCmd().cmd)
