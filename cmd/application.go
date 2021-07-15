@@ -19,8 +19,9 @@ func newApplicationCmd() *applicationCmd {
 
 	ac := &applicationCmd{}
 	ac.cmd = &cobra.Command{
-		Use:   "application",
-		Short: "List, create & modify applications",
+		Use:     "application",
+		Short:   "List, create & modify applications",
+		Aliases: []string{"app"},
 	}
 
 	// list
