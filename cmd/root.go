@@ -86,6 +86,11 @@ func getSvixClientOrExit() *svix.Svix {
 		os.Exit(1)
 	}
 
+	opts := getSvixClientOptsOrExit()
+	return svix.New(token, opts)
+}
+
+func getSvixClientOptsOrExit() *svix.SvixOptions {
 	opts := &svix.SvixOptions{}
 	rawDebugURL := viper.GetString("debug_url")
 	if rawDebugURL != "" {
@@ -96,5 +101,5 @@ func getSvixClientOrExit() *svix.Svix {
 		}
 		opts.DebugURL = debugURL
 	}
-	return svix.New(token, opts)
+	return opts
 }
