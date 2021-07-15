@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.12.0
+* Update `--color` flag to enum `auto|always|never`
+* Bump svix-libs (adds disabled value to endpoints)
+* Add `authentication logout` command for invalidating dashboard tokens
+  
 ## Version 0.11.1
 * Fix bug where application update expected the wrong number of arguments
 
