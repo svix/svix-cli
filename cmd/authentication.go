@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/svix/svix-cli/pretty"
 	"github.com/svix/svix-cli/validators"
+	svix "github.com/svix/svix-libs/go"
 )
 
 type authenticationCmd struct {
@@ -36,17 +37,21 @@ func newAuthenticationCmd() *authenticationCmd {
 	}
 	ac.cmd.AddCommand(dashboard)
 
-	// // logout
-	// logout := &cobra.Command{
-	// 	Use:   "logout",
-	// 	Short: "Get a dashboard URL for the given app",
-	// 	Run: func(cmd *cobra.Command, args []string) {
-	// 		svixClient := getSvixClientOrExit()
-	// 		err := svixClient.Authentication.Logout()
-	// 		printer.CheckErr(err)
-	// 	},
-	// }
-	// ac.cmd.AddCommand(logout)
+	// logout
+	logout := &cobra.Command{
+		Use:   "logout DASHBOARD_AUTH_TOKEN",
+		Short: "Invalidates the given dashboard key",
+		Args:  validators.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			authToken := args[0]
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
+			svixClient := svix.New(authToken, getSvixClientOptsOrExit())
+			err := svixClient.Authentication.Logout()
+			printer.CheckErr(err)
+		},
+	}
+	ac.cmd.AddCommand(logout)
 
 	return ac
 }
