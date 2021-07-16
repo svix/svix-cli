@@ -43,8 +43,8 @@ type Client struct {
 
 	errChan chan error
 
-	sendChan chan *OutgoingMessageEvent
-	recChan  chan *IncomingMessage
+	sendChan chan *MessageOut
+	recChan  chan *MessageIn
 	wg       *sync.WaitGroup
 }
 
@@ -57,6 +57,7 @@ func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 	wsProto := "wss"
 	httpProto := "https"
 	apiHost := defaultAPIHost
+	token = fmt.Sprintf("c.%s", token)
 	if opts != nil {
 		if opts.DisableSecurity {
 			wsProto = "ws"
@@ -69,9 +70,9 @@ func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 
 	return &Client{
 		token:              token,
-		websocketURL:       fmt.Sprintf("%s://%s/%s/listen/", wsProto, apiHost, apiPrefix),
+		websocketURL:       fmt.Sprintf("%s://%s/%s/play/listen/%s/", wsProto, apiHost, apiPrefix, token),
 		localURL:           localURL,
-		receiveURLTemplate: fmt.Sprintf("%s://%s/%s/receive/%%s/", httpProto, apiHost, apiPrefix),
+		receiveURLTemplate: fmt.Sprintf("%s://%s/%s/play/receive/%%s/", httpProto, apiHost, apiPrefix),
 		dialer: &websocket.Dialer{
 			HandshakeTimeout: 10 * time.Second,
 			Proxy:            http.ProxyFromEnvironment,
@@ -89,8 +90,8 @@ func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 		errChan: make(chan error),
 
 		// TODO should these be buffered?
-		sendChan: make(chan *OutgoingMessageEvent),
-		recChan:  make(chan *IncomingMessage),
+		sendChan: make(chan *MessageOut),
+		recChan:  make(chan *MessageIn),
 	}
 }
 
@@ -116,10 +117,17 @@ func (c *Client) Listen(ctx context.Context) {
 			close(c.stopRead)
 			close(c.stopWrite)
 			return
-		case <-c.errChan:
+		case err = <-c.errChan:
 			close(c.stopRead)
 			close(c.stopWrite)
 			c.wg.Wait()
+
+			if sErr, ok := err.(*websocket.CloseError); ok {
+				if sErr.Code == websocket.ClosePolicyViolation {
+					color.Red("Unrecoverable error, please try again.")
+					return
+				}
+			}
 		case <-time.After(c.connResetInterval):
 			close(c.stopRead)
 			close(c.stopWrite)
@@ -154,40 +162,16 @@ func (c *Client) connect(ctx context.Context) error {
 	}
 	c.changeConnection(conn)
 
-	startMsgOut := &OutgoingMessageStart{
-		Type:    MessageTypeStart,
-		Version: version,
-		Data: OutgoingMessageStartData{
-			Token: c.token,
-		},
-	}
-
-	err = c.conn.WriteJSON(startMsgOut)
-	if err != nil {
-		return err
-	}
-
-	_, msg, err := c.conn.ReadMessage()
-	if err != nil {
-		if sErr, ok := err.(*websocket.CloseError); ok {
-			if sErr.Code == websocket.ClosePolicyViolation {
-				return fmt.Errorf("invalid token or already listening")
-			}
-		}
-		return err
-	}
-	var startMsgIn IncomingMessageStart
-	err = json.Unmarshal(msg, &startMsgIn)
-	if err != nil {
-		return err
-	}
-	url := fmt.Sprintf(c.receiveURLTemplate, startMsgIn.Data.Token)
-	fmt.Printf(`Webhook relay is now listening at
+	url := fmt.Sprintf(c.receiveURLTemplate, c.token)
+	playURL := fmt.Sprintf("https://play.svix.com/view/%s/", c.token)
+	fmt.Printf(`Forwarding requests from
+%s
+to
 %s
 
-All requests on this endpoint will be forwarded to your local URL:
+View logs and debug information on Svix Play:
 %s
-`, pretty.MakeTerminalLink(url, url), c.localURL)
+`, pretty.MakeTerminalLink(url, url), c.localURL, pretty.MakeTerminalLink(playURL, playURL))
 
 	c.wg = &sync.WaitGroup{}
 	c.wg.Add(2)
@@ -197,7 +181,7 @@ All requests on this endpoint will be forwarded to your local URL:
 	return nil
 }
 
-func (c *Client) SendMessage(msg *OutgoingMessageEvent) {
+func (c *Client) SendMessage(msg *MessageOut) {
 	c.sendChan <- msg
 }
 
@@ -264,29 +248,20 @@ func (c *Client) sendLoop() {
 }
 
 func (c *Client) handleIncommingMessage(packet []byte) {
-	var msg IncomingMessage
+	var msg MessageIn
 	if err := json.Unmarshal(packet, &msg); err != nil {
+		color.Red("Recieved Invalid Message message... skipping\n")
 		return
 	}
-	switch msg.Type {
-	case MessageTypeEvent:
-		var msgData IncomingMessageEventData
-		err := json.Unmarshal(msg.Data, &msgData)
-		if err != nil {
-			color.Red("Recieved Invalid Webhook message... skipping\n")
-			return
-		}
-		color.Blue("<- Forwarding Message to: %s", c.localURL.String())
-		res, err := c.makeLocalRequest(c.localURL, msgData)
-		if err != nil {
-			color.Red("Failed to make request to local server: \n%s\n", err.Error())
-			return
-		}
 
-		c.processResponse(msgData.ID, res)
-	default:
+	color.Blue("<- Forwarding Message to: %s", c.localURL.String())
+	res, err := c.makeLocalRequest(c.localURL, msg)
+	if err != nil {
+		color.Red("Failed to make request to local server: \n%s\n", err.Error())
 		return
 	}
+
+	c.processResponse(msg.ID, res)
 }
 
 func formatRespHeaders(h http.Header) map[string]string {
@@ -300,7 +275,7 @@ func formatRespHeaders(h http.Header) map[string]string {
 	return msgHeader
 }
 
-func (c *Client) makeLocalRequest(url *url.URL, msg IncomingMessageEventData) (*http.Response, error) {
+func (c *Client) makeLocalRequest(url *url.URL, msg MessageIn) (*http.Response, error) {
 	body, err := base64.StdEncoding.DecodeString(msg.Body)
 	if err != nil {
 		return nil, err
@@ -330,15 +305,11 @@ func (c *Client) processResponse(id string, res *http.Response) {
 	buf, _ := io.ReadAll(res.Body)
 	defer res.Body.Close()
 
-	msg := &OutgoingMessageEvent{
-		Type:    MessageTypeEvent,
-		Version: version,
-		Data: OutgoingMessageEventData{
-			ID:      id,
-			Status:  res.StatusCode,
-			Headers: formatRespHeaders(res.Header),
-			Body:    base64.StdEncoding.EncodeToString(buf),
-		},
+	msg := &MessageOut{
+		ID:         id,
+		StatusCode: res.StatusCode,
+		Headers:    formatRespHeaders(res.Header),
+		Body:       base64.StdEncoding.EncodeToString(buf),
 	}
 	color.Green("-> Recieved \"%s\" response, forwarding to webhook sender\n", res.Status)
 	c.SendMessage(msg)
