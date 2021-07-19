@@ -19,7 +19,7 @@ type listenCmd struct {
 func newListenCmd() *listenCmd {
 	lc := &listenCmd{}
 	lc.cmd = &cobra.Command{
-		Use:   "listen localURL",
+		Use:   `listen localURL (ex. http://localhost:8000/webhook/)`,
 		Short: "Forward webhook requests a local url",
 		Long: `listen creates an on-the-fly publicly accessible URL for use when testing webhooks.
 
