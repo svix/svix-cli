@@ -24,34 +24,54 @@ func NewPrinter(opts *PrinterOptions) *Printer {
 	}
 }
 
-func (p *Printer) Print(v interface{}) {
-	var b []byte
-	switch msg := v.(type) {
-	case []byte:
-		b = msg
-	default:
-		var err error
-		var buf bytes.Buffer
-
-		// disable html escaping
-		// otherwise & gets transformed to \u0026
-		// so url can become invalid
-		enc := json.NewEncoder(&buf)
-		enc.SetEscapeHTML(false)
-
-		err = enc.Encode(v)
-		if err != nil {
-			fmt.Printf("%+v\n", v)
-			return
+func (p *Printer) Write(b []byte) (n int, err error) {
+	if isJSON(b) {
+		b = prettyJson.Pretty(b)
+		if p.opts != nil && p.opts.Color {
+			b = prettyJson.Color(b, nil)
 		}
-		b = buf.Bytes()
-	}
-
-	b = prettyJson.Pretty(b)
-	if p.opts != nil && p.opts.Color {
-		b = prettyJson.Color(b, nil)
 	}
 	fmt.Println(string(b))
+	return len(b), err
+}
+
+func (p *Printer) Print(a ...interface{}) {
+	for _, v := range a {
+		var b []byte
+		switch msg := v.(type) {
+		case []byte:
+			b = msg
+		default:
+			var err error
+			var buf bytes.Buffer
+
+			// disable html escaping
+			// otherwise & gets transformed to \u0026
+			// so url can become invalid
+			enc := json.NewEncoder(&buf)
+			enc.SetEscapeHTML(false)
+
+			err = enc.Encode(v)
+			if err != nil {
+				fmt.Printf("%+v\n", v)
+				return
+			}
+			b = buf.Bytes()
+		}
+
+		if isJSON(b) {
+			b = prettyJson.Pretty(b)
+			if p.opts != nil && p.opts.Color {
+				b = prettyJson.Color(b, nil)
+			}
+		}
+		fmt.Println(string(b))
+	}
+}
+
+func isJSON(b []byte) bool {
+	var i interface{}
+	return json.Unmarshal(b, &i) == nil
 }
 
 func (p *Printer) CheckErr(msg interface{}) {
