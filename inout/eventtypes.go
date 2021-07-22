@@ -9,7 +9,7 @@ import (
 	svix "github.com/svix/svix-libs/go"
 )
 
-func ImportEventTypesJson(sc *svix.Svix, reader io.Reader) error {
+func ImportEventTypesJson(sc *svix.Svix, reader io.Reader, update bool) error {
 	dec := json.NewDecoder(reader)
 	var eventTypes []*svix.EventTypeIn
 	err := dec.Decode(&eventTypes)
@@ -17,7 +17,7 @@ func ImportEventTypesJson(sc *svix.Svix, reader io.Reader) error {
 		return err
 	}
 	for _, et := range eventTypes {
-		err = createOrUpdateEventType(sc, et)
+		err = createOrUpdateEventType(sc, et, update)
 		if err != nil {
 			return err
 		}
@@ -25,7 +25,7 @@ func ImportEventTypesJson(sc *svix.Svix, reader io.Reader) error {
 	return nil
 }
 
-func ImportEventTypesCsv(sc *svix.Svix, reader io.Reader) error {
+func ImportEventTypesCsv(sc *svix.Svix, reader io.Reader, update bool) error {
 	csvReader := csv.NewReader(reader)
 	for {
 		record, err := csvReader.Read()
@@ -42,7 +42,7 @@ func ImportEventTypesCsv(sc *svix.Svix, reader io.Reader) error {
 			Name:        record[0],
 			Description: record[1],
 		}
-		err = createOrUpdateEventType(sc, et)
+		err = createOrUpdateEventType(sc, et, update)
 		if err != nil {
 			return err
 		}
@@ -50,16 +50,20 @@ func ImportEventTypesCsv(sc *svix.Svix, reader io.Reader) error {
 	return nil
 }
 
-func createOrUpdateEventType(sc *svix.Svix, et *svix.EventTypeIn) error {
+func createOrUpdateEventType(sc *svix.Svix, et *svix.EventTypeIn, update bool) error {
 	_, err := sc.EventType.Create(et)
 	if err != nil {
 		if sErr, ok := err.(*svix.Error); ok {
 			if sErr.Status() == 409 {
-				_, err := sc.EventType.Update(et.Name, &svix.EventTypeUpdate{Description: et.Description})
-				if err != nil {
-					return err
+				if update {
+					_, err := sc.EventType.Update(et.Name, &svix.EventTypeUpdate{Description: et.Description})
+					if err != nil {
+						return err
+					}
 				}
 			}
+		} else {
+			return err
 		}
 	}
 	return nil

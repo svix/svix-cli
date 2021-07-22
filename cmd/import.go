@@ -17,6 +17,8 @@ type importCmd struct {
 }
 
 func newImportCmd() *importCmd {
+	forceFlagName := "force"
+
 	cmd := &cobra.Command{
 		Use:   "import event-types",
 		Short: "Import data to your Svix Organization",
@@ -42,6 +44,9 @@ Json Format:
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 			svixClient := getSvixClientOrExit()
 
+			force, err := cmd.Flags().GetBool(forceFlagName)
+			printer.CheckErr(err)
+
 			var reader io.Reader
 			fileName := ""
 			if len(args) > 0 {
@@ -62,15 +67,16 @@ Json Format:
 			fileType := getOrInferFileType(fileName)
 			switch fileType {
 			case "csv":
-				err := inout.ImportEventTypesCsv(svixClient, reader)
+				err := inout.ImportEventTypesCsv(svixClient, reader, force)
 				printer.CheckErr(err)
 			default:
-				err := inout.ImportEventTypesJson(svixClient, reader)
+				err := inout.ImportEventTypesJson(svixClient, reader, force)
 				printer.CheckErr(err)
 			}
 		},
 	}
 	importEventTypes.Flags().AddGoFlag(flag.Lookup(fileTypeFlagName))
+	importEventTypes.Flags().Bool(forceFlagName, false, "Update event type if already exists (defaults to skipping)")
 	cmd.AddCommand(importEventTypes)
 
 	return &importCmd{
