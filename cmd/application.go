@@ -168,6 +168,11 @@ Example Schema:
 				printer.CheckErr(err)
 				app.Uid = &uidFlag
 			}
+			if cmd.Flags().Changed(rateLimitFlagName) {
+				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
+				printer.CheckErr(err)
+				app.RateLimit = &rateLimitFlag
+			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Application.Update(appID, &app)
@@ -178,6 +183,7 @@ Example Schema:
 	}
 	update.Flags().String(nameFlagName, "", "Name of the Application")
 	update.Flags().String(uidFlagName, "", "UID of the application (optional)")
+	update.Flags().Int32(rateLimitFlagName, 0, "Rate Limit of the application (optional)")
 	ac.cmd.AddCommand(update)
 
 	delete := &cobra.Command{
