@@ -46,6 +46,8 @@ func newEndpointCmd() *endpointCmd {
 	urlFlagName := "data-url"
 	versionFlagName := "data-version"
 	filterTypesFlagName := "data-filterTypes"
+	rateLimitFlagName := "data-rate-limit"
+	disabledFlagName := "data-disabled"
 	create := &cobra.Command{
 		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new endpoint",
@@ -98,6 +100,16 @@ Example Schema:
 				printer.CheckErr(err)
 				ep.FilterTypes = &filterTypesFlag
 			}
+			if cmd.Flags().Changed(rateLimitFlagName) {
+				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
+				printer.CheckErr(err)
+				ep.RateLimit = &rateLimitFlag
+			}
+			if cmd.Flags().Changed(disabledFlagName) {
+				disabledFlag, err := cmd.Flags().GetBool(disabledFlagName)
+				printer.CheckErr(err)
+				ep.Disabled = &disabledFlag
+			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Endpoint.Create(appID, &ep)
@@ -109,6 +121,8 @@ Example Schema:
 	create.Flags().String(urlFlagName, "", "")
 	create.Flags().Int32(versionFlagName, 0, "")
 	create.Flags().StringArray(filterTypesFlagName, []string{}, "")
+	create.Flags().Int32(rateLimitFlagName, 0, "Rate Limit of the endpoint (optional)")
+	create.Flags().Bool(disabledFlagName, false, "")
 	ec.cmd.AddCommand(create)
 
 	// get
@@ -184,6 +198,16 @@ Example Schema:
 				printer.CheckErr(err)
 				ep.FilterTypes = &filterTypesFlag
 			}
+			if cmd.Flags().Changed(rateLimitFlagName) {
+				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
+				printer.CheckErr(err)
+				ep.RateLimit = &rateLimitFlag
+			}
+			if cmd.Flags().Changed(disabledFlagName) {
+				disabledFlag, err := cmd.Flags().GetBool(disabledFlagName)
+				printer.CheckErr(err)
+				ep.Disabled = &disabledFlag
+			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Endpoint.Update(appID, endpointID, &ep)
@@ -195,6 +219,8 @@ Example Schema:
 	update.Flags().String(urlFlagName, "", "")
 	update.Flags().Int32(versionFlagName, 0, "")
 	update.Flags().StringArray(filterTypesFlagName, []string{}, "")
+	update.Flags().Int32(rateLimitFlagName, 0, "Rate Limit of the endpoint (optional)")
+	update.Flags().Bool(disabledFlagName, false, "")
 	ec.cmd.AddCommand(update)
 
 	delete := &cobra.Command{
