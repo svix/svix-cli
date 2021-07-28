@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.12.0
+* Update `--color` flag to enum `auto|always|never`
+* Add `authentication logout` command for invalidating dashboard tokens
+* Add `import` and `export` commands for quickly adding event-types
+* Bump svix-libs t0 v0.24.0 (adds rate limit support, and disabled value to endpoints)
+  
 ## Version 0.11.1
 * Fix bug where application update expected the wrong number of arguments
 
