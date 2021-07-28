@@ -43,6 +43,7 @@ func newApplicationCmd() *applicationCmd {
 	// create
 	nameFlagName := "data-name"
 	uidFlagName := "data-uid"
+	rateLimitFlagName := "data-rate-limit"
 	create := &cobra.Command{
 		Use:   "create [JSON_PAYLOAD]",
 		Short: "Create a new application",
@@ -82,6 +83,11 @@ Example Schema:
 				printer.CheckErr(err)
 				app.Uid = &uidFlag
 			}
+			if cmd.Flags().Changed(rateLimitFlagName) {
+				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
+				printer.CheckErr(err)
+				app.RateLimit = &rateLimitFlag
+			}
 
 			// validate args
 			if app.Name == "" {
@@ -97,6 +103,7 @@ Example Schema:
 	}
 	create.Flags().String(nameFlagName, "", "Name of the Application")
 	create.Flags().String(uidFlagName, "", "UID of the application (optional)")
+	create.Flags().Int32(rateLimitFlagName, 0, "Rate Limit of the application (optional)")
 	ac.cmd.AddCommand(create)
 
 	// get

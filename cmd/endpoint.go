@@ -46,6 +46,7 @@ func newEndpointCmd() *endpointCmd {
 	urlFlagName := "data-url"
 	versionFlagName := "data-version"
 	filterTypesFlagName := "data-filterTypes"
+	rateLimitFlagName := "data-rate-limit"
 	create := &cobra.Command{
 		Use:   "create APP_ID [JSON_PAYLOAD]",
 		Short: "Create a new endpoint",
@@ -98,6 +99,11 @@ Example Schema:
 				printer.CheckErr(err)
 				ep.FilterTypes = &filterTypesFlag
 			}
+			if cmd.Flags().Changed(rateLimitFlagName) {
+				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
+				printer.CheckErr(err)
+				ep.RateLimit = &rateLimitFlag
+			}
 
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Endpoint.Create(appID, &ep)
@@ -109,6 +115,7 @@ Example Schema:
 	create.Flags().String(urlFlagName, "", "")
 	create.Flags().Int32(versionFlagName, 0, "")
 	create.Flags().StringArray(filterTypesFlagName, []string{}, "")
+	create.Flags().Int32(rateLimitFlagName, 0, "Rate Limit of the endpoint (optional)")
 	ec.cmd.AddCommand(create)
 
 	// get
