@@ -35,6 +35,7 @@ type Client struct {
 	receiveURLTemplate string
 	dialer             *websocket.Dialer
 	httpClient         *http.Client
+	logging            bool
 
 	conn              *websocket.Conn
 	connResetInterval time.Duration
@@ -51,27 +52,32 @@ type Client struct {
 type ClientOptions struct {
 	DisableSecurity bool
 	RelayDebugUrl   string
+	Logging         bool
 }
 
 func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 	wsProto := "wss"
-	httpProto := "https"
 	apiHost := defaultAPIHost
+	logging := false
 	if opts != nil {
 		if opts.DisableSecurity {
 			wsProto = "ws"
-			httpProto = "http"
 		}
 		if opts.RelayDebugUrl != "" {
 			apiHost = opts.RelayDebugUrl
+		}
+		if opts.Logging {
+			logging = opts.Logging
+			token = fmt.Sprintf("c_%s", token)
 		}
 	}
 
 	return &Client{
 		token:              token,
+		logging:            logging,
 		websocketURL:       fmt.Sprintf("%s://%s/%s/listen/", wsProto, apiHost, apiPrefix),
 		localURL:           localURL,
-		receiveURLTemplate: fmt.Sprintf("%s://%s/%s/receive/%%s/", httpProto, apiHost, apiPrefix),
+		receiveURLTemplate: "https://play.svix.com/in/%s/",
 		dialer: &websocket.Dialer{
 			HandshakeTimeout: 10 * time.Second,
 			Proxy:            http.ProxyFromEnvironment,
@@ -188,7 +194,16 @@ func (c *Client) connect(ctx context.Context) error {
 All requests on this endpoint will be forwarded to your local URL:
 %s
 `, pretty.MakeTerminalLink(url, url), c.localURL)
-
+	if c.logging {
+		viewUrl := fmt.Sprintf("https://play.svix.com/view/%s/", c.token)
+		fmt.Printf(`
+View logs and debug information at
+%s
+To disable logging run "svix listen --no-logging"
+`,
+			pretty.MakeTerminalLink(viewUrl, viewUrl),
+		)
+	}
 	c.wg = &sync.WaitGroup{}
 	c.wg.Add(2)
 

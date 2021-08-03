@@ -17,6 +17,7 @@ type listenCmd struct {
 }
 
 func newListenCmd() *listenCmd {
+	noLoggingFlagName := "no-logging"
 	lc := &listenCmd{}
 	lc.cmd = &cobra.Command{
 		Use:   `listen localURL (ex. http://localhost:8000/webhook/)`,
@@ -51,14 +52,18 @@ to http://localhost:8000/webhook/`,
 				err := config.Write(viper.AllSettings())
 				printer.CheckErr(err)
 			}
+			noLogging, err := cmd.Flags().GetBool(noLoggingFlagName)
+			printer.CheckErr(err)
 
 			client := relay.NewClient(token, url, &relay.ClientOptions{
 				DisableSecurity: viper.GetBool("relay_disable_security"),
 				RelayDebugUrl:   viper.GetString("relay_debug_url"),
+				Logging:         !noLogging,
 			})
 			client.Listen(context.Background())
 			return nil
 		},
 	}
+	lc.cmd.Flags().Bool(noLoggingFlagName, false, "Disables History Logging")
 	return lc
 }
