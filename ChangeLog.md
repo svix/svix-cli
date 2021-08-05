@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.13.0
+* Add play.svix.com support
+
 ## Version 0.12.0
 * Update `--color` flag to enum `auto|always|never`
 * Add `authentication logout` command for invalidating dashboard tokens
