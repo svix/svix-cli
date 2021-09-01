@@ -322,7 +322,7 @@ func (c *Client) makeLocalRequest(url *url.URL, msg IncomingMessageEventData) (*
 	}
 
 	req := &http.Request{
-		Method: http.MethodPost,
+		Method: msg.Method,
 		Header: http.Header{},
 		URL:    url,
 		Body:   io.NopCloser(bytes.NewReader(body)),
