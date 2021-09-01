@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.14.0
+* Add support for non-POST http methods on play
+
 ## Version 0.13.0
 * Add play.svix.com support
 
