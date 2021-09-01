@@ -33,6 +33,7 @@ type IncomingMessageEventData struct {
 	ID      string            `json:"id"`
 	Headers map[string]string `json:"headers"`
 	Body    string            `json:"body"`
+	Method  string            `json:"method"`
 }
 
 type OutgoingMessageStart struct {
