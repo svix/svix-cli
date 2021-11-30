@@ -21,9 +21,10 @@ func newAuthenticationCmd() *authenticationCmd {
 
 	// dashboard
 	dashboard := &cobra.Command{
-		Use:   "dashboard APP_ID",
-		Short: "Get a dashboard URL for the given app",
-		Args:  validators.ExactArgs(1),
+		Use:     "dashboard-access APP_ID",
+		Short:   "Get a dashboard URL for the given app",
+		Args:    validators.ExactArgs(1),
+		Aliases: []string{"dashboard"},
 		Run: func(cmd *cobra.Command, args []string) {
 			appID := args[0]
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
