@@ -33,13 +33,13 @@ func newEndpointCmd() *endpointCmd {
 			appID := args[0]
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.Endpoint.List(appID, getFilterOptions(cmd))
+			l, err := svixClient.Endpoint.List(appID, getEndpointListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
 		},
 	}
-	addFilterFlags(list)
+	addEndpointFilterFlags(list)
 	ec.cmd.AddCommand(list)
 
 	// create
@@ -176,7 +176,7 @@ Example Schema:
 				in, err = utils.ReadPipe()
 				printer.CheckErr(err)
 			}
-			var ep svix.EndpointIn
+			var ep svix.EndpointUpdate
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &ep)
 				printer.CheckErr(err)
@@ -266,4 +266,24 @@ Example Schema:
 	ec.cmd.AddCommand(secret)
 
 	return ec
+}
+
+func addEndpointFilterFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("iterator", "i", "", "anchor id for list call")
+	cmd.Flags().Int32P("limit", "l", 50, "max items per request")
+}
+
+func getEndpointListOptions(cmd *cobra.Command) *svix.EndpointListOptions {
+	limit, _ := cmd.Flags().GetInt32("limit")
+
+	opts := &svix.EndpointListOptions{
+		Limit: &limit,
+	}
+
+	iteratorFlag, _ := cmd.Flags().GetString("iterator")
+	if cmd.Flags().Changed("iterator") {
+		opts.Iterator = &iteratorFlag
+	}
+
+	return opts
 }

@@ -74,7 +74,7 @@ func GetAllEventTypes(sc *svix.Svix) ([]svix.EventTypeOut, error) {
 	done := false
 	var iterator *string
 	for !done {
-		out, err := sc.EventType.List(&svix.FetchOptions{
+		out, err := sc.EventType.List(&svix.EventTypeListOptions{
 			Iterator: iterator,
 		})
 		if err != nil {

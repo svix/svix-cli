@@ -30,13 +30,13 @@ func newEventTypeCmd() *eventTypeCmd {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.EventType.List(getFilterOptions(cmd))
+			l, err := svixClient.EventType.List(getEventListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
 		},
 	}
-	addFilterFlags(list)
+	addEventFilterFlags(list)
 	etc.cmd.AddCommand(list)
 
 	// create
@@ -104,7 +104,7 @@ Example Schema:
   "description": "string"
 }
 	`,
-		Args: validators.RangeArgs(0, 1),
+		Args: validators.RangeArgs(1, 2),
 		Run: func(cmd *cobra.Command, args []string) {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
@@ -164,4 +164,36 @@ Example Schema:
 	etc.cmd.AddCommand(delete)
 
 	return etc
+}
+
+func addEventFilterFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("iterator", "i", "", "anchor id for list call")
+	cmd.Flags().Int32P("limit", "l", 50, "max items per request")
+	cmd.Flags().Bool("with-content", false, "includes content like schemas")
+	cmd.Flags().Bool("include-archived", false, "include archived event types")
+}
+
+func getEventListOptions(cmd *cobra.Command) *svix.EventTypeListOptions {
+	limit, _ := cmd.Flags().GetInt32("limit")
+
+	opts := &svix.EventTypeListOptions{
+		Limit: &limit,
+	}
+
+	iteratorFlag, _ := cmd.Flags().GetString("iterator")
+	if cmd.Flags().Changed("iterator") {
+		opts.Iterator = &iteratorFlag
+	}
+
+	withContentFlag, _ := cmd.Flags().GetBool("with-content")
+	if cmd.Flags().Changed("with-content") {
+		opts.WithContent = &withContentFlag
+	}
+
+	includeArchivedFlag, _ := cmd.Flags().GetBool("include-archived")
+	if cmd.Flags().Changed("include-archived") {
+		opts.IncludeArchived = &includeArchivedFlag
+	}
+
+	return opts
 }

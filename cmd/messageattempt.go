@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"fmt"
+
+	"github.com/araddon/dateparse"
 	"github.com/spf13/cobra"
 	"github.com/svix/svix-cli/pretty"
 	"github.com/svix/svix-cli/validators"
+	svix "github.com/svix/svix-libs/go"
 )
 
 type messageAttemptCmd struct {
@@ -29,7 +33,10 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			msgID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.MessageAttempt.List(appID, msgID, getFilterOptionsMessageAttempt(cmd))
+			opts, err := getMessageAttemptListOptions(cmd)
+			fmt.Println(opts.Before)
+			printer.CheckErr(err)
+			l, err := svixClient.MessageAttempt.List(appID, msgID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -50,21 +57,24 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			msgID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(appID, msgID, getFilterOptions(cmd))
+			opts, err := getMessageAttemptListOptions(cmd)
+			printer.CheckErr(err)
+			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(appID, msgID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
 		},
 	}
-	addFilterFlags(listDestinations)
+	addMessageAttemptFilterFlags(listDestinations)
 	mac.cmd.AddCommand(listDestinations)
 
 	// list by endpoint
 	// List Attempts For Endpoint
 	listEndpoint := &cobra.Command{
-		Use:   "list-endpoint APP_ID MSG_ID ENDPOINT_ID",
-		Short: "List attempts for endpoint",
-		Args:  validators.ExactArgs(3),
+		Use:     "list-attempts-for-endpoint APP_ID MSG_ID ENDPOINT_ID",
+		Short:   "List attempts of the message filted by endpoint",
+		Args:    validators.ExactArgs(3),
+		Aliases: []string{"list-endpoint"},
 		Run: func(cmd *cobra.Command, args []string) {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
@@ -73,7 +83,10 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			endpointID := args[2]
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(appID, msgID, endpointID, *getFilterOptionsMessageAttempt(cmd))
+
+			opts, err := getMessageAttemptListOptions(cmd)
+			printer.CheckErr(err)
+			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(appID, msgID, endpointID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -81,6 +94,31 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 	}
 	addMessageAttemptFilterFlags(listEndpoint)
 	mac.cmd.AddCommand(listEndpoint)
+
+	// list all attempts for endpoint
+	// List Attempts For Endpoint
+	listAttemptedMessages := &cobra.Command{
+		Use:   "list-attempted-messages APP_ID ENDPOINT_ID",
+		Short: "List all attempts for a given endpoint",
+		Args:  validators.ExactArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
+			appID := args[0]
+			endpointID := args[1]
+
+			svixClient := getSvixClientOrExit()
+
+			opts, err := getMessageAttemptListOptions(cmd)
+			printer.CheckErr(err)
+			l, err := svixClient.MessageAttempt.ListAttemptedMessages(appID, endpointID, opts)
+			printer.CheckErr(err)
+
+			printer.Print(l)
+		},
+	}
+	addMessageAttemptFilterFlags(listAttemptedMessages)
+	mac.cmd.AddCommand(listAttemptedMessages)
 
 	// get
 	get := &cobra.Command{
@@ -125,4 +163,47 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 	mac.cmd.AddCommand(resend)
 
 	return mac
+}
+
+func addMessageAttemptFilterFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("iterator", "i", "", "anchor id for list call")
+	cmd.Flags().Int32P("limit", "l", 50, "max items per request")
+	cmd.Flags().Int32P("status", "s", 0, "message status")
+	cmd.Flags().StringArray("event-types", []string{}, "event types")
+	cmd.Flags().StringP("before", "b", "", "before")
+}
+
+func getMessageAttemptListOptions(cmd *cobra.Command) (*svix.MessageAttemptListOptions, error) {
+	limit, _ := cmd.Flags().GetInt32("limit")
+
+	opts := &svix.MessageAttemptListOptions{
+		Limit: &limit,
+	}
+
+	iteratorFlag, _ := cmd.Flags().GetString("iterator")
+	if cmd.Flags().Changed("iterator") {
+		opts.Iterator = &iteratorFlag
+	}
+
+	statusFlag, _ := cmd.Flags().GetInt32("status")
+	if cmd.Flags().Changed("status") {
+		status := svix.MessageStatus(statusFlag)
+		opts.Status = &status
+	}
+
+	eventTypesFlag, _ := cmd.Flags().GetStringArray("event-types")
+	if cmd.Flags().Changed("event-types") {
+		opts.EventTypes = &eventTypesFlag
+	}
+
+	beforeFlag, _ := cmd.Flags().GetString("before")
+	if cmd.Flags().Changed("before") {
+		t, err := dateparse.ParseAny(beforeFlag)
+		if err != nil {
+			return nil, fmt.Errorf("invalid before flag: %s", err)
+		}
+		opts.Before = &t
+	}
+
+	return opts, nil
 }
