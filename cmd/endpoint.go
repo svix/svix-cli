@@ -33,13 +33,13 @@ func newEndpointCmd() *endpointCmd {
 			appID := args[0]
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.Endpoint.List(appID, getFilterOptions(cmd))
+			l, err := svixClient.Endpoint.List(appID, getEndpointListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
 		},
 	}
-	addFilterFlags(list)
+	addEndpointFilterFlags(list)
 	ec.cmd.AddCommand(list)
 
 	// create
@@ -176,7 +176,7 @@ Example Schema:
 				in, err = utils.ReadPipe()
 				printer.CheckErr(err)
 			}
-			var ep svix.EndpointIn
+			var ep svix.EndpointUpdate
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &ep)
 				printer.CheckErr(err)
@@ -265,5 +265,109 @@ Example Schema:
 	}
 	ec.cmd.AddCommand(secret)
 
+	getHeaders := &cobra.Command{
+		Use:   "get-headers APP_ID ENDPOINT_ID",
+		Short: "get custom headers for endpoint by id",
+		Args:  validators.ExactArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
+			// parse args
+			appID := args[0]
+			endpointID := args[1]
+
+			svixClient := getSvixClientOrExit()
+			out, err := svixClient.Endpoint.GetHeaders(appID, endpointID)
+			printer.CheckErr(err)
+
+			printer.Print(out)
+		},
+	}
+	ec.cmd.AddCommand(getHeaders)
+
+	updateHeaders := &cobra.Command{
+		Use:   "update-headers APP_ID ENDPOINT_ID [JSON_PAYLOAD]",
+		Short: "update custom headers for endpoint by id",
+		Args:  validators.RangeArgs(2, 3),
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
+			// parse positional args
+			appID := args[0]
+			endpointID := args[1]
+
+			var in []byte
+			if len(args) > 2 {
+				in = []byte(args[2])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				printer.CheckErr(err)
+			}
+			var headersIn svix.EndpointHeadersIn
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &headersIn)
+				printer.CheckErr(err)
+			}
+
+			svixClient := getSvixClientOrExit()
+			err := svixClient.Endpoint.UpdateHeaders(appID, endpointID, &headersIn)
+			printer.CheckErr(err)
+		},
+	}
+	ec.cmd.AddCommand(updateHeaders)
+
+	patchHeaders := &cobra.Command{
+		Use:   "patch-headers APP_ID ENDPOINT_ID [JSON_PAYLOAD]",
+		Short: "patch custom headers for endpoint by id",
+		Args:  validators.RangeArgs(2, 3),
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
+			// parse positional args
+			appID := args[0]
+			endpointID := args[1]
+
+			var in []byte
+			if len(args) > 2 {
+				in = []byte(args[2])
+			} else {
+				var err error
+				in, err = utils.ReadPipe()
+				printer.CheckErr(err)
+			}
+			var headersIn svix.EndpointHeadersIn
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &headersIn)
+				printer.CheckErr(err)
+			}
+
+			svixClient := getSvixClientOrExit()
+			err := svixClient.Endpoint.PatchHeaders(appID, endpointID, &headersIn)
+			printer.CheckErr(err)
+		},
+	}
+	ec.cmd.AddCommand(patchHeaders)
+
 	return ec
+}
+
+func addEndpointFilterFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("iterator", "i", "", "anchor id for list call")
+	cmd.Flags().Int32P("limit", "l", 50, "max items per request")
+}
+
+func getEndpointListOptions(cmd *cobra.Command) *svix.EndpointListOptions {
+	limit, _ := cmd.Flags().GetInt32("limit")
+
+	opts := &svix.EndpointListOptions{
+		Limit: &limit,
+	}
+
+	iteratorFlag, _ := cmd.Flags().GetString("iterator")
+	if cmd.Flags().Changed("iterator") {
+		opts.Iterator = &iteratorFlag
+	}
+
+	return opts
 }

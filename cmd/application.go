@@ -31,13 +31,13 @@ func newApplicationCmd() *applicationCmd {
 		Run: func(cmd *cobra.Command, args []string) {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.Application.List(getFilterOptions(cmd))
+			l, err := svixClient.Application.List(getApplicationListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
 		},
 	}
-	addFilterFlags(list)
+	addApplicationFilterFlags(list)
 	ac.cmd.AddCommand(list)
 
 	// create
@@ -209,4 +209,24 @@ Example Schema:
 	ac.cmd.AddCommand(delete)
 
 	return ac
+}
+
+func addApplicationFilterFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("iterator", "i", "", "anchor id for list call")
+	cmd.Flags().Int32P("limit", "l", 50, "max items per request")
+}
+
+func getApplicationListOptions(cmd *cobra.Command) *svix.ApplicationListOptions {
+	limit, _ := cmd.Flags().GetInt32("limit")
+
+	opts := &svix.ApplicationListOptions{
+		Limit: &limit,
+	}
+
+	iteratorFlag, _ := cmd.Flags().GetString("iterator")
+	if cmd.Flags().Changed("iterator") {
+		opts.Iterator = &iteratorFlag
+	}
+
+	return opts
 }

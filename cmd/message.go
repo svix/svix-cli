@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/araddon/dateparse"
 	"github.com/spf13/cobra"
 	"github.com/svix/svix-cli/pretty"
 	"github.com/svix/svix-cli/utils"
@@ -33,13 +34,16 @@ func newMessageCmd() *messageCmd {
 			appID := args[0]
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.Message.List(appID, getFilterOptions(cmd))
+
+			opts, err := getMessageFilterFlags(cmd)
+			printer.CheckErr(err)
+			l, err := svixClient.Message.List(appID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
 		},
 	}
-	addFilterFlags(list)
+	addMessageFilterFlags(list)
 	mc.cmd.AddCommand(list)
 
 	// create
@@ -136,4 +140,40 @@ Example Schema:
 	mc.cmd.AddCommand(get)
 
 	return mc
+}
+
+func addMessageFilterFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("iterator", "i", "", "anchor id for list call")
+	cmd.Flags().Int32P("limit", "l", 50, "max items per request")
+	cmd.Flags().StringArray("event-types", []string{}, "event types")
+	cmd.Flags().StringP("before", "b", "", "before")
+}
+
+func getMessageFilterFlags(cmd *cobra.Command) (*svix.MessageListOptions, error) {
+	limit, _ := cmd.Flags().GetInt32("limit")
+
+	opts := &svix.MessageListOptions{
+		Limit: &limit,
+	}
+
+	iteratorFlag, _ := cmd.Flags().GetString("iterator")
+	if cmd.Flags().Changed("iterator") {
+		opts.Iterator = &iteratorFlag
+	}
+
+	eventTypesFlag, _ := cmd.Flags().GetStringArray("event-types")
+	if cmd.Flags().Changed("event-types") {
+		opts.EventTypes = &eventTypesFlag
+	}
+
+	beforeFlag, _ := cmd.Flags().GetString("before")
+	if cmd.Flags().Changed("before") {
+		t, err := dateparse.ParseAny(beforeFlag)
+		if err != nil {
+			return nil, fmt.Errorf("invalid before flag: %s", err)
+		}
+		opts.Before = &t
+	}
+
+	return opts, nil
 }
