@@ -38,6 +38,10 @@ func newVerifyCmd() *verifyCmd {
 				printer.CheckErr(err)
 			}
 
+			if len(payload) <= 0 {
+				printer.CheckErr("No json payload provided!")
+			}
+
 			// ensure all flags are set
 			var err error
 			if !cmd.Flags().Changed(secretFlagName) {
@@ -67,15 +71,17 @@ func newVerifyCmd() *verifyCmd {
 			headers.Set("svix-signature", signature)
 
 			wh, err := svix.NewWebhook(secret)
-			printer.CheckErr(err)
+			if err != nil {
+				printer.CheckErr(fmt.Errorf("Failed to parse signing secret: %s", err.Error()))
+			}
 			err = wh.Verify(payload, headers)
 			printer.CheckErr(err)
 			fmt.Println("Message Signature Is Valid!")
 		},
 	}
-	ac.cmd.Flags().String(secretFlagName, "", "")
-	ac.cmd.Flags().String(msgIdFlagName, "", "")
-	ac.cmd.Flags().String(timestampFlagName, "", "")
-	ac.cmd.Flags().String(signatureFlagName, "", "")
+	ac.cmd.Flags().String(secretFlagName, "", "signing secret of the endpoint (required)")
+	ac.cmd.Flags().String(msgIdFlagName, "", "msg id header (required)")
+	ac.cmd.Flags().String(timestampFlagName, "", "timestamp header (required)")
+	ac.cmd.Flags().String(signatureFlagName, "", "signature header (required)")
 	return ac
 }
