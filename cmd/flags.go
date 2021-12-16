@@ -3,6 +3,7 @@ package cmd
 import (
 	"flag"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -42,10 +43,12 @@ func getPrinterOptions(cmd *cobra.Command) *pretty.PrinterOptions {
 	case "never":
 		color = false
 	default:
-		isTTY, _, err := utils.IsTTY(os.Stdout)
-		if err == nil {
-			// just defaults to false if an error occurs
-			color = isTTY
+		if runtime.GOOS != "windows" {
+			isTTY, _, err := utils.IsTTY(os.Stdout)
+			if err == nil {
+				// just defaults to false if an error occurs
+				color = isTTY
+			}
 		}
 	}
 
