@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/svix/svix-cli/pretty"
@@ -75,7 +76,14 @@ func newVerifyCmd() *verifyCmd {
 				printer.CheckErr(fmt.Errorf("Failed to parse signing secret: %s", err.Error()))
 			}
 			err = wh.Verify(payload, headers)
-			printer.CheckErr(err)
+			if err != nil {
+				errNoTimestamp := wh.VerifyIgnoringTimestamp(payload, headers)
+				if errNoTimestamp == nil {
+					fmt.Println("Signature is valid but failed timestamp verification.")
+					os.Exit(1)
+				}
+				printer.CheckErr(err)
+			}
 			fmt.Println("Message Signature Is Valid!")
 		},
 	}
