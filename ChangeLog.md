@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.15.0
+* Make dashboard access command name uniform with lib names
+* Verify: improve error output & flag descriptions
+* Bump cobra to 1.3.0, replace completion command
+* Pretty: disable color by default on windows
+* Bump svix-libs to 0.41.1 & support new features
+* Verify: Improve error message for invalid timestamp
+
 ## Version 0.14.0
 * Add support for non-POST http methods on play
 
