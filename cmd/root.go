@@ -93,14 +93,20 @@ func getSvixClientOrExit() *svix.Svix {
 
 func getSvixClientOptsOrExit() *svix.SvixOptions {
 	opts := &svix.SvixOptions{}
-	rawDebugURL := viper.GetString("debug_url")
-	if rawDebugURL != "" {
-		debugURL, err := url.Parse(rawDebugURL)
+	rawServerUrl := viper.GetString("server_url")
+
+	// fallback to debug_url for backwards compatibility
+	if rawServerUrl == "" {
+		rawServerUrl = viper.GetString("debug_url")
+	}
+
+	if rawServerUrl != "" {
+		serverUrl, err := url.Parse(rawServerUrl)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Invalid debug_url set: \"%s\"\n", rawDebugURL)
+			fmt.Fprintf(os.Stderr, "Invalid server_url set: \"%s\"\n", rawServerUrl)
 			os.Exit(1)
 		}
-		opts.DebugURL = debugURL
+		opts.ServerUrl = serverUrl
 	}
 	return opts
 }
