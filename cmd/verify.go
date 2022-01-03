@@ -82,7 +82,7 @@ func newVerifyCmd() *verifyCmd {
 					fmt.Println("Signature is valid but failed timestamp verification.")
 					os.Exit(1)
 				}
-				printer.CheckErr(err)
+				printer.CheckErr(errNoTimestamp)
 			}
 			fmt.Println("Message Signature Is Valid!")
 		},
