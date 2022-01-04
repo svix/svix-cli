@@ -56,10 +56,10 @@ Json Format:
 				defer file.Close()
 				reader = file
 			} else {
-				isPipe, err := utils.IsPipeWithData(os.Stdin)
+				isReadable, err := utils.IsStdinReadable()
 				printer.CheckErr(err)
-				if !isPipe {
-					printer.CheckErr(fmt.Errorf("no data on pipe"))
+				if !isReadable {
+					printer.CheckErr(fmt.Errorf("stdin not readable"))
 				}
 				reader = os.Stdin
 			}

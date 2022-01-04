@@ -35,7 +35,7 @@ func newVerifyCmd() *verifyCmd {
 				payload = []byte(args[0])
 			} else {
 				var err error
-				payload, err = utils.ReadPipe()
+				payload, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
 

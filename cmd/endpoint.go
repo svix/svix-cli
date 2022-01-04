@@ -75,7 +75,7 @@ Example Schema:
 				in = []byte(args[1])
 			} else {
 				var err error
-				in, err = utils.ReadPipe()
+				in, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
 			var ep svix.EndpointIn
@@ -173,7 +173,7 @@ Example Schema:
 				in = []byte(args[2])
 			} else {
 				var err error
-				in, err = utils.ReadPipe()
+				in, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
 			var ep svix.EndpointUpdate
@@ -301,7 +301,7 @@ Example Schema:
 				in = []byte(args[2])
 			} else {
 				var err error
-				in, err = utils.ReadPipe()
+				in, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
 			var headersIn svix.EndpointHeadersIn
@@ -333,7 +333,7 @@ Example Schema:
 				in = []byte(args[2])
 			} else {
 				var err error
-				in, err = utils.ReadPipe()
+				in, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
 			var headersIn svix.EndpointHeadersIn
