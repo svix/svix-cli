@@ -6,20 +6,20 @@ import (
 	"strings"
 )
 
-func IsPipeWithData(f *os.File) (bool, error) {
-	isTTY, hasData, err := IsTTY(f)
+func IsStdinReadable() (bool, error) {
+	info, err := os.Stdin.Stat()
 	if err != nil {
 		return false, err
 	}
-	return !isTTY && hasData, nil
+	return (info.Mode() & os.ModeCharDevice) == 0, nil
 }
 
-func ReadPipe() ([]byte, error) {
-	isPipe, err := IsPipeWithData(os.Stdin)
+func ReadStdin() ([]byte, error) {
+	isReadable, err := IsStdinReadable()
 	if err != nil {
 		return nil, err
 	}
-	if isPipe {
+	if isReadable {
 		in, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			return nil, err

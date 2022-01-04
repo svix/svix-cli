@@ -63,7 +63,7 @@ Example Schema:
 				in = []byte(args[0])
 			} else {
 				var err error
-				in, err = utils.ReadPipe()
+				in, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
 			var app svix.ApplicationIn
@@ -148,7 +148,7 @@ Example Schema:
 				in = []byte(args[1])
 			} else {
 				var err error
-				in, err = utils.ReadPipe()
+				in, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
 			var app svix.ApplicationIn

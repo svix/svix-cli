@@ -76,7 +76,7 @@ Example Schema:
 				in = []byte(args[1])
 			} else {
 				var err error
-				in, err = utils.ReadPipe()
+				in, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
 			var msg svix.MessageIn
