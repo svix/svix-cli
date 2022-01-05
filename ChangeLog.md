@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.15.1
+* Verify: improved error message for invalid signatures
+* Improved detection of stdin data when piping values to commands
+
 ## Version 0.15.0
 * Make dashboard access command name uniform with lib names
 * Verify: improve error output & flag descriptions
