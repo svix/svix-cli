@@ -34,8 +34,8 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 
 			svixClient := getSvixClientOrExit()
 			opts, err := getMessageAttemptListOptions(cmd)
-			fmt.Println(opts.Before)
 			printer.CheckErr(err)
+
 			l, err := svixClient.MessageAttempt.List(appID, msgID, opts)
 			printer.CheckErr(err)
 
