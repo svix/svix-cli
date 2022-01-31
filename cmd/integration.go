@@ -1,8 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/svix/svix-cli/pretty"
+	"github.com/svix/svix-cli/utils"
 	"github.com/svix/svix-cli/validators"
 	svix "github.com/svix/svix-libs/go"
 )
@@ -13,8 +17,8 @@ type integrationCmd struct {
 
 func newIntegrationCmd() *integrationCmd {
 
-	ac := &integrationCmd{}
-	ac.cmd = &cobra.Command{
+	ic := &integrationCmd{}
+	ic.cmd = &cobra.Command{
 		Use:   "integration",
 		Short: "List, create & modify integrations",
 	}
@@ -37,9 +41,64 @@ func newIntegrationCmd() *integrationCmd {
 		},
 	}
 	addIntegrationFilterFlags(list)
-	ac.cmd.AddCommand(list)
+	ic.cmd.AddCommand(list)
 
-	return ac
+	// create
+	nameFlagName := "data-name"
+	create := &cobra.Command{
+		Use:   "create APP_ID [JSON_PAYLOAD]",
+		Short: "Create a new integration",
+		Long: `Create a new integration
+
+Example Schema:
+{
+    "name": "Example Integration"
+}
+`,
+		Args: validators.RangeArgs(1, 2),
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
+			// parse positional args
+			appID := args[0]
+
+			var in []byte
+			if len(args) > 1 {
+				in = []byte(args[1])
+			} else {
+				var err error
+				in, err = utils.ReadStdin()
+				printer.CheckErr(err)
+			}
+			var integration svix.IntegrationIn
+			if len(in) > 0 {
+				err := json.Unmarshal(in, &integration)
+				printer.CheckErr(err)
+			}
+
+			// get flags
+			if cmd.Flags().Changed(nameFlagName) {
+				nameFlag, err := cmd.Flags().GetString(nameFlagName)
+				printer.CheckErr(err)
+				integration.Name = nameFlag
+			}
+
+			// validate args
+			if integration.Name == "" {
+				printer.CheckErr(fmt.Errorf("name required"))
+			}
+
+			svixClient := getSvixClientOrExit()
+			out, err := svixClient.Integration.Create(appID, &integration)
+			printer.CheckErr(err)
+
+			printer.Print(out)
+		},
+	}
+	create.Flags().String(nameFlagName, "", "")
+	ic.cmd.AddCommand(create)
+
+	return ic
 }
 
 func addIntegrationFilterFlags(cmd *cobra.Command) {
