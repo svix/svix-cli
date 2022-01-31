@@ -25,7 +25,7 @@ func newIntegrationCmd() *integrationCmd {
 
 	// list
 	list := &cobra.Command{
-		Use:   "list",
+		Use:   "list APP_ID",
 		Short: "List integrations by app id",
 		Args:  validators.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -100,7 +100,7 @@ Example Schema:
 
 	// get
 	get := &cobra.Command{
-		Use:   "get",
+		Use:   "get APP_ID INTEGRATION_ID",
 		Short: "Get an integration by id",
 		Args:  validators.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -120,7 +120,7 @@ Example Schema:
 
 	// update
 	update := &cobra.Command{
-		Use:   "update APP_ID INGETRATION_ID [JSON_PAYLOAD]",
+		Use:   "update APP_ID INTEGRATION_ID [JSON_PAYLOAD]",
 		Short: "update an integration by id",
 		Long: `update an integration by id
 
@@ -175,7 +175,7 @@ Example Schema:
 
 	// delete
 	delete := &cobra.Command{
-		Use:   "delete",
+		Use:   "delete APP_ID INTEGRATION_ID",
 		Short: "Delete an integration by id",
 		Args:  validators.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -193,7 +193,7 @@ Example Schema:
 
 	// get-key
 	getKey := &cobra.Command{
-		Use:   "get-key",
+		Use:   "get-key APP_ID INTEGRATION_ID",
 		Short: "Get an integration's key by id",
 		Args:  validators.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -213,7 +213,7 @@ Example Schema:
 
 	// rotate-key
 	rotateKey := &cobra.Command{
-		Use:   "rotate-key",
+		Use:   "rotate-key APP_ID INTEGRATION_ID",
 		Short: "Rotate an integration's key by id",
 		Args:  validators.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
