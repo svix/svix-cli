@@ -191,6 +191,26 @@ Example Schema:
 	}
 	ic.cmd.AddCommand(delete)
 
+	// get-key
+	getKey := &cobra.Command{
+		Use:   "get-key",
+		Short: "Get an integration's key by id",
+		Args:  validators.ExactArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+			svixClient := getSvixClientOrExit()
+
+			appID := args[0]
+			integrationID := args[1]
+
+			l, err := svixClient.Integration.GetKey(appID, integrationID)
+			printer.CheckErr(err)
+
+			printer.Print(l)
+		},
+	}
+	ic.cmd.AddCommand(getKey)
+
 	return ic
 }
 
