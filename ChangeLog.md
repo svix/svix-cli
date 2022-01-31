@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.16.0
+* Add bindings for integrations API
+
 ## Version 0.15.1
 * Verify: improved error message for invalid signatures
 * Improved detection of stdin data when piping values to commands
