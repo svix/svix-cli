@@ -116,7 +116,6 @@ Example Schema:
 			printer.Print(l)
 		},
 	}
-	addIntegrationFilterFlags(get)
 	ic.cmd.AddCommand(get)
 
 	// update
@@ -173,6 +172,24 @@ Example Schema:
 	}
 	update.Flags().String(nameFlagName, "", "")
 	ic.cmd.AddCommand(update)
+
+	// delete
+	delete := &cobra.Command{
+		Use:   "delete",
+		Short: "Delete an integration by id",
+		Args:  validators.ExactArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+			svixClient := getSvixClientOrExit()
+
+			appID := args[0]
+			integrationID := args[1]
+
+			err := svixClient.Integration.Delete(appID, integrationID)
+			printer.CheckErr(err)
+		},
+	}
+	ic.cmd.AddCommand(delete)
 
 	return ic
 }
