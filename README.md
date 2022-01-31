@@ -134,6 +134,7 @@ The Svix CLI supports the following commands:
 | message-attempt | List, lookup & resend message attempts                     |
 | verify          | Verify the signature of a webhook message                  |
 | listen          | Forward webhook requests a local url                       |
+| integration     | List, create & modify integrations                         |
 | import          | Import data from a file to your Svix Organization          |
 | export          | Export data from your Svix Organization to a file          |
 | open            | Quickly open Svix pages in your browser                    |
