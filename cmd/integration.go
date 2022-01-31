@@ -211,6 +211,26 @@ Example Schema:
 	}
 	ic.cmd.AddCommand(getKey)
 
+	// rotate-key
+	rotateKey := &cobra.Command{
+		Use:   "rotate-key",
+		Short: "Rotate an integration's key by id",
+		Args:  validators.ExactArgs(2),
+		Run: func(cmd *cobra.Command, args []string) {
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+			svixClient := getSvixClientOrExit()
+
+			appID := args[0]
+			integrationID := args[1]
+
+			l, err := svixClient.Integration.RotateKey(appID, integrationID)
+			printer.CheckErr(err)
+
+			printer.Print(l)
+		},
+	}
+	ic.cmd.AddCommand(rotateKey)
+
 	return ic
 }
 
