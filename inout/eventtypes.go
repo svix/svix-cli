@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	svix "github.com/svix/svix-libs/go"
+	svix "github.com/svix/svix-webhooks/go"
 )
 
 func ImportEventTypesJson(sc *svix.Svix, reader io.Reader, update bool) error {

@@ -13,7 +13,7 @@ import (
 	"github.com/svix/svix-cli/config"
 	"github.com/svix/svix-cli/flags"
 	"github.com/svix/svix-cli/version"
-	svix "github.com/svix/svix-libs/go"
+	svix "github.com/svix/svix-webhooks/go"
 )
 
 // rootCmd represents the base command when called without any subcommands
