@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	svix "github.com/svix/svix-libs/go"
+	svix "github.com/svix/svix-webhooks/go"
 	prettyJson "github.com/tidwall/pretty"
 )
 

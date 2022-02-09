@@ -12,6 +12,6 @@ require (
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.0
-	github.com/svix/svix-libs v0.44.0
+	github.com/svix/svix-webhooks v0.46.0
 	github.com/tidwall/pretty v1.1.1
 )

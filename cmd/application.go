@@ -8,7 +8,7 @@ import (
 	"github.com/svix/svix-cli/pretty"
 	"github.com/svix/svix-cli/utils"
 	"github.com/svix/svix-cli/validators"
-	svix "github.com/svix/svix-libs/go"
+	svix "github.com/svix/svix-webhooks/go"
 )
 
 type applicationCmd struct {

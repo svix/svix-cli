@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/svix/svix-cli/pretty"
 	"github.com/svix/svix-cli/validators"
-	svix "github.com/svix/svix-libs/go"
+	svix "github.com/svix/svix-webhooks/go"
 )
 
 type messageAttemptCmd struct {
