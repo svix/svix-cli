@@ -16,6 +16,8 @@ import (
 	svix "github.com/svix/svix-webhooks/go"
 )
 
+var defaultApiUrl = "https://api.svix.com"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:     "svix",
