@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.17.0
+* Login: Support setting API url
+* Bump svix-libs to 0.52.0 & support new features
+
 ## Version 0.16.0
 * Add bindings for integrations API
 
