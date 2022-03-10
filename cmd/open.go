@@ -13,7 +13,7 @@ import (
 
 var openableURLs = map[string]string{
 	"docs": "https://docs.svix.com/",
-	"api":  "https://api.svix.com/docs",
+	"api":  defaultApiUrl,
 }
 
 type openCmd struct {
