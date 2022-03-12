@@ -360,6 +360,8 @@ github.com/subosito/gotenv v1.2.0 h1:Slr1R9HxAlEKefgq5jn9U+DnETlIUa6HfgEzj0g5d7s
 github.com/subosito/gotenv v1.2.0/go.mod h1:N0PQaV/YGNqwC0u51sEeR/aUtSLEXKX9iv69rRypqCw=
 github.com/svix/svix-webhooks v0.46.0 h1:nmp8PDRp2j7GPzVlnOQX2AxVk2+CS5T1aXKKyCjgbJo=
 github.com/svix/svix-webhooks v0.46.0/go.mod h1:vWwH7D6zMhF9pCLfgLlogcXGDmnGqIJeIT9AXorZTAQ=
+github.com/svix/svix-webhooks v0.52.0 h1:tBDDYSRCSlx0sGY4ciJBWwoKQ9sp8S1+EsYIy6ZGktg=
+github.com/svix/svix-webhooks v0.52.0/go.mod h1:vWwH7D6zMhF9pCLfgLlogcXGDmnGqIJeIT9AXorZTAQ=
 github.com/tidwall/pretty v1.1.1 h1:nt6/Ot5LtZnJCWwEFlelOixPo0xhPFsuZlKyOL3Xfnc=
 github.com/tidwall/pretty v1.1.1/go.mod h1:ITEVvHYasfjBbM0u2Pg8T2nJnzm8xPwvNhhsoaGGjNU=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
