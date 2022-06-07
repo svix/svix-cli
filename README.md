@@ -66,7 +66,7 @@ You can also put the binaries anywhere in your `PATH` so you can run the command
 Installing the Svix CLI provides access to the `svix` command.
 
 ```sh
-sivx [command]
+svix [command]
 
 # Run `svix help` for information about the available commands
 svix help
