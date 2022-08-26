@@ -130,11 +130,11 @@ func (c *Client) Listen(ctx context.Context) {
 			close(c.stopRead)
 			close(c.stopWrite)
 
+			c.wg.Wait()
+
 			if c.conn != nil {
 				c.conn.Close()
 			}
-
-			c.wg.Wait()
 		}
 	}
 }
