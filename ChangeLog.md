@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.17.1
+* Fix bug in Svix Play causing reconnection issues
+
 ## Version 0.17.0
 * Login: Support setting API url
 * Bump svix-libs to 0.52.0 & support new features
