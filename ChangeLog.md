@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.17.2
+* CI: fix build on Windows
+
 ## Version 0.17.1
 * Fix bug in Svix Play causing reconnection issues
 
