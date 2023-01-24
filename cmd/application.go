@@ -81,12 +81,12 @@ Example Schema:
 			if cmd.Flags().Changed(uidFlagName) {
 				uidFlag, err := cmd.Flags().GetString(uidFlagName)
 				printer.CheckErr(err)
-				app.Uid = &uidFlag
+				app.Uid.Set(&uidFlag)
 			}
 			if cmd.Flags().Changed(rateLimitFlagName) {
 				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
 				printer.CheckErr(err)
-				app.RateLimit = &rateLimitFlag
+				app.RateLimit.Set(&rateLimitFlag)
 			}
 
 			// validate args
@@ -166,12 +166,12 @@ Example Schema:
 			if cmd.Flags().Changed(uidFlagName) {
 				uidFlag, err := cmd.Flags().GetString(uidFlagName)
 				printer.CheckErr(err)
-				app.Uid = &uidFlag
+				app.Uid.Set(&uidFlag)
 			}
 			if cmd.Flags().Changed(rateLimitFlagName) {
 				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
 				printer.CheckErr(err)
-				app.RateLimit = &rateLimitFlag
+				app.RateLimit.Set(&rateLimitFlag)
 			}
 
 			svixClient := getSvixClientOrExit()

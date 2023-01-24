@@ -94,7 +94,7 @@ Example Schema:
 			if cmd.Flags().Changed(eventIdFlagName) {
 				eventIdFlag, err := cmd.Flags().GetString(eventIdFlagName)
 				printer.CheckErr(err)
-				msg.EventId = &eventIdFlag
+				msg.EventId.Set(&eventIdFlag)
 			}
 			if cmd.Flags().Changed(payloadFlagName) {
 				payloadFlag, err := cmd.Flags().GetString(payloadFlagName)
