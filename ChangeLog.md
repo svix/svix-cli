@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.18.1
+* Snapcraft: fix releasing to snapcraft
+
 ## Version 0.18.0
 * Update Svix libs (expose new properties)
 * Add new app-portal endpoint and deprecate dashboard-access
