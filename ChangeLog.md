@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.18.0
+* Update Svix libs (expose new properties)
+* Add new app-portal endpoint and deprecate dashboard-access
+
 ## Version 0.17.2
 * CI: fix build on Windows
 
