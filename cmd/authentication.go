@@ -1,8 +1,11 @@
 package cmd
 
 import (
+	"encoding/json"
+
 	"github.com/spf13/cobra"
 	"github.com/svix/svix-cli/pretty"
+	"github.com/svix/svix-cli/utils"
 	"github.com/svix/svix-cli/validators"
 	svix "github.com/svix/svix-webhooks/go"
 )
@@ -19,12 +22,13 @@ func newAuthenticationCmd() *authenticationCmd {
 		Aliases: []string{"auth"},
 	}
 
-	// dashboard
+	// dashboard -- deprecated
 	dashboard := &cobra.Command{
-		Use:     "dashboard-access APP_ID",
-		Short:   "Get a dashboard URL for the given app",
-		Args:    validators.ExactArgs(1),
-		Aliases: []string{"dashboard"},
+		Use:        "dashboard-access APP_ID",
+		Short:      "Get a dashboard URL for the given app",
+		Args:       validators.ExactArgs(1),
+		Aliases:    []string{"dashboard"},
+		Deprecated: "use app-portal instead",
 		Run: func(cmd *cobra.Command, args []string) {
 			appID := args[0]
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
@@ -53,6 +57,40 @@ func newAuthenticationCmd() *authenticationCmd {
 		},
 	}
 	ac.cmd.AddCommand(logout)
+
+	// app-portal
+	appPortal := &cobra.Command{
+		Use:   "app-portal APP_ID [JSON_PAYLOAD]",
+		Short: "Get app portal access for the given app ID",
+		Args:  validators.RangeArgs(1, 2),
+		Run: func(cmd *cobra.Command, args []string) {
+			appID := args[0]
+			printer := pretty.NewPrinter(getPrinterOptions(cmd))
+
+			var payloadBytes []byte
+
+			if len(args) > 1 {
+				payloadBytes = []byte(args[1])
+			} else if readable, _ := utils.IsStdinReadable(); readable {
+				bytes, err := utils.ReadStdin()
+				printer.CheckErr(err)
+				payloadBytes = bytes
+			}
+
+			var appPortalAccessIn svix.AppPortalAccessIn
+			if len(payloadBytes) > 0 {
+				err := json.Unmarshal(payloadBytes, &appPortalAccessIn)
+				printer.CheckErr(err)
+			}
+
+			svixClient := getSvixClientOrExit()
+			out, err := svixClient.Authentication.AppPortalAccess(appID, &appPortalAccessIn)
+
+			printer.CheckErr(err)
+			printer.Print(out)
+		},
+	}
+	ac.cmd.AddCommand(appPortal)
 
 	return ac
 }

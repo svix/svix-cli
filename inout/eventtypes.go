@@ -83,8 +83,8 @@ func GetAllEventTypes(sc *svix.Svix) ([]svix.EventTypeOut, error) {
 		for _, et := range out.Data {
 			eventTypes = append(eventTypes, svix.EventTypeOut(et))
 		}
-		if out.Iterator != nil {
-			iterator = out.Iterator
+		if out.Iterator.Get() != nil {
+			iterator = out.Iterator.Get()
 		}
 		done = out.Done
 	}

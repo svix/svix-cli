@@ -98,12 +98,12 @@ Example Schema:
 			if cmd.Flags().Changed(filterTypesFlagName) {
 				filterTypesFlag, err := cmd.Flags().GetStringArray(filterTypesFlagName)
 				printer.CheckErr(err)
-				ep.FilterTypes = &filterTypesFlag
+				ep.FilterTypes = filterTypesFlag
 			}
 			if cmd.Flags().Changed(rateLimitFlagName) {
 				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
 				printer.CheckErr(err)
-				ep.RateLimit = &rateLimitFlag
+				ep.RateLimit.Set(&rateLimitFlag)
 			}
 			if cmd.Flags().Changed(disabledFlagName) {
 				disabledFlag, err := cmd.Flags().GetBool(disabledFlagName)
@@ -196,12 +196,12 @@ Example Schema:
 			if cmd.Flags().Changed(filterTypesFlagName) {
 				filterTypesFlag, err := cmd.Flags().GetStringArray(filterTypesFlagName)
 				printer.CheckErr(err)
-				ep.FilterTypes = &filterTypesFlag
+				ep.FilterTypes = filterTypesFlag
 			}
 			if cmd.Flags().Changed(rateLimitFlagName) {
 				rateLimitFlag, err := cmd.Flags().GetInt32(rateLimitFlagName)
 				printer.CheckErr(err)
-				ep.RateLimit = &rateLimitFlag
+				ep.RateLimit.Set(&rateLimitFlag)
 			}
 			if cmd.Flags().Changed(disabledFlagName) {
 				disabledFlag, err := cmd.Flags().GetBool(disabledFlagName)
@@ -336,7 +336,7 @@ Example Schema:
 				in, err = utils.ReadStdin()
 				printer.CheckErr(err)
 			}
-			var headersIn svix.EndpointHeadersIn
+			var headersIn svix.EndpointHeadersPatchIn
 			if len(in) > 0 {
 				err := json.Unmarshal(in, &headersIn)
 				printer.CheckErr(err)
