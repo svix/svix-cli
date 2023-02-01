@@ -87,16 +87,16 @@ func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 			},
 			Timeout: defaultTimeout,
 		},
-		stopRead:          make(chan struct{}),
-		stopWrite:         make(chan struct{}),
+		stopRead:          make(chan struct{}, 10),
+		stopWrite:         make(chan struct{}, 10),
 
-		errChan: make(chan error),
-
-		// TODO should these be buffered?
-		sendChan: make(chan *OutgoingMessageEvent),
-		recChan:  make(chan *IncomingMessage),
+		errChan: make(chan error, 10),
+		sendChan: make(chan *OutgoingMessageEvent, 10),
+		recChan:  make(chan *IncomingMessage, 10),
 	}
 }
+
+type Stop = struct {}
 
 func (c *Client) Listen(ctx context.Context) {
 	if c.conn != nil {
@@ -114,15 +114,13 @@ func (c *Client) Listen(ctx context.Context) {
 
 		select {
 		case <-ctx.Done():
-			close(c.sendChan)
-			close(c.recChan)
-
-			close(c.stopRead)
-			close(c.stopWrite)
+			c.stopRead <- Stop{}
+			c.stopWrite <- Stop{}
 			return
 		case <-c.errChan:
-			close(c.stopRead)
-			close(c.stopWrite)
+			c.stopRead <- Stop{}
+			c.stopWrite <- Stop{}
+			c.close();
 			c.wg.Wait()
 		}
     }
@@ -136,9 +134,9 @@ func (c *Client) close() {
 
 func (c *Client) changeConnection(conn *websocket.Conn) {
 	c.conn = conn
-	c.errChan = make(chan error)
-	c.stopRead = make(chan struct{})
-	c.stopWrite = make(chan struct{})
+	c.errChan = make(chan error, 10)
+	c.stopRead = make(chan struct{}, 10)
+	c.stopWrite = make(chan struct{}, 10)
 }
 
 func (c *Client) connect(ctx context.Context) error {
@@ -218,13 +216,7 @@ func (c *Client) recLoop() {
 	for {
 		_, packet, err := c.conn.ReadMessage()
 		if err != nil {
-			select {
-			case <-c.stopRead:
-				// dont send error if
-				// stop was requested
-			default:
-				c.errChan <- err
-			}
+			c.sendErrorMaybe(err, c.stopRead)
 			return
 		}
 		go c.handleIncommingMessage(packet)
@@ -250,16 +242,18 @@ func (c *Client) sendLoop() {
 			if err != nil {
 				// resend message when we reconnect
 				c.SendMessage(msg)
-				c.errChan <- err
+				c.sendErrorMaybe(err, c.stopWrite)
 				return
 			}
+
 		case <-ticker.C:
 			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-				c.errChan <- err
+				c.sendErrorMaybe(err, c.stopWrite)
 				return
 			}
+
 		case <-c.stopWrite:
 			// ignore error
 			return
@@ -346,4 +340,14 @@ func (c *Client) processResponse(id string, res *http.Response) {
 	}
 	color.Green("-> Recieved \"%s\" response, forwarding to webhook sender\n", res.Status)
 	c.SendMessage(msg)
+}
+
+func (c *Client) sendErrorMaybe(err error, stopChan chan(struct{})) {
+	select {
+	case <-stopChan:
+	// dont send error if
+	// stop was requested
+	default:
+		c.errChan <- err
+	}
 }
