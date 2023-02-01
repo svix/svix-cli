@@ -38,7 +38,6 @@ type Client struct {
 	logging            bool
 
 	conn              *websocket.Conn
-	connResetInterval time.Duration
 	stopRead          chan struct{}
 	stopWrite         chan struct{}
 
@@ -88,7 +87,6 @@ func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 			},
 			Timeout: defaultTimeout,
 		},
-		connResetInterval: time.Minute,
 		stopRead:          make(chan struct{}),
 		stopWrite:         make(chan struct{}),
 
@@ -126,17 +124,8 @@ func (c *Client) Listen(ctx context.Context) {
 			close(c.stopRead)
 			close(c.stopWrite)
 			c.wg.Wait()
-		case <-time.After(c.connResetInterval):
-			close(c.stopRead)
-			close(c.stopWrite)
-
-			if c.conn != nil {
-				c.conn.Close()
-			}
-
-			c.wg.Wait()
 		}
-	}
+    }
 }
 func (c *Client) close() {
 	if c.conn != nil {
