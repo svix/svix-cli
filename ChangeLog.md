@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.18.3
+* Further improvements to reconnection and error handling
+
 ## Version 0.18.2
 * Fix bug in Svix Play causing reconnection issues (revert the change from 0.17.1)
 
