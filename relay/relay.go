@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -104,13 +105,38 @@ func (c *Client) Listen(ctx context.Context) {
 		return
 	}
 
+	reconnectBackoffSteps := []time.Duration{
+		0,
+		100 * time.Millisecond,
+		500 * time.Millisecond,
+		time.Second,
+		5 * time.Second,
+	}
+	reconnectAttempts := 0
+
 	for {
 		err := c.connect(ctx)
-		if err != nil {
-			color.Red("Failed to connect to Webhook Relay:\n%s\n", err.Error())
+		if errors.Is(err, context.Canceled) {
 			c.close()
 			return
 		}
+		if err != nil {
+			color.Red("Failed to connect to Webhook Relay:\n%s\n", err.Error())
+			c.close()
+
+			backoff := reconnectBackoffSteps[len(reconnectBackoffSteps)-1]
+			if reconnectAttempts < len(reconnectBackoffSteps) {
+				backoff = reconnectBackoffSteps[reconnectAttempts]
+			}
+			color.Yellow("Reattempting connection in %v\n", backoff)
+			time.Sleep(backoff)
+
+			reconnectAttempts += 1
+			continue
+		}
+
+		// If the connection was successful reset reconnect counter
+		reconnectAttempts = 0
 
 		select {
 		case <-ctx.Done():
