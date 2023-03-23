@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.19.0
+* Listen: attempt reconnecting on any kind of error, not just simple connection issues
+
 ## Version 0.18.3
 * Further improvements to reconnection and error handling
 
