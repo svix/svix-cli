@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -23,6 +24,8 @@ func newMessageCmd() *messageCmd {
 		Short: "List & create messages",
 	}
 
+	ctx := context.Background()
+
 	// list
 	list := &cobra.Command{
 		Use:   "list APP_ID",
@@ -37,7 +40,7 @@ func newMessageCmd() *messageCmd {
 
 			opts, err := getMessageFilterFlags(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.Message.List(appID, opts)
+			l, err := svixClient.Message.List(ctx, appID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -109,7 +112,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Message.Create(appID, &msg)
+			out, err := svixClient.Message.Create(ctx, appID, &msg)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -131,7 +134,7 @@ Example Schema:
 			msgID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Message.Get(appID, msgID)
+			out, err := svixClient.Message.Get(ctx, appID, msgID)
 			printer.CheckErr(err)
 
 			printer.Print(out)

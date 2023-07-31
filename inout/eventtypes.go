@@ -1,6 +1,7 @@
 package inout
 
 import (
+	"context"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
@@ -51,12 +52,13 @@ func ImportEventTypesCsv(sc *svix.Svix, reader io.Reader, update bool) error {
 }
 
 func createOrUpdateEventType(sc *svix.Svix, et *svix.EventTypeIn, update bool) error {
-	_, err := sc.EventType.Create(et)
+	ctx := context.Background()
+	_, err := sc.EventType.Create(ctx, et)
 	if err != nil {
 		if sErr, ok := err.(*svix.Error); ok {
 			if sErr.Status() == 409 {
 				if update {
-					_, err := sc.EventType.Update(et.Name, &svix.EventTypeUpdate{Description: et.Description})
+					_, err := sc.EventType.Update(ctx, et.Name, &svix.EventTypeUpdate{Description: et.Description})
 					if err != nil {
 						return err
 					}
@@ -71,10 +73,11 @@ func createOrUpdateEventType(sc *svix.Svix, et *svix.EventTypeIn, update bool) e
 
 func GetAllEventTypes(sc *svix.Svix) ([]svix.EventTypeOut, error) {
 	var eventTypes []svix.EventTypeOut
+	ctx := context.Background()
 	done := false
 	var iterator *string
 	for !done {
-		out, err := sc.EventType.List(&svix.EventTypeListOptions{
+		out, err := sc.EventType.List(ctx, &svix.EventTypeListOptions{
 			Iterator: iterator,
 		})
 		if err != nil {

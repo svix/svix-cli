@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -23,6 +24,8 @@ func newIntegrationCmd() *integrationCmd {
 		Short: "List, create & modify integrations",
 	}
 
+	ctx := context.Background()
+
 	// list
 	list := &cobra.Command{
 		Use:   "list APP_ID",
@@ -34,7 +37,7 @@ func newIntegrationCmd() *integrationCmd {
 
 			appID := args[0]
 
-			l, err := svixClient.Integration.List(appID, getIntegrationListOptions(cmd))
+			l, err := svixClient.Integration.List(ctx, appID, getIntegrationListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -89,7 +92,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Integration.Create(appID, &integration)
+			out, err := svixClient.Integration.Create(ctx, appID, &integration)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -110,7 +113,7 @@ Example Schema:
 			appID := args[0]
 			integrationID := args[1]
 
-			l, err := svixClient.Integration.Get(appID, integrationID)
+			l, err := svixClient.Integration.Get(ctx, appID, integrationID)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -164,7 +167,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Integration.Update(appID, integrationID, &integration)
+			out, err := svixClient.Integration.Update(ctx, appID, integrationID, &integration)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -185,7 +188,7 @@ Example Schema:
 			appID := args[0]
 			integrationID := args[1]
 
-			err := svixClient.Integration.Delete(appID, integrationID)
+			err := svixClient.Integration.Delete(ctx, appID, integrationID)
 			printer.CheckErr(err)
 		},
 	}
@@ -203,7 +206,7 @@ Example Schema:
 			appID := args[0]
 			integrationID := args[1]
 
-			l, err := svixClient.Integration.GetKey(appID, integrationID)
+			l, err := svixClient.Integration.GetKey(ctx, appID, integrationID)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -223,7 +226,7 @@ Example Schema:
 			appID := args[0]
 			integrationID := args[1]
 
-			l, err := svixClient.Integration.RotateKey(appID, integrationID)
+			l, err := svixClient.Integration.RotateKey(ctx, appID, integrationID)
 			printer.CheckErr(err)
 
 			printer.Print(l)

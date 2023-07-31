@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/araddon/dateparse"
@@ -21,6 +22,8 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 		Short: "List, lookup & resend message attempts",
 	}
 
+	ctx := context.Background()
+
 	// list TODO add remaining list endpoints to this single command
 	list := &cobra.Command{
 		Use:   "list APP_ID MSG_ID",
@@ -36,7 +39,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			opts, err := getMessageAttemptListOptions(cmd)
 			printer.CheckErr(err)
 
-			l, err := svixClient.MessageAttempt.ListByMsg(appID, msgID, opts)
+			l, err := svixClient.MessageAttempt.ListByMsg(ctx, appID, msgID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -59,7 +62,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			svixClient := getSvixClientOrExit()
 			opts, err := getMessageAttemptListOptions(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(appID, msgID, opts)
+			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(ctx, appID, msgID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -86,7 +89,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 
 			opts, err := getMessageAttemptListOptions(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(appID, msgID, endpointID, opts)
+			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(ctx, appID, msgID, endpointID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -111,7 +114,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 
 			opts, err := getMessageAttemptListOptions(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.MessageAttempt.ListAttemptedMessages(appID, endpointID, opts)
+			l, err := svixClient.MessageAttempt.ListAttemptedMessages(ctx, appID, endpointID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -134,7 +137,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			attemptID := args[2]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.MessageAttempt.Get(appID, msgID, attemptID)
+			out, err := svixClient.MessageAttempt.Get(ctx, appID, msgID, attemptID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -156,7 +159,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			endpointID := args[2]
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.MessageAttempt.Resend(appID, msgID, endpointID)
+			err := svixClient.MessageAttempt.Resend(ctx, appID, msgID, endpointID)
 			printer.CheckErr(err)
 		},
 	}
