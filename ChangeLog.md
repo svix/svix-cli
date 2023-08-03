@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.20.0
+* Update Svix lib (includes fixes and improvements)
+
 ## Version 0.19.0
 * Listen: attempt reconnecting on any kind of error, not just simple connection issues
 
