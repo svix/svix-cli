@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"io"
@@ -40,7 +41,7 @@ Json Format:
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 			svixClient := getSvixClientOrExit()
 
-			eventTypes, err := inout.GetAllEventTypes(svixClient)
+			eventTypes, err := inout.GetAllEventTypes(context.Background(), svixClient)
 			printer.CheckErr(err)
 
 			var outStream io.Writer = printer
