@@ -15,14 +15,12 @@ type messageAttemptCmd struct {
 	cmd *cobra.Command
 }
 
-func newMessageAttemptCmd() *messageAttemptCmd {
+func newMessageAttemptCmd(ctx context.Context) *messageAttemptCmd {
 	mac := &messageAttemptCmd{}
 	mac.cmd = &cobra.Command{
 		Use:   "message-attempt",
 		Short: "List, lookup & resend message attempts",
 	}
-
-	ctx := context.Background()
 
 	// list TODO add remaining list endpoints to this single command
 	list := &cobra.Command{

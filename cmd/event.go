@@ -16,14 +16,12 @@ type eventTypeCmd struct {
 	cmd *cobra.Command
 }
 
-func newEventTypeCmd() *eventTypeCmd {
+func newEventTypeCmd(ctx context.Context) *eventTypeCmd {
 	etc := &eventTypeCmd{}
 	etc.cmd = &cobra.Command{
 		Use:   "event-type",
 		Short: "List, create & modify event types",
 	}
-
-	ctx := context.Background()
 
 	// list
 	list := &cobra.Command{

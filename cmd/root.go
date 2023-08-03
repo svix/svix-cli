@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -25,10 +27,14 @@ var rootCmd = &cobra.Command{
 	Version: version.Version,
 }
 
+const commandTimeout = 15 * time.Second
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
+	ctx, cancel := context.WithTimeout(context.Background(), commandTimeout)
+	defer cancel()
+	cobra.CheckErr(rootCmd.ExecuteContext(ctx))
 }
 
 func init() {
@@ -48,18 +54,18 @@ func init() {
 	// Register Commands
 	rootCmd.AddCommand(newVersionCmd().cmd)
 	rootCmd.AddCommand(newLoginCmd().cmd)
-	rootCmd.AddCommand(newApplicationCmd().cmd)
-	rootCmd.AddCommand(newAuthenticationCmd().cmd)
-	rootCmd.AddCommand(newEventTypeCmd().cmd)
-	rootCmd.AddCommand(newEndpointCmd().cmd)
-	rootCmd.AddCommand(newMessageCmd().cmd)
-	rootCmd.AddCommand(newMessageAttemptCmd().cmd)
+	rootCmd.AddCommand(newApplicationCmd(rootCmd.Context()).cmd)
+	rootCmd.AddCommand(newAuthenticationCmd(rootCmd.Context()).cmd)
+	rootCmd.AddCommand(newEventTypeCmd(rootCmd.Context()).cmd)
+	rootCmd.AddCommand(newEndpointCmd(rootCmd.Context()).cmd)
+	rootCmd.AddCommand(newMessageCmd(rootCmd.Context()).cmd)
+	rootCmd.AddCommand(newMessageAttemptCmd(rootCmd.Context()).cmd)
 	rootCmd.AddCommand(newVerifyCmd().cmd)
 	rootCmd.AddCommand(newOpenCmd().cmd)
 	rootCmd.AddCommand(newListenCmd().cmd)
 	rootCmd.AddCommand(newImportCmd().cmd)
 	rootCmd.AddCommand(newExportCmd().cmd)
-	rootCmd.AddCommand(newIntegrationCmd().cmd)
+	rootCmd.AddCommand(newIntegrationCmd(rootCmd.Context()).cmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

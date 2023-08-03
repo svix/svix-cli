@@ -17,14 +17,12 @@ type messageCmd struct {
 	cmd *cobra.Command
 }
 
-func newMessageCmd() *messageCmd {
+func newMessageCmd(ctx context.Context) *messageCmd {
 	mc := &messageCmd{}
 	mc.cmd = &cobra.Command{
 		Use:   "message",
 		Short: "List & create messages",
 	}
-
-	ctx := context.Background()
 
 	// list
 	list := &cobra.Command{

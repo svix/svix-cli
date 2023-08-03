@@ -16,15 +16,13 @@ type integrationCmd struct {
 	cmd *cobra.Command
 }
 
-func newIntegrationCmd() *integrationCmd {
+func newIntegrationCmd(ctx context.Context) *integrationCmd {
 
 	ic := &integrationCmd{}
 	ic.cmd = &cobra.Command{
 		Use:   "integration",
 		Short: "List, create & modify integrations",
 	}
-
-	ctx := context.Background()
 
 	// list
 	list := &cobra.Command{

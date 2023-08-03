@@ -16,15 +16,13 @@ type applicationCmd struct {
 	cmd *cobra.Command
 }
 
-func newApplicationCmd() *applicationCmd {
+func newApplicationCmd(ctx context.Context) *applicationCmd {
 	ac := &applicationCmd{}
 	ac.cmd = &cobra.Command{
 		Use:     "application",
 		Short:   "List, create & modify applications",
 		Aliases: []string{"app"},
 	}
-
-	ctx := context.Background()
 
 	// list
 	list := &cobra.Command{

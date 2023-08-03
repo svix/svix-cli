@@ -15,15 +15,13 @@ type authenticationCmd struct {
 	cmd *cobra.Command
 }
 
-func newAuthenticationCmd() *authenticationCmd {
+func newAuthenticationCmd(ctx context.Context) *authenticationCmd {
 	ac := &authenticationCmd{}
 	ac.cmd = &cobra.Command{
 		Use:     "authentication",
 		Short:   "Manage authentication tasks such as getting dashboard URLs",
 		Aliases: []string{"auth"},
 	}
-
-	ctx := context.Background()
 
 	// dashboard -- deprecated
 	dashboard := &cobra.Command{

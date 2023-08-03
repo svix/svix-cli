@@ -16,14 +16,12 @@ type endpointCmd struct {
 	cmd *cobra.Command
 }
 
-func newEndpointCmd() *endpointCmd {
+func newEndpointCmd(ctx context.Context) *endpointCmd {
 	ec := &endpointCmd{}
 	ec.cmd = &cobra.Command{
 		Use:   "endpoint",
 		Short: "List, create & modify endpoints",
 	}
-
-	ctx := context.Background()
 
 	// list
 	list := &cobra.Command{
