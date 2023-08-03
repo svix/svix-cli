@@ -36,7 +36,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			opts, err := getMessageAttemptListOptions(cmd)
 			printer.CheckErr(err)
 
-			l, err := svixClient.MessageAttempt.ListByMsg(appID, msgID, opts)
+			l, err := svixClient.MessageAttempt.ListByMsg(cmd.Context(), appID, msgID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -59,7 +59,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			svixClient := getSvixClientOrExit()
 			opts, err := getMessageAttemptListOptions(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(appID, msgID, opts)
+			l, err := svixClient.MessageAttempt.ListAttemptedDestinations(cmd.Context(), appID, msgID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -86,7 +86,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 
 			opts, err := getMessageAttemptListOptions(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(appID, msgID, endpointID, opts)
+			l, err := svixClient.MessageAttempt.ListAttemptsForEndpoint(cmd.Context(), appID, msgID, endpointID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -111,7 +111,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 
 			opts, err := getMessageAttemptListOptions(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.MessageAttempt.ListAttemptedMessages(appID, endpointID, opts)
+			l, err := svixClient.MessageAttempt.ListAttemptedMessages(cmd.Context(), appID, endpointID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -134,7 +134,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			attemptID := args[2]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.MessageAttempt.Get(appID, msgID, attemptID)
+			out, err := svixClient.MessageAttempt.Get(cmd.Context(), appID, msgID, attemptID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -156,7 +156,7 @@ func newMessageAttemptCmd() *messageAttemptCmd {
 			endpointID := args[2]
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.MessageAttempt.Resend(appID, msgID, endpointID)
+			err := svixClient.MessageAttempt.Resend(cmd.Context(), appID, msgID, endpointID)
 			printer.CheckErr(err)
 		},
 	}

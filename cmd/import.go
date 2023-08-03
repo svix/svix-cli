@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io"
@@ -67,10 +68,10 @@ Json Format:
 			fileType := getOrInferFileType(fileName)
 			switch fileType {
 			case "csv":
-				err := inout.ImportEventTypesCsv(svixClient, reader, force)
+				err := inout.ImportEventTypesCsv(context.Background(), svixClient, reader, force)
 				printer.CheckErr(err)
 			default:
-				err := inout.ImportEventTypesJson(svixClient, reader, force)
+				err := inout.ImportEventTypesJson(context.Background(), svixClient, reader, force)
 				printer.CheckErr(err)
 			}
 		},

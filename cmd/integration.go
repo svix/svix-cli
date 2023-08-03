@@ -34,7 +34,7 @@ func newIntegrationCmd() *integrationCmd {
 
 			appID := args[0]
 
-			l, err := svixClient.Integration.List(appID, getIntegrationListOptions(cmd))
+			l, err := svixClient.Integration.List(cmd.Context(), appID, getIntegrationListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -89,7 +89,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Integration.Create(appID, &integration)
+			out, err := svixClient.Integration.Create(cmd.Context(), appID, &integration)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -110,7 +110,7 @@ Example Schema:
 			appID := args[0]
 			integrationID := args[1]
 
-			l, err := svixClient.Integration.Get(appID, integrationID)
+			l, err := svixClient.Integration.Get(cmd.Context(), appID, integrationID)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -164,7 +164,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Integration.Update(appID, integrationID, &integration)
+			out, err := svixClient.Integration.Update(cmd.Context(), appID, integrationID, &integration)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -185,7 +185,7 @@ Example Schema:
 			appID := args[0]
 			integrationID := args[1]
 
-			err := svixClient.Integration.Delete(appID, integrationID)
+			err := svixClient.Integration.Delete(cmd.Context(), appID, integrationID)
 			printer.CheckErr(err)
 		},
 	}
@@ -203,7 +203,7 @@ Example Schema:
 			appID := args[0]
 			integrationID := args[1]
 
-			l, err := svixClient.Integration.GetKey(appID, integrationID)
+			l, err := svixClient.Integration.GetKey(cmd.Context(), appID, integrationID)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -223,7 +223,7 @@ Example Schema:
 			appID := args[0]
 			integrationID := args[1]
 
-			l, err := svixClient.Integration.RotateKey(appID, integrationID)
+			l, err := svixClient.Integration.RotateKey(cmd.Context(), appID, integrationID)
 			printer.CheckErr(err)
 
 			printer.Print(l)

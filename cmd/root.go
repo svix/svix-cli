@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -25,10 +27,14 @@ var rootCmd = &cobra.Command{
 	Version: version.Version,
 }
 
+const commandTimeout = 15 * time.Second
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
+	ctx, cancel := context.WithTimeout(context.Background(), commandTimeout)
+	defer cancel()
+	cobra.CheckErr(rootCmd.ExecuteContext(ctx))
 }
 
 func init() {

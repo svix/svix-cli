@@ -30,7 +30,7 @@ func newEventTypeCmd() *eventTypeCmd {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.EventType.List(getEventListOptions(cmd))
+			l, err := svixClient.EventType.List(cmd.Context(), getEventListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -84,7 +84,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.EventType.Create(&et)
+			out, err := svixClient.EventType.Create(cmd.Context(), &et)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -133,7 +133,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.EventType.Update(eventName, &et)
+			out, err := svixClient.EventType.Update(cmd.Context(), eventName, &et)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -155,7 +155,7 @@ Example Schema:
 			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the the event with id: %s", eventID))
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.EventType.Delete(eventID)
+			err := svixClient.EventType.Delete(cmd.Context(), eventID)
 			printer.CheckErr(err)
 
 			fmt.Printf("Event Type \"%s\" Deleted!\n", eventID)

@@ -37,7 +37,7 @@ func newMessageCmd() *messageCmd {
 
 			opts, err := getMessageFilterFlags(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.Message.List(appID, opts)
+			l, err := svixClient.Message.List(cmd.Context(), appID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -109,7 +109,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Message.Create(appID, &msg)
+			out, err := svixClient.Message.Create(cmd.Context(), appID, &msg)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -131,7 +131,7 @@ Example Schema:
 			msgID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Message.Get(appID, msgID)
+			out, err := svixClient.Message.Get(cmd.Context(), appID, msgID)
 			printer.CheckErr(err)
 
 			printer.Print(out)

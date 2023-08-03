@@ -34,7 +34,7 @@ func newAuthenticationCmd() *authenticationCmd {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			svixClient := getSvixClientOrExit()
-			da, err := svixClient.Authentication.DashboardAccess(appID)
+			da, err := svixClient.Authentication.DashboardAccess(cmd.Context(), appID)
 			printer.CheckErr(err)
 
 			printer.Print(da)
@@ -52,7 +52,7 @@ func newAuthenticationCmd() *authenticationCmd {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			svixClient := svix.New(authToken, getSvixClientOptsOrExit())
-			err := svixClient.Authentication.Logout()
+			err := svixClient.Authentication.Logout(cmd.Context())
 			printer.CheckErr(err)
 		},
 	}
@@ -84,7 +84,7 @@ func newAuthenticationCmd() *authenticationCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Authentication.AppPortalAccess(appID, &appPortalAccessIn)
+			out, err := svixClient.Authentication.AppPortalAccess(cmd.Context(), appID, &appPortalAccessIn)
 
 			printer.CheckErr(err)
 			printer.Print(out)

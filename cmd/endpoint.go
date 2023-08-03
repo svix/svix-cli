@@ -33,7 +33,7 @@ func newEndpointCmd() *endpointCmd {
 			appID := args[0]
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.Endpoint.List(appID, getEndpointListOptions(cmd))
+			l, err := svixClient.Endpoint.List(cmd.Context(), appID, getEndpointListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -56,7 +56,7 @@ func newEndpointCmd() *endpointCmd {
 Example Schema:
 {
 	"url": "string",
-	"version": 0,
+	"version": 1,
 	"description": "",
 	"filterTypes": [
 	  "string"
@@ -90,11 +90,6 @@ Example Schema:
 				printer.CheckErr(err)
 				ep.Url = urlFlag
 			}
-			if cmd.Flags().Changed(versionFlagName) {
-				versionFlag, err := cmd.Flags().GetInt32(versionFlagName)
-				printer.CheckErr(err)
-				ep.Version = versionFlag
-			}
 			if cmd.Flags().Changed(filterTypesFlagName) {
 				filterTypesFlag, err := cmd.Flags().GetStringArray(filterTypesFlagName)
 				printer.CheckErr(err)
@@ -110,16 +105,19 @@ Example Schema:
 				printer.CheckErr(err)
 				ep.Disabled = &disabledFlag
 			}
+			versionFlag, err := cmd.Flags().GetInt32(versionFlagName)
+			printer.CheckErr(err)
+			ep.Version = versionFlag
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.Create(appID, &ep)
+			out, err := svixClient.Endpoint.Create(cmd.Context(), appID, &ep)
 			printer.CheckErr(err)
 
 			printer.Print(out)
 		},
 	}
 	create.Flags().String(urlFlagName, "", "")
-	create.Flags().Int32(versionFlagName, 0, "")
+	create.Flags().Int32(versionFlagName, 1, "")
 	create.Flags().StringArray(filterTypesFlagName, []string{}, "")
 	create.Flags().Int32(rateLimitFlagName, 0, "Rate Limit of the endpoint (optional)")
 	create.Flags().Bool(disabledFlagName, false, "")
@@ -137,7 +135,7 @@ Example Schema:
 			endpointID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.Get(appID, endpointID)
+			out, err := svixClient.Endpoint.Get(cmd.Context(), appID, endpointID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -153,7 +151,7 @@ Example Schema:
 Example Schema:
 {
   "url": "string",
-  "version": 0,
+  "version": 1,
   "description": "",
   "filterTypes": [
     "string"
@@ -210,14 +208,14 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.Update(appID, endpointID, &ep)
+			out, err := svixClient.Endpoint.Update(cmd.Context(), appID, endpointID, &ep)
 			printer.CheckErr(err)
 
 			printer.Print(out)
 		},
 	}
 	update.Flags().String(urlFlagName, "", "")
-	update.Flags().Int32(versionFlagName, 0, "")
+	update.Flags().Int32(versionFlagName, 1, "")
 	update.Flags().StringArray(filterTypesFlagName, []string{}, "")
 	update.Flags().Int32(rateLimitFlagName, 0, "Rate Limit of the endpoint (optional)")
 	update.Flags().Bool(disabledFlagName, false, "")
@@ -237,7 +235,7 @@ Example Schema:
 			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the the endpoint with id: %s", endpointID))
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.Endpoint.Delete(appID, endpointID)
+			err := svixClient.Endpoint.Delete(cmd.Context(), appID, endpointID)
 			printer.CheckErr(err)
 
 			fmt.Printf("Endpoint \"%s\" Deleted!\n", endpointID)
@@ -257,7 +255,7 @@ Example Schema:
 			endpointID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.GetSecret(appID, endpointID)
+			out, err := svixClient.Endpoint.GetSecret(cmd.Context(), appID, endpointID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -277,7 +275,7 @@ Example Schema:
 			endpointID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.GetHeaders(appID, endpointID)
+			out, err := svixClient.Endpoint.GetHeaders(cmd.Context(), appID, endpointID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -311,7 +309,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.Endpoint.UpdateHeaders(appID, endpointID, &headersIn)
+			err := svixClient.Endpoint.UpdateHeaders(cmd.Context(), appID, endpointID, &headersIn)
 			printer.CheckErr(err)
 		},
 	}
@@ -343,7 +341,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.Endpoint.PatchHeaders(appID, endpointID, &headersIn)
+			err := svixClient.Endpoint.PatchHeaders(cmd.Context(), appID, endpointID, &headersIn)
 			printer.CheckErr(err)
 		},
 	}

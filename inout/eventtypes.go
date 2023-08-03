@@ -1,6 +1,7 @@
 package inout
 
 import (
+	"context"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
@@ -9,7 +10,7 @@ import (
 	svix "github.com/svix/svix-webhooks/go"
 )
 
-func ImportEventTypesJson(sc *svix.Svix, reader io.Reader, update bool) error {
+func ImportEventTypesJson(ctx context.Context, sc *svix.Svix, reader io.Reader, update bool) error {
 	dec := json.NewDecoder(reader)
 	var eventTypes []*svix.EventTypeIn
 	err := dec.Decode(&eventTypes)
@@ -17,7 +18,7 @@ func ImportEventTypesJson(sc *svix.Svix, reader io.Reader, update bool) error {
 		return err
 	}
 	for _, et := range eventTypes {
-		err = createOrUpdateEventType(sc, et, update)
+		err = createOrUpdateEventType(ctx, sc, et, update)
 		if err != nil {
 			return err
 		}
@@ -25,7 +26,7 @@ func ImportEventTypesJson(sc *svix.Svix, reader io.Reader, update bool) error {
 	return nil
 }
 
-func ImportEventTypesCsv(sc *svix.Svix, reader io.Reader, update bool) error {
+func ImportEventTypesCsv(ctx context.Context, sc *svix.Svix, reader io.Reader, update bool) error {
 	csvReader := csv.NewReader(reader)
 	for {
 		record, err := csvReader.Read()
@@ -42,7 +43,7 @@ func ImportEventTypesCsv(sc *svix.Svix, reader io.Reader, update bool) error {
 			Name:        record[0],
 			Description: record[1],
 		}
-		err = createOrUpdateEventType(sc, et, update)
+		err = createOrUpdateEventType(ctx, sc, et, update)
 		if err != nil {
 			return err
 		}
@@ -50,13 +51,13 @@ func ImportEventTypesCsv(sc *svix.Svix, reader io.Reader, update bool) error {
 	return nil
 }
 
-func createOrUpdateEventType(sc *svix.Svix, et *svix.EventTypeIn, update bool) error {
-	_, err := sc.EventType.Create(et)
+func createOrUpdateEventType(ctx context.Context, sc *svix.Svix, et *svix.EventTypeIn, update bool) error {
+	_, err := sc.EventType.Create(ctx, et)
 	if err != nil {
 		if sErr, ok := err.(*svix.Error); ok {
 			if sErr.Status() == 409 {
 				if update {
-					_, err := sc.EventType.Update(et.Name, &svix.EventTypeUpdate{Description: et.Description})
+					_, err := sc.EventType.Update(ctx, et.Name, &svix.EventTypeUpdate{Description: et.Description})
 					if err != nil {
 						return err
 					}
@@ -69,12 +70,12 @@ func createOrUpdateEventType(sc *svix.Svix, et *svix.EventTypeIn, update bool) e
 	return nil
 }
 
-func GetAllEventTypes(sc *svix.Svix) ([]svix.EventTypeOut, error) {
+func GetAllEventTypes(ctx context.Context, sc *svix.Svix) ([]svix.EventTypeOut, error) {
 	var eventTypes []svix.EventTypeOut
 	done := false
 	var iterator *string
 	for !done {
-		out, err := sc.EventType.List(&svix.EventTypeListOptions{
+		out, err := sc.EventType.List(ctx, &svix.EventTypeListOptions{
 			Iterator: iterator,
 		})
 		if err != nil {
