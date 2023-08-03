@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
@@ -17,7 +16,7 @@ type messageCmd struct {
 	cmd *cobra.Command
 }
 
-func newMessageCmd(ctx context.Context) *messageCmd {
+func newMessageCmd() *messageCmd {
 	mc := &messageCmd{}
 	mc.cmd = &cobra.Command{
 		Use:   "message",
@@ -38,7 +37,7 @@ func newMessageCmd(ctx context.Context) *messageCmd {
 
 			opts, err := getMessageFilterFlags(cmd)
 			printer.CheckErr(err)
-			l, err := svixClient.Message.List(ctx, appID, opts)
+			l, err := svixClient.Message.List(cmd.Context(), appID, opts)
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -110,7 +109,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Message.Create(ctx, appID, &msg)
+			out, err := svixClient.Message.Create(cmd.Context(), appID, &msg)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -132,7 +131,7 @@ Example Schema:
 			msgID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Message.Get(ctx, appID, msgID)
+			out, err := svixClient.Message.Get(cmd.Context(), appID, msgID)
 			printer.CheckErr(err)
 
 			printer.Print(out)

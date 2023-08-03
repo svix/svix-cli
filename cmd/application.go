@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
@@ -16,7 +15,7 @@ type applicationCmd struct {
 	cmd *cobra.Command
 }
 
-func newApplicationCmd(ctx context.Context) *applicationCmd {
+func newApplicationCmd() *applicationCmd {
 	ac := &applicationCmd{}
 	ac.cmd = &cobra.Command{
 		Use:     "application",
@@ -31,7 +30,7 @@ func newApplicationCmd(ctx context.Context) *applicationCmd {
 		Run: func(cmd *cobra.Command, args []string) {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.Application.List(ctx, getApplicationListOptions(cmd))
+			l, err := svixClient.Application.List(cmd.Context(), getApplicationListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -95,7 +94,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Application.Create(ctx, &app)
+			out, err := svixClient.Application.Create(cmd.Context(), &app)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -117,7 +116,7 @@ Example Schema:
 			appID := args[0]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Application.Get(ctx, appID)
+			out, err := svixClient.Application.Get(cmd.Context(), appID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -175,7 +174,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Application.Update(ctx, appID, &app)
+			out, err := svixClient.Application.Update(cmd.Context(), appID, &app)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -200,7 +199,7 @@ Example Schema:
 
 			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the app with id: %s", appID))
 
-			err := svixClient.Application.Delete(ctx, appID)
+			err := svixClient.Application.Delete(cmd.Context(), appID)
 			printer.CheckErr(err)
 
 			fmt.Printf("Application \"%s\" Deleted!\n", appID)

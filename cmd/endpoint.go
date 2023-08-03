@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
@@ -16,7 +15,7 @@ type endpointCmd struct {
 	cmd *cobra.Command
 }
 
-func newEndpointCmd(ctx context.Context) *endpointCmd {
+func newEndpointCmd() *endpointCmd {
 	ec := &endpointCmd{}
 	ec.cmd = &cobra.Command{
 		Use:   "endpoint",
@@ -34,7 +33,7 @@ func newEndpointCmd(ctx context.Context) *endpointCmd {
 			appID := args[0]
 
 			svixClient := getSvixClientOrExit()
-			l, err := svixClient.Endpoint.List(ctx, appID, getEndpointListOptions(cmd))
+			l, err := svixClient.Endpoint.List(cmd.Context(), appID, getEndpointListOptions(cmd))
 			printer.CheckErr(err)
 
 			printer.Print(l)
@@ -111,7 +110,7 @@ Example Schema:
 			ep.Version = versionFlag
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.Create(ctx, appID, &ep)
+			out, err := svixClient.Endpoint.Create(cmd.Context(), appID, &ep)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -136,7 +135,7 @@ Example Schema:
 			endpointID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.Get(ctx, appID, endpointID)
+			out, err := svixClient.Endpoint.Get(cmd.Context(), appID, endpointID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -209,7 +208,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.Update(ctx, appID, endpointID, &ep)
+			out, err := svixClient.Endpoint.Update(cmd.Context(), appID, endpointID, &ep)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -236,7 +235,7 @@ Example Schema:
 			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the the endpoint with id: %s", endpointID))
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.Endpoint.Delete(ctx, appID, endpointID)
+			err := svixClient.Endpoint.Delete(cmd.Context(), appID, endpointID)
 			printer.CheckErr(err)
 
 			fmt.Printf("Endpoint \"%s\" Deleted!\n", endpointID)
@@ -256,7 +255,7 @@ Example Schema:
 			endpointID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.GetSecret(ctx, appID, endpointID)
+			out, err := svixClient.Endpoint.GetSecret(cmd.Context(), appID, endpointID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -276,7 +275,7 @@ Example Schema:
 			endpointID := args[1]
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Endpoint.GetHeaders(ctx, appID, endpointID)
+			out, err := svixClient.Endpoint.GetHeaders(cmd.Context(), appID, endpointID)
 			printer.CheckErr(err)
 
 			printer.Print(out)
@@ -310,7 +309,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.Endpoint.UpdateHeaders(ctx, appID, endpointID, &headersIn)
+			err := svixClient.Endpoint.UpdateHeaders(cmd.Context(), appID, endpointID, &headersIn)
 			printer.CheckErr(err)
 		},
 	}
@@ -342,7 +341,7 @@ Example Schema:
 			}
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.Endpoint.PatchHeaders(ctx, appID, endpointID, &headersIn)
+			err := svixClient.Endpoint.PatchHeaders(cmd.Context(), appID, endpointID, &headersIn)
 			printer.CheckErr(err)
 		},
 	}

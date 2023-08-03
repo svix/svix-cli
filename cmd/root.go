@@ -54,18 +54,18 @@ func init() {
 	// Register Commands
 	rootCmd.AddCommand(newVersionCmd().cmd)
 	rootCmd.AddCommand(newLoginCmd().cmd)
-	rootCmd.AddCommand(newApplicationCmd(rootCmd.Context()).cmd)
-	rootCmd.AddCommand(newAuthenticationCmd(rootCmd.Context()).cmd)
-	rootCmd.AddCommand(newEventTypeCmd(rootCmd.Context()).cmd)
-	rootCmd.AddCommand(newEndpointCmd(rootCmd.Context()).cmd)
-	rootCmd.AddCommand(newMessageCmd(rootCmd.Context()).cmd)
-	rootCmd.AddCommand(newMessageAttemptCmd(rootCmd.Context()).cmd)
+	rootCmd.AddCommand(newApplicationCmd().cmd)
+	rootCmd.AddCommand(newAuthenticationCmd().cmd)
+	rootCmd.AddCommand(newEventTypeCmd().cmd)
+	rootCmd.AddCommand(newEndpointCmd().cmd)
+	rootCmd.AddCommand(newMessageCmd().cmd)
+	rootCmd.AddCommand(newMessageAttemptCmd().cmd)
 	rootCmd.AddCommand(newVerifyCmd().cmd)
 	rootCmd.AddCommand(newOpenCmd().cmd)
 	rootCmd.AddCommand(newListenCmd().cmd)
 	rootCmd.AddCommand(newImportCmd().cmd)
 	rootCmd.AddCommand(newExportCmd().cmd)
-	rootCmd.AddCommand(newIntegrationCmd(rootCmd.Context()).cmd)
+	rootCmd.AddCommand(newIntegrationCmd().cmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

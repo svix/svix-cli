@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/spf13/cobra"
@@ -15,7 +14,7 @@ type authenticationCmd struct {
 	cmd *cobra.Command
 }
 
-func newAuthenticationCmd(ctx context.Context) *authenticationCmd {
+func newAuthenticationCmd() *authenticationCmd {
 	ac := &authenticationCmd{}
 	ac.cmd = &cobra.Command{
 		Use:     "authentication",
@@ -35,7 +34,7 @@ func newAuthenticationCmd(ctx context.Context) *authenticationCmd {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			svixClient := getSvixClientOrExit()
-			da, err := svixClient.Authentication.DashboardAccess(ctx, appID)
+			da, err := svixClient.Authentication.DashboardAccess(cmd.Context(), appID)
 			printer.CheckErr(err)
 
 			printer.Print(da)
@@ -53,7 +52,7 @@ func newAuthenticationCmd(ctx context.Context) *authenticationCmd {
 			printer := pretty.NewPrinter(getPrinterOptions(cmd))
 
 			svixClient := svix.New(authToken, getSvixClientOptsOrExit())
-			err := svixClient.Authentication.Logout(ctx)
+			err := svixClient.Authentication.Logout(cmd.Context())
 			printer.CheckErr(err)
 		},
 	}
@@ -85,7 +84,7 @@ func newAuthenticationCmd(ctx context.Context) *authenticationCmd {
 			}
 
 			svixClient := getSvixClientOrExit()
-			out, err := svixClient.Authentication.AppPortalAccess(ctx, appID, &appPortalAccessIn)
+			out, err := svixClient.Authentication.AppPortalAccess(cmd.Context(), appID, &appPortalAccessIn)
 
 			printer.CheckErr(err)
 			printer.Print(out)
