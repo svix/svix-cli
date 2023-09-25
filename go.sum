@@ -362,6 +362,10 @@ github.com/svix/svix-webhooks v0.75.0 h1:GH8myVTh6EDlVIHbyEXqs6bA8a/zSBH3JmZKRdD
 github.com/svix/svix-webhooks v0.75.0/go.mod h1:vWwH7D6zMhF9pCLfgLlogcXGDmnGqIJeIT9AXorZTAQ=
 github.com/svix/svix-webhooks v1.7.0 h1:rfJ9yGc1h9odbdoNW8+dkO4ZdgajPYXvTdLqJsLBcIo=
 github.com/svix/svix-webhooks v1.7.0/go.mod h1:q3Z9c8NXqDRPZviI+zLMToAja+bjhTw929cMVhJirOI=
+github.com/svix/svix-webhooks v1.12.1-0.20230925233234-3ab7663b4d56 h1:PQ68xHJkoZ8Y0O283S+QRg9X6vbUyWKvuQHauLaaC3U=
+github.com/svix/svix-webhooks v1.12.1-0.20230925233234-3ab7663b4d56/go.mod h1:q3Z9c8NXqDRPZviI+zLMToAja+bjhTw929cMVhJirOI=
+github.com/svix/svix-webhooks v1.12.1-0.20230925234853-e39398a6349d h1:0EDWjQWi6yyBwekvXhMxbmM7M/llfGeYCeiUQvVfe8g=
+github.com/svix/svix-webhooks v1.12.1-0.20230925234853-e39398a6349d/go.mod h1:q3Z9c8NXqDRPZviI+zLMToAja+bjhTw929cMVhJirOI=
 github.com/tidwall/pretty v1.1.1 h1:nt6/Ot5LtZnJCWwEFlelOixPo0xhPFsuZlKyOL3Xfnc=
 github.com/tidwall/pretty v1.1.1/go.mod h1:ITEVvHYasfjBbM0u2Pg8T2nJnzm8xPwvNhhsoaGGjNU=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
