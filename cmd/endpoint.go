@@ -105,10 +105,11 @@ Example Schema:
 				printer.CheckErr(err)
 				ep.Disabled = &disabledFlag
 			}
-			versionFlag, err := cmd.Flags().GetInt32(versionFlagName)
-			printer.CheckErr(err)
-			ep.Version = versionFlag
-
+			if cmd.Flags().Changed(versionFlagName) {
+				versionFlag, err := cmd.Flags().GetInt32(versionFlagName)
+				printer.CheckErr(err)
+				ep.Version.Set(&versionFlag)
+			}
 			svixClient := getSvixClientOrExit()
 			out, err := svixClient.Endpoint.Create(cmd.Context(), appID, &ep)
 			printer.CheckErr(err)
@@ -117,7 +118,7 @@ Example Schema:
 		},
 	}
 	create.Flags().String(urlFlagName, "", "")
-	create.Flags().Int32(versionFlagName, 1, "")
+	create.Flags().Int32(versionFlagName, 0, "")
 	create.Flags().StringArray(filterTypesFlagName, []string{}, "")
 	create.Flags().Int32(rateLimitFlagName, 0, "Rate Limit of the endpoint (optional)")
 	create.Flags().Bool(disabledFlagName, false, "")
@@ -189,7 +190,7 @@ Example Schema:
 			if cmd.Flags().Changed(versionFlagName) {
 				versionFlag, err := cmd.Flags().GetInt32(versionFlagName)
 				printer.CheckErr(err)
-				ep.Version = versionFlag
+				ep.Version.Set(&versionFlag)
 			}
 			if cmd.Flags().Changed(filterTypesFlagName) {
 				filterTypesFlag, err := cmd.Flags().GetStringArray(filterTypesFlagName)

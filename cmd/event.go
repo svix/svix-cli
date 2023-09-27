@@ -152,15 +152,22 @@ Example Schema:
 			// parse args
 			eventID := args[0]
 
-			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the the event with id: %s", eventID))
+			utils.Confirm(fmt.Sprintf("Are you sure you want to delete the event with id: %s", eventID))
 
 			svixClient := getSvixClientOrExit()
-			err := svixClient.EventType.Delete(cmd.Context(), eventID)
+			options := &svix.EventTypeDeleteOptions{}
+			expunge, _ := cmd.Flags().GetBool("expunge")
+			if cmd.Flags().Changed("expunge") {
+				options.Expunge = &expunge
+			}
+			err := svixClient.EventType.DeleteWithOptions(cmd.Context(), eventID, options)
 			printer.CheckErr(err)
 
 			fmt.Printf("Event Type \"%s\" Deleted!\n", eventID)
 		},
 	}
+
+	delete.Flags().Bool("expunge", false, "permanently delete instead of archiving")
 	etc.cmd.AddCommand(delete)
 
 	return etc
