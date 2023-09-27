@@ -14,6 +14,6 @@ require (
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.0
-	github.com/svix/svix-webhooks v1.12.1-0.20230925234853-e39398a6349d
+	github.com/svix/svix-webhooks v1.12.1-0.20230926011735-7bc1d38200ec
 	github.com/tidwall/pretty v1.1.1
 )
