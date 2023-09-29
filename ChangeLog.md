@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.21.0
+* Add `--expunge` flag to `event-type delete` command for permanently deleting event types
+* Update Svix lib (includes fixes and improvements)
+
 ## Version 0.20.0
 * Update Svix lib (includes fixes and improvements)
 
