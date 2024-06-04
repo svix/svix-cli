@@ -76,7 +76,38 @@ svix [command] --help
 ```
 
 
-## Quick Start
+## Using the `listen` command
+
+The `listen` command creates an on-the-fly publicly accessible URL for use when testing webhooks.
+
+**NOTE:** You don't need a Svix account when using the `listen` command.
+
+The cli then acts as a proxy, forwarding any requests to the given local URL.
+This is useful for testing your webhook server locally without having to open a port or
+change any NAT configuration on your network.
+
+Example:
+
+`svix listen http://localhost:8000/webhook/`
+
+Output:
+
+```sh
+Webhook relay is now listening at
+https://play.svix.com/in/c_pSbznmV2KCg38CY7zYpFBUktsgl/
+
+All requests on this endpoint will be forwarded to your local url:
+http://localhost:8080/webhook/
+
+View logs and debug information at
+https://play.svix.com/view/c_pSbznmV2KCg38CY7zYpFBUktsgl/
+To disable logging run "svix listen --no-logging"
+```
+
+The above command will return you a unique URL and forward any POST requests it receives
+to `http://localhost:8000/webhook/`.
+
+## Interacting with the Svix server
 
 ```sh
 # Set your Auth Token temporarily via the SVIX_AUTH_TOKEN environment variable
@@ -94,31 +125,6 @@ svix application create --data-name demo
 # List Applications
 svix application list --limit 2 --iterator some_iterator 
 ```
-
-## Using the `listen` command
-
-The `listen` command creates an on-the-fly publicly accessible URL for use when testing webhooks.
-
-The cli then acts as a proxy, forwarding any requests to the given local URL.
-This is useful for testing your webhook server locally without having to open a port or
-change any nat configuration on your network.
-
-Example:
-
-`svix listen http://localhost:8000/webhook/`
-
-Output:
-
-```sh
-Webhook relay is now listening at
-https://api.relay.svix.com/api/v1/receive/q1FB7XNKZTO4s0Tzh5BDTZ7_oktf1NBo/
-
-All requests on this endpoint will be forwarded to your local url:
-http://localhost:8080/webhook/
-```
-
-The above command will return you a unique URL and forward any POST requests it receives
-to `http://localhost:8000/webhook/`.
 
 ## Commands
 
