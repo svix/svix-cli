@@ -119,7 +119,7 @@ svix login # interactively configure your Svix API credentials
 svix application create '{ "name": "demo" }'
 # or pipe in some json
 echo '{ "name": "demo" }' | svix application create
-# or use the convinence cli flags
+# or use the convenience cli flags
 svix application create --data-name demo
 
 # List Applications

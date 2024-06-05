@@ -52,8 +52,8 @@ func newMessageCmd() *messageCmd {
 	payloadFlagName := "data-payload"
 	create := &cobra.Command{
 		Use:   "create APP_ID [JSON_PAYLOAD]",
-		Short: "Create a new messsage",
-		Long: `Create a new messsage
+		Short: "Create a new message",
+		Long: `Create a new message
 
 Example Schema:
 {
