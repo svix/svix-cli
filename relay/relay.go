@@ -245,7 +245,7 @@ func (c *Client) recLoop() {
 			c.sendErrorMaybe(err, c.stopRead)
 			return
 		}
-		go c.handleIncommingMessage(packet)
+		go c.handleIncomingMessage(packet)
 	}
 }
 
@@ -287,7 +287,7 @@ func (c *Client) sendLoop() {
 	}
 }
 
-func (c *Client) handleIncommingMessage(packet []byte) {
+func (c *Client) handleIncomingMessage(packet []byte) {
 	var msg IncomingMessage
 	if err := json.Unmarshal(packet, &msg); err != nil {
 		return
@@ -297,7 +297,7 @@ func (c *Client) handleIncommingMessage(packet []byte) {
 		var msgData IncomingMessageEventData
 		err := json.Unmarshal(msg.Data, &msgData)
 		if err != nil {
-			color.Red("Recieved Invalid Webhook message... skipping\n")
+			color.Red("Received Invalid Webhook message... skipping\n")
 			return
 		}
 		color.Blue("<- Forwarding Message to: %s", c.localURL.String())
@@ -364,7 +364,7 @@ func (c *Client) processResponse(id string, res *http.Response) {
 			Body:    base64.StdEncoding.EncodeToString(buf),
 		},
 	}
-	color.Green("-> Recieved \"%s\" response, forwarding to webhook sender\n", res.Status)
+	color.Green("-> Received \"%s\" response, forwarding to webhook sender\n", res.Status)
 	c.SendMessage(msg)
 }
 

@@ -52,7 +52,7 @@ func newVerifyCmd() *verifyCmd {
 			} else if !cmd.Flags().Changed(timestampFlagName) {
 				err = fmt.Errorf("Timestamp required for verification!")
 			} else if !cmd.Flags().Changed(msgIdFlagName) {
-				err = fmt.Errorf("Message ID required for verifcation")
+				err = fmt.Errorf("Message ID required for verification")
 			}
 			printer.CheckErr(err)
 
