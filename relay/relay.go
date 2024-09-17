@@ -38,9 +38,9 @@ type Client struct {
 	httpClient         *http.Client
 	logging            bool
 
-	conn              *websocket.Conn
-	stopRead          chan struct{}
-	stopWrite         chan struct{}
+	conn      *websocket.Conn
+	stopRead  chan struct{}
+	stopWrite chan struct{}
 
 	errChan chan error
 
@@ -88,16 +88,16 @@ func NewClient(token string, localURL *url.URL, opts *ClientOptions) *Client {
 			},
 			Timeout: defaultTimeout,
 		},
-		stopRead:          make(chan struct{}, 10),
-		stopWrite:         make(chan struct{}, 10),
+		stopRead:  make(chan struct{}, 10),
+		stopWrite: make(chan struct{}, 10),
 
-		errChan: make(chan error, 10),
+		errChan:  make(chan error, 10),
 		sendChan: make(chan *OutgoingMessageEvent, 10),
 		recChan:  make(chan *IncomingMessage, 10),
 	}
 }
 
-type Stop = struct {}
+type Stop = struct{}
 
 func (c *Client) Listen(ctx context.Context) {
 	if c.conn != nil {
@@ -146,10 +146,10 @@ func (c *Client) Listen(ctx context.Context) {
 		case <-c.errChan:
 			c.stopRead <- Stop{}
 			c.stopWrite <- Stop{}
-			c.close();
+			c.close()
 			c.wg.Wait()
 		}
-    }
+	}
 }
 func (c *Client) close() {
 	if c.conn != nil {
@@ -273,6 +273,11 @@ func (c *Client) sendLoop() {
 			}
 
 		case <-ticker.C:
+			if c.conn == nil {
+				c.sendErrorMaybe(errors.New("Connection is closed"), c.stopWrite)
+				return
+			}
+
 			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
@@ -368,7 +373,7 @@ func (c *Client) processResponse(id string, res *http.Response) {
 	c.SendMessage(msg)
 }
 
-func (c *Client) sendErrorMaybe(err error, stopChan chan(struct{})) {
+func (c *Client) sendErrorMaybe(err error, stopChan chan (struct{})) {
 	select {
 	case <-stopChan:
 	// dont send error if
