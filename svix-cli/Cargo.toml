@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+clap = "4.5.23"
+clap_complete = "4.5.38"
+svix = "1.43.0"
