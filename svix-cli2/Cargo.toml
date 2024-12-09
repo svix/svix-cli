@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-clap = "4.5.23"
+clap = { version = "4.5.23", features = ["derive"] }
 clap_complete = "4.5.38"
+concolor-clap = "0.1.0"
 svix = "1.43.0"

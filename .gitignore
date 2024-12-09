@@ -1,1 +1,4 @@
 dist/
+target/
+# the binary produced by Go
+/svix-cli
