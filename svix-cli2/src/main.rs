@@ -1,5 +1,8 @@
 use anyhow::Result;
 use clap::{Args, Parser, Subcommand, ValueEnum};
+use colored_json::{ColorMode, Output};
+use concolor_clap::{Color, ColorChoice};
+use serde::Serialize;
 use svix::api::{ApplicationListOptions, Ordering};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -8,9 +11,19 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 #[clap(color = concolor_clap::color_choice())]
 struct Cli {
     #[command(flatten)]
-    color: concolor_clap::Color,
+    color: Color,
     #[command(subcommand)]
     command: RootCommands,
+}
+
+impl Cli {
+    fn color_mode(&self) -> ColorMode {
+        match self.color.color {
+            ColorChoice::Auto => ColorMode::Auto(Output::StdOut),
+            ColorChoice::Always => ColorMode::On,
+            ColorChoice::Never => ColorMode::Off,
+        }
+    }
 }
 
 // N.b Ordering matters here for how clap presents the help.
@@ -114,19 +127,30 @@ enum ApplicationCommands {
     Delete { id: String },
 }
 
+fn print_json_output<T>(val: &T, color_mode: ColorMode) -> Result<()>
+where
+    T: Serialize,
+{
+    // FIXME: factor the writer out? Will that help with testing?
+    let mut writer = std::io::stdout().lock();
+    colored_json::write_colored_json_with_mode(val, &mut writer, color_mode)?;
+    Ok(())
+}
+
 impl ApplicationCommands {
     // FIXME: codegen an exec() method that takes the args and a client and does the thing?
     //   Not sure if we need to pass in a printer or how the output should work if we can't
     //   have a typed return here.
     //   This might not make sense but let's roll with it for now.
-    async fn exec(&self, client: &svix::api::Svix) -> Result<()> {
+    async fn exec(&self, client: &svix::api::Svix, color_mode: ColorMode) -> Result<()> {
         match self {
             ApplicationCommands::List(options) => {
                 let resp = client
                     .application()
                     .list(Some(options.clone().into()))
                     .await?;
-                println!("{}", serde_json::to_string_pretty(&resp)?);
+
+                print_json_output(&resp, color_mode)?;
             }
             ApplicationCommands::Create { body } => todo!("application create"),
             ApplicationCommands::Get { id } => todo!("application get"),
@@ -149,7 +173,7 @@ async fn main() -> Result<()> {
         // Remote API calls
         RootCommands::Application(args) => {
             let client = get_client()?;
-            args.command.exec(&client).await?;
+            args.command.exec(&client, cli.color_mode()).await?;
         }
         RootCommands::Authentication => todo!("Commands::Authentication"),
         RootCommands::EventType => todo!("Commands::EventType"),
