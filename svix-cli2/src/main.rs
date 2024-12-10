@@ -1,4 +1,6 @@
-use clap::{Parser, Subcommand};
+use anyhow::Result;
+use clap::{Args, Parser, Subcommand, ValueEnum};
+use svix::api::{ApplicationListOptions, Ordering};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -8,98 +10,182 @@ struct Cli {
     #[command(flatten)]
     color: concolor_clap::Color,
     #[command(subcommand)]
-    command: Commands,
+    command: RootCommands,
 }
 
 // N.b Ordering matters here for how clap presents the help.
 // FIXME: double-check Go cli. Seems like cobra may sort the items in the help lexigraphically
 #[derive(Subcommand)]
-enum Commands {
-    /// Get the version of the Svix CLI
-    Version,
-    /// Interactively configure your Svix API credentials
-    Login,
+enum RootCommands {
     /// List, create & modify applications
     Application(ApplicationArgs),
     /// Manage authentication tasks such as getting dashboard URLs
     Authentication,
     /// List, create & modify event types
-    EventType,
-    /// List, create & modify endpoints
     Endpoint,
     /// List & create messages
+    EventType,
+    /// List, create & modify endpoints
+    /// Export data from your Svix Organization
+    Export,
+    /// Import data to your Svix Organization
+    Import,
+    /// List integrations by app id
+    Integration,
+    /// Forward webhook requests a local url
+    Listen,
+    /// Interactively configure your Svix API credentials
+    Login,
     Message,
     /// List, lookup & resend message attempts
     MessageAttempt,
-    /// Verify the signature of a webhook message
-    Verify,
     /// Quickly open Svix pages in your browser
     Open,
-    /// Forward webhook requests a local url
-    Listen,
-    /// Import data to your Svix Organization
-    Import,
-    /// Export data from your Svix Organization
-    Export,
-    /// List integrations by app id
-    Integration,
+    /// Verify the signature of a webhook message
+    Verify,
+    /// Get the version of the Svix CLI
+    Version,
 }
 
+#[derive(Args)]
+#[command(args_conflicts_with_subcommands = true)]
+#[command(flatten_help = true)]
+struct ApplicationArgs {
+    #[command(subcommand)]
+    command: ApplicationCommands,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+pub enum Ordering_ {
+    Ascending,
+    Descending,
+}
+
+impl From<Ordering_> for Ordering {
+    fn from(value: Ordering_) -> Self {
+        match value {
+            Ordering_::Ascending => Ordering::Ascending,
+            Ordering_::Descending => Ordering::Descending,
+        }
+    }
+}
+
+// FIXME: there's surely a way to use the type as-is from the libs with clap.
+//  Workaround: make this type and a From impl to convert for lib usage.
+//  Updating codegen to derive `Args`
+#[derive(Args, Clone)]
+pub struct ApplicationListOptions_ {
+    #[arg(long)]
+    pub iterator: Option<String>,
+    #[arg(long)]
+    pub limit: Option<i32>,
+    #[arg(long)]
+    pub order: Option<Ordering_>,
+}
+
+impl From<ApplicationListOptions_> for ApplicationListOptions {
+    fn from(
+        ApplicationListOptions_ {
+            iterator,
+            limit,
+            order,
+        }: ApplicationListOptions_,
+    ) -> Self {
+        ApplicationListOptions {
+            iterator,
+            limit,
+            order: order.map(Into::into),
+        }
+    }
+}
+
+// FIXME: build these via codegen from the spec, along with the rust lib.
 #[derive(Subcommand)]
-enum ApplicationArgs {
+enum ApplicationCommands {
     /// List current applications
-    List,
+    List(ApplicationListOptions_),
     /// Creates a new application
-    Create,
+    Create { body: String },
     /// Get an application by id
-    Get,
+    Get { id: String },
     /// Update an application by id
-    Update,
+    Update { id: String, body: String },
     /// Deletes an application by id
-    Delete,
+    Delete { id: String },
 }
 
-fn main() {
+impl ApplicationCommands {
+    // FIXME: codegen an exec() method that takes the args and a client and does the thing?
+    //   Not sure if we need to pass in a printer or how the output should work if we can't
+    //   have a typed return here.
+    //   This might not make sense but let's roll with it for now.
+    async fn exec(&self, client: &svix::api::Svix) -> Result<()> {
+        match self {
+            ApplicationCommands::List(options) => {
+                let resp = client
+                    .application()
+                    .list(Some(options.clone().into()))
+                    .await?;
+                println!("{}", serde_json::to_string_pretty(&resp)?);
+            }
+            ApplicationCommands::Create { body } => todo!("application create"),
+            ApplicationCommands::Get { id } => todo!("application get"),
+            ApplicationCommands::Update { id, body } => todo!("application update"),
+            ApplicationCommands::Delete { id } => todo!("application delete"),
+        }
+        Ok(())
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match &cli.command {
         // Local-only things
-        Commands::Version => println!("{VERSION}"),
-        Commands::Verify => todo!("Commands::Verify"),
-        Commands::Open => todo!("Commands::Open"),
-
+        RootCommands::Version => println!("{VERSION}"),
+        RootCommands::Verify => todo!("Commands::Verify"),
+        RootCommands::Open => todo!("Commands::Open"),
         // Remote API calls
-        Commands::Application(cmd) => match cmd {
-            ApplicationArgs::List => todo!("application list"),
-            ApplicationArgs::Create => todo!("application create"),
-            ApplicationArgs::Get => todo!("application get"),
-            ApplicationArgs::Update => todo!("application update"),
-            ApplicationArgs::Delete => todo!("application delete"),
-        },
-        Commands::Authentication => todo!("Commands::Authentication"),
-        Commands::EventType => todo!("Commands::EventType"),
-        Commands::Endpoint => todo!("Commands::Endpoint"),
-        Commands::Message => todo!("Commands::Message"),
-        Commands::MessageAttempt => todo!("Commands::MessageAttempt"),
-        Commands::Import => todo!("Commands::Import"),
-        Commands::Export => todo!("Commands::Export"),
-        Commands::Integration => todo!("Commands::Integration"),
+        RootCommands::Application(args) => {
+            let client = get_client()?;
+            args.command.exec(&client).await?;
+        }
+        RootCommands::Authentication => todo!("Commands::Authentication"),
+        RootCommands::EventType => todo!("Commands::EventType"),
+        RootCommands::Endpoint => todo!("Commands::Endpoint"),
+        RootCommands::Message => todo!("Commands::Message"),
+        RootCommands::MessageAttempt => todo!("Commands::MessageAttempt"),
+        RootCommands::Import => todo!("Commands::Import"),
+        RootCommands::Export => todo!("Commands::Export"),
+        RootCommands::Integration => todo!("Commands::Integration"),
 
         // FIXME: make login/listen play subcommands?
-        Commands::Listen => todo!("Commands::Listen"),
-        Commands::Login => todo!("Commands::Login"),
+        RootCommands::Listen => todo!("Commands::Listen"),
+        RootCommands::Login => todo!("Commands::Login"),
     }
+
+    Ok(())
 }
 
-fn get_client() -> svix::api::Svix {
+fn get_client() -> Result<svix::api::Svix> {
     // XXX: Go client will exit if the token is not set. May need to rewrangle the flow.
-    let token = String::new(); // FIXME: read from config
-    let opts = get_client_options();
-    svix::api::Svix::new(token, Some(opts))
+    // FIXME: read from config
+
+    // FIXME: don't hardcode ;)
+    let token = env!("LOCAL_CLOUD_TOKEN").to_string();
+    let opts = get_client_options()?;
+    Ok(svix::api::Svix::new(token, Some(opts)))
 }
 
-fn get_client_options() -> svix::api::SvixOptions {
+fn get_client_options() -> Result<svix::api::SvixOptions> {
     // FIXME: read options from config file
     // FIXME: validate server url
-    svix::api::SvixOptions::default()
+
+    Ok(svix::api::SvixOptions {
+        debug: false,
+        // FIXME: don't hardcode ;)
+        server_url: Some(env!("SVIX_ROOT").to_string()),
+        timeout: None,
+    })
 }

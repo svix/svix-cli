@@ -4,7 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0.94"
 clap = { version = "4.5.23", features = ["derive"] }
 clap_complete = "4.5.38"
 concolor-clap = "0.1.0"
+serde_json = "1.0.133"
 svix = "1.43.0"
+tokio = { version = "1.42.0", features = ["full"] }
