@@ -1,3 +1,4 @@
+use crate::cmds::api::authentication::AuthenticationArgs;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use cmds::api::application::ApplicationArgs;
@@ -39,7 +40,7 @@ enum RootCommands {
     /// List, create & modify applications
     Application(ApplicationArgs),
     /// Manage authentication tasks such as getting dashboard URLs
-    Authentication,
+    Authentication(AuthenticationArgs),
     /// List, create & modify event types
     Endpoint,
     /// List & create messages
@@ -80,7 +81,10 @@ async fn main() -> Result<()> {
             let client = get_client()?;
             args.command.exec(&client, cli.color_mode()).await?;
         }
-        RootCommands::Authentication => todo!("Commands::Authentication"),
+        RootCommands::Authentication(args) => {
+            let client = get_client()?;
+            args.command.exec(&client, cli.color_mode()).await?;
+        }
         RootCommands::EventType => todo!("Commands::EventType"),
         RootCommands::Endpoint => todo!("Commands::Endpoint"),
         RootCommands::Message => todo!("Commands::Message"),
