@@ -16,16 +16,18 @@ pub struct ApplicationArgs {
 // FIXME: build these via codegen from the spec, along with the rust lib.
 #[derive(Subcommand)]
 pub enum ApplicationCommands {
-    /// List current applications
-    List(ApplicationListOptions),
     /// Creates a new application
     Create {
         application_in: JsonOf<ApplicationIn>,
         #[clap(flatten)]
         post_options: Option<PostOptions>,
     },
+    /// Deletes an application by id
+    Delete { id: String },
     /// Get an application by id
     Get { id: String },
+    /// List current applications
+    List(ApplicationListOptions),
     /// Update an application by id
     Update {
         id: String,
@@ -33,8 +35,6 @@ pub enum ApplicationCommands {
         #[clap(flatten)]
         post_options: Option<PostOptions>,
     },
-    /// Deletes an application by id
-    Delete { id: String },
 }
 
 impl ApplicationCommands {
