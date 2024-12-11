@@ -27,7 +27,12 @@ pub enum ApplicationCommands {
     /// Get an application by id
     Get { id: String },
     /// Update an application by id
-    Update { id: String, body: String },
+    Update {
+        id: String,
+        application_in: JsonOf<ApplicationIn>,
+        #[clap(flatten)]
+        post_options: Option<PostOptions>,
+    },
     /// Deletes an application by id
     Delete { id: String },
 }
@@ -65,9 +70,31 @@ impl ApplicationCommands {
 
                 crate::json::print_json_output(&resp, color_mode)?;
             }
-            ApplicationCommands::Get { id } => todo!("application get"),
-            ApplicationCommands::Update { id, body } => todo!("application update"),
-            ApplicationCommands::Delete { id } => todo!("application delete"),
+            ApplicationCommands::Get { id } => {
+                let resp = client.application().get(id.clone()).await?;
+                crate::json::print_json_output(&resp, color_mode)?;
+            }
+            ApplicationCommands::Update {
+                id,
+                application_in,
+                post_options,
+            } => {
+                let resp = client
+                    .application()
+                    .update(
+                        id.clone(),
+                        application_in.clone().into_inner(),
+                        post_options.clone().map(Into::into),
+                    )
+                    .await?;
+
+                crate::json::print_json_output(&resp, color_mode)?;
+            }
+            ApplicationCommands::Delete { id } => {
+                // don't print the response for this case since `()` will just show as `null`
+                // (which is confusing).
+                let _resp = client.application().delete(id.clone()).await?;
+            }
         }
         Ok(())
     }
