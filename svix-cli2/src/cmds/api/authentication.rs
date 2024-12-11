@@ -13,8 +13,7 @@ pub struct AuthenticationArgs {
 
 #[derive(Subcommand)]
 pub enum AuthenticationCommands {
-    /// Get a dashboard URL for the given app
-    ///
+    /// Get a dashboard URL for the given app.
     /// Deprecated: use `app-portal` instead.
     #[clap(alias = "dashboard")]
     DashboardAccess {
