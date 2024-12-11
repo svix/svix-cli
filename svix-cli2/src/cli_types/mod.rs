@@ -7,6 +7,7 @@ use clap::{Args, ValueEnum};
 use svix::api;
 
 pub mod application;
+pub mod endpoint;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum Ordering {

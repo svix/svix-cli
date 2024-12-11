@@ -91,9 +91,7 @@ impl ApplicationCommands {
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             ApplicationCommands::Delete { id } => {
-                // don't print the response for this case since `()` will just show as `null`
-                // (which is confusing).
-                let _resp = client.application().delete(id.clone()).await?;
+                client.application().delete(id.clone()).await?;
             }
         }
         Ok(())

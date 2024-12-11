@@ -1,4 +1,5 @@
 use crate::cmds::api::authentication::AuthenticationArgs;
+use crate::cmds::api::endpoint::EndpointArgs;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use cmds::api::application::ApplicationArgs;
@@ -41,18 +42,17 @@ enum RootCommands {
     Application(ApplicationArgs),
     /// Manage authentication tasks such as getting dashboard URLs
     Authentication(AuthenticationArgs),
-    /// List, create & modify event types
-    Endpoint,
-    /// List & create messages
-    EventType,
     /// List, create & modify endpoints
+    Endpoint(EndpointArgs),
+    /// List, create & modify event types
+    EventType,
     /// Export data from your Svix Organization
     Export,
     /// Import data to your Svix Organization
     Import,
     /// List integrations by app id
     Integration,
-    /// Forward webhook requests a local url
+    /// Forward webhook requests to a local url
     Listen,
     /// Interactively configure your Svix API credentials
     Login,
@@ -87,7 +87,10 @@ async fn main() -> Result<()> {
             args.command.exec(&client, cli.color_mode()).await?;
         }
         RootCommands::EventType => todo!("Commands::EventType"),
-        RootCommands::Endpoint => todo!("Commands::Endpoint"),
+        RootCommands::Endpoint(args) => {
+            let client = get_client()?;
+            args.command.exec(&client, cli.color_mode()).await?;
+        }
         RootCommands::Message => todo!("Commands::Message"),
         RootCommands::MessageAttempt => todo!("Commands::MessageAttempt"),
         RootCommands::Import => todo!("Commands::Import"),

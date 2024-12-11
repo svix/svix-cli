@@ -57,12 +57,10 @@ impl AuthenticationCommands {
                 let client =
                     svix::api::Svix::new(dashboard_auth_token.clone(), Some(get_client_options()?));
 
-                let resp = client
+                client
                     .authentication()
                     .logout(post_options.clone().map(Into::into))
                     .await?;
-
-                crate::json::print_json_output(&resp, color_mode)?;
             }
         }
         Ok(())
