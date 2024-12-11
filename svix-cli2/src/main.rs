@@ -56,6 +56,7 @@ enum RootCommands {
     Listen,
     /// Interactively configure your Svix API credentials
     Login,
+    /// List & create messages
     Message,
     /// List, lookup & resend message attempts
     MessageAttempt,
