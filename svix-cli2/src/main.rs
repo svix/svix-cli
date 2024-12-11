@@ -2,6 +2,7 @@ use crate::cmds::api::authentication::AuthenticationArgs;
 use crate::cmds::api::endpoint::EndpointArgs;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
+use clap_complete::Shell;
 use cmds::api::application::ApplicationArgs;
 use colored_json::{ColorMode, Output};
 use concolor_clap::{Color, ColorChoice};
@@ -10,10 +11,11 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 mod cli_types;
 mod cmds;
+mod completion;
 mod json;
 
 #[derive(Parser)]
-#[clap(color = concolor_clap::color_choice())]
+#[clap(color = concolor_clap::color_choice(), bin_name="svix-cli")]
 struct Cli {
     #[command(flatten)]
     color: Color,
@@ -66,6 +68,11 @@ enum RootCommands {
     Verify,
     /// Get the version of the Svix CLI
     Version,
+
+    // Completions
+    Generate {
+        shell: Shell,
+    },
 }
 
 #[tokio::main]
@@ -100,6 +107,9 @@ async fn main() -> Result<()> {
         // FIXME: make login/listen play subcommands?
         RootCommands::Listen => todo!("Commands::Listen"),
         RootCommands::Login => todo!("Commands::Login"),
+        RootCommands::Generate { shell } => {
+            completion::generate(shell)?;
+        }
     }
 
     Ok(())
