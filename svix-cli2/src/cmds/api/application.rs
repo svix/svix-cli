@@ -42,17 +42,10 @@ impl ApplicationCommands {
     //   Not sure if we need to pass in a printer or how the output should work if we can't
     //   have a typed return here.
     //   This might not make sense but let's roll with it for now.
-    pub async fn exec(
-        &self,
-        client: &svix::api::Svix,
-        color_mode: ColorMode,
-    ) -> anyhow::Result<()> {
+    pub async fn exec(self, client: &svix::api::Svix, color_mode: ColorMode) -> anyhow::Result<()> {
         match self {
             ApplicationCommands::List(options) => {
-                let resp = client
-                    .application()
-                    .list(Some(options.clone().into()))
-                    .await?;
+                let resp = client.application().list(Some(options.into())).await?;
 
                 crate::json::print_json_output(&resp, color_mode)?;
             }
@@ -62,16 +55,13 @@ impl ApplicationCommands {
             } => {
                 let resp = client
                     .application()
-                    .create(
-                        application_in.clone().into_inner(),
-                        post_options.clone().map(Into::into),
-                    )
+                    .create(application_in.into_inner(), post_options.map(Into::into))
                     .await?;
 
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             ApplicationCommands::Get { id } => {
-                let resp = client.application().get(id.clone()).await?;
+                let resp = client.application().get(id).await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             ApplicationCommands::Update {
@@ -82,16 +72,16 @@ impl ApplicationCommands {
                 let resp = client
                     .application()
                     .update(
-                        id.clone(),
-                        application_in.clone().into_inner(),
-                        post_options.clone().map(Into::into),
+                        id,
+                        application_in.into_inner(),
+                        post_options.map(Into::into),
                     )
                     .await?;
 
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             ApplicationCommands::Delete { id } => {
-                client.application().delete(id.clone()).await?;
+                client.application().delete(id).await?;
             }
         }
         Ok(())

@@ -31,11 +31,7 @@ pub enum AuthenticationCommands {
 }
 
 impl AuthenticationCommands {
-    pub async fn exec(
-        &self,
-        client: &svix::api::Svix,
-        color_mode: ColorMode,
-    ) -> anyhow::Result<()> {
+    pub async fn exec(self, client: &svix::api::Svix, color_mode: ColorMode) -> anyhow::Result<()> {
         match self {
             AuthenticationCommands::DashboardAccess {
                 app_id,
@@ -43,7 +39,7 @@ impl AuthenticationCommands {
             } => {
                 let resp = client
                     .authentication()
-                    .dashboard_access(app_id.clone(), post_options.clone().map(Into::into))
+                    .dashboard_access(app_id, post_options.map(Into::into))
                     .await?;
 
                 crate::json::print_json_output(&resp, color_mode)?;
@@ -55,11 +51,11 @@ impl AuthenticationCommands {
                 // We're not using the client received by `exec()` here since the token is an
                 // arg, not whatever is configured for the cli otherwise.
                 let client =
-                    svix::api::Svix::new(dashboard_auth_token.clone(), Some(get_client_options()?));
+                    svix::api::Svix::new(dashboard_auth_token, Some(get_client_options()?));
 
                 client
                     .authentication()
-                    .logout(post_options.clone().map(Into::into))
+                    .logout(post_options.map(Into::into))
                     .await?;
             }
         }

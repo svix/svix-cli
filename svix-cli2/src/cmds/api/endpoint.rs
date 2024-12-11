@@ -59,11 +59,7 @@ pub enum EndpointCommands {
 }
 
 impl EndpointCommands {
-    pub async fn exec(
-        &self,
-        client: &svix::api::Svix,
-        color_mode: ColorMode,
-    ) -> anyhow::Result<()> {
+    pub async fn exec(self, client: &svix::api::Svix, color_mode: ColorMode) -> anyhow::Result<()> {
         match self {
             EndpointCommands::Create {
                 app_id,
@@ -73,32 +69,26 @@ impl EndpointCommands {
                 let resp = client
                     .endpoint()
                     .create(
-                        app_id.clone(),
-                        endpoint_in.clone().into_inner(),
-                        post_options.clone().map(Into::into),
+                        app_id,
+                        endpoint_in.into_inner(),
+                        post_options.map(Into::into),
                     )
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             EndpointCommands::Delete { app_id, id } => {
-                client.endpoint().delete(app_id.clone(), id.clone()).await?;
+                client.endpoint().delete(app_id, id).await?;
             }
             EndpointCommands::Get { app_id, id } => {
-                let resp = client.endpoint().get(app_id.clone(), id.clone()).await?;
+                let resp = client.endpoint().get(app_id, id).await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             EndpointCommands::GetHeaders { app_id, id } => {
-                let resp = client
-                    .endpoint()
-                    .get_headers(app_id.clone(), id.clone())
-                    .await?;
+                let resp = client.endpoint().get_headers(app_id, id).await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             EndpointCommands::List { app_id, options } => {
-                let resp = client
-                    .endpoint()
-                    .list(app_id.clone(), Some(options.clone().into()))
-                    .await?;
+                let resp = client.endpoint().list(app_id, Some(options.into())).await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             EndpointCommands::PatchHeaders {
@@ -108,18 +98,11 @@ impl EndpointCommands {
             } => {
                 client
                     .endpoint()
-                    .patch_headers(
-                        app_id.clone(),
-                        id.clone(),
-                        endpoint_headers_patch_in.clone().into_inner(),
-                    )
+                    .patch_headers(app_id, id, endpoint_headers_patch_in.into_inner())
                     .await?;
             }
             EndpointCommands::Secret { app_id, id } => {
-                let resp = client
-                    .endpoint()
-                    .get_secret(app_id.clone(), id.clone())
-                    .await?;
+                let resp = client.endpoint().get_secret(app_id, id).await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             EndpointCommands::Update {
@@ -131,10 +114,10 @@ impl EndpointCommands {
                 let resp = client
                     .endpoint()
                     .update(
-                        app_id.clone(),
-                        id.clone(),
-                        endpoint_update.clone().into_inner(),
-                        post_options.clone().map(Into::into),
+                        app_id,
+                        id,
+                        endpoint_update.into_inner(),
+                        post_options.map(Into::into),
                     )
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
@@ -146,11 +129,7 @@ impl EndpointCommands {
             } => {
                 client
                     .endpoint()
-                    .update_headers(
-                        app_id.clone(),
-                        id.clone(),
-                        endpoint_headers_in.clone().into_inner(),
-                    )
+                    .update_headers(app_id, id, endpoint_headers_in.into_inner())
                     .await?;
             }
         }

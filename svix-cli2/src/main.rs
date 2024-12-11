@@ -78,8 +78,8 @@ enum RootCommands {
 #[tokio::main]
 async fn main() -> Result<()> {
     let cli = Cli::parse();
-
-    match &cli.command {
+    let color_mode = cli.color_mode();
+    match cli.command {
         // Local-only things
         RootCommands::Version => println!("{VERSION}"),
         RootCommands::Verify => todo!("Commands::Verify"),
@@ -87,16 +87,16 @@ async fn main() -> Result<()> {
         // Remote API calls
         RootCommands::Application(args) => {
             let client = get_client()?;
-            args.command.exec(&client, cli.color_mode()).await?;
+            args.command.exec(&client, color_mode).await?;
         }
         RootCommands::Authentication(args) => {
             let client = get_client()?;
-            args.command.exec(&client, cli.color_mode()).await?;
+            args.command.exec(&client, color_mode).await?;
         }
         RootCommands::EventType => todo!("Commands::EventType"),
         RootCommands::Endpoint(args) => {
             let client = get_client()?;
-            args.command.exec(&client, cli.color_mode()).await?;
+            args.command.exec(&client, color_mode).await?;
         }
         RootCommands::Message => todo!("Commands::Message"),
         RootCommands::MessageAttempt => todo!("Commands::MessageAttempt"),
@@ -108,7 +108,7 @@ async fn main() -> Result<()> {
         RootCommands::Listen => todo!("Commands::Listen"),
         RootCommands::Login => todo!("Commands::Login"),
         RootCommands::Generate { shell } => {
-            completion::generate(shell)?;
+            completion::generate(&shell)?;
         }
     }
 
