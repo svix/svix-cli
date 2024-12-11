@@ -1,6 +1,10 @@
 use crate::cli_types::application::ApplicationListOptions;
+use crate::cli_types::PostOptions;
+use crate::json::JsonOf;
 use clap::{Args, Subcommand};
 use colored_json::ColorMode;
+use svix::api::ApplicationIn;
+
 #[derive(Args)]
 #[command(args_conflicts_with_subcommands = true)]
 #[command(flatten_help = true)]
@@ -15,7 +19,11 @@ pub enum ApplicationCommands {
     /// List current applications
     List(ApplicationListOptions),
     /// Creates a new application
-    Create { body: String },
+    Create {
+        application_in: JsonOf<ApplicationIn>,
+        #[clap(flatten)]
+        post_options: Option<PostOptions>,
+    },
     /// Get an application by id
     Get { id: String },
     /// Update an application by id
@@ -41,9 +49,22 @@ impl ApplicationCommands {
                     .list(Some(options.clone().into()))
                     .await?;
 
-                crate::print_json_output(&resp, color_mode)?;
+                crate::json::print_json_output(&resp, color_mode)?;
             }
-            ApplicationCommands::Create { body } => todo!("application create"),
+            ApplicationCommands::Create {
+                application_in,
+                post_options,
+            } => {
+                let resp = client
+                    .application()
+                    .create(
+                        application_in.clone().into_inner(),
+                        post_options.clone().map(Into::into),
+                    )
+                    .await?;
+
+                crate::json::print_json_output(&resp, color_mode)?;
+            }
             ApplicationCommands::Get { id } => todo!("application get"),
             ApplicationCommands::Update { id, body } => todo!("application update"),
             ApplicationCommands::Delete { id } => todo!("application delete"),

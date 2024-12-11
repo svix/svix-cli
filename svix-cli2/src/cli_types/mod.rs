@@ -22,3 +22,15 @@ impl From<Ordering> for api::Ordering {
         }
     }
 }
+
+#[derive(Args, Clone, Default)]
+pub struct PostOptions {
+    #[arg(long)]
+    pub idempotency_key: Option<String>,
+}
+
+impl From<PostOptions> for api::PostOptions {
+    fn from(PostOptions { idempotency_key }: PostOptions) -> Self {
+        Self { idempotency_key }
+    }
+}

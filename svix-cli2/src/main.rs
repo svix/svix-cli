@@ -3,11 +3,12 @@ use clap::{Parser, Subcommand};
 use cmds::api::application::ApplicationArgs;
 use colored_json::{ColorMode, Output};
 use concolor_clap::{Color, ColorChoice};
-use serde::Serialize;
+
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 mod cli_types;
 mod cmds;
+mod json;
 
 #[derive(Parser)]
 #[clap(color = concolor_clap::color_choice())]
@@ -63,16 +64,6 @@ enum RootCommands {
     Verify,
     /// Get the version of the Svix CLI
     Version,
-}
-
-fn print_json_output<T>(val: &T, color_mode: ColorMode) -> Result<()>
-where
-    T: Serialize,
-{
-    // FIXME: factor the writer out? Will that help with testing?
-    let mut writer = std::io::stdout().lock();
-    colored_json::write_colored_json_with_mode(val, &mut writer, color_mode)?;
-    Ok(())
 }
 
 #[tokio::main]
