@@ -1,5 +1,6 @@
 use crate::cmds::api::authentication::AuthenticationArgs;
 use crate::cmds::api::endpoint::EndpointArgs;
+use crate::signature::SignatureArgs;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
@@ -13,6 +14,7 @@ mod cli_types;
 mod cmds;
 mod completion;
 mod json;
+mod signature;
 
 #[derive(Parser)]
 #[clap(color = concolor_clap::color_choice(), bin_name="svix-cli")]
@@ -64,8 +66,8 @@ enum RootCommands {
     MessageAttempt,
     /// Quickly open Svix pages in your browser
     Open,
-    /// Verify the signature of a webhook message
-    Verify,
+    /// Signing and verifying webhooks
+    Signature(SignatureArgs),
     /// Get the version of the Svix CLI
     Version,
 
@@ -82,7 +84,9 @@ async fn main() -> Result<()> {
     match cli.command {
         // Local-only things
         RootCommands::Version => println!("{VERSION}"),
-        RootCommands::Verify => todo!("Commands::Verify"),
+        RootCommands::Signature(args) => {
+            args.command.exec(color_mode).await?;
+        }
         RootCommands::Open => todo!("Commands::Open"),
         // Remote API calls
         RootCommands::Application(args) => {
