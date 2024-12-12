@@ -3,7 +3,7 @@ use clap::Args;
 use svix::api;
 
 #[derive(Args, Clone)]
-pub struct ApplicationListOptions {
+pub struct IntegrationListOptions {
     /// Limit the number of returned items
     #[arg(long)]
     pub limit: Option<i32>,
@@ -15,17 +15,18 @@ pub struct ApplicationListOptions {
     pub order: Option<Ordering>,
 }
 
-impl From<ApplicationListOptions> for api::ApplicationListOptions {
+impl From<IntegrationListOptions> for api::IntegrationListOptions {
     fn from(
-        ApplicationListOptions {
+        IntegrationListOptions {
             limit,
             iterator,
             order,
-        }: ApplicationListOptions,
+        }: IntegrationListOptions,
     ) -> Self {
         Self {
             limit,
             iterator,
+
             order: order.map(Into::into),
         }
     }

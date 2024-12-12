@@ -8,6 +8,9 @@ use svix::api;
 
 pub mod application;
 pub mod endpoint;
+pub mod event_type;
+pub mod integration;
+pub mod message;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum Ordering {
