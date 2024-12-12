@@ -80,9 +80,7 @@ async fn main() -> Result<()> {
     match cli.command {
         // Local-only things
         RootCommands::Version => println!("{VERSION}"),
-        RootCommands::SvixSignature(args) => {
-            args.command.exec(color_mode).await?;
-        }
+        RootCommands::SvixSignature(args) => args.command.exec().await?,
         RootCommands::Open => todo!("Commands::Open"),
         // Remote API calls
         RootCommands::Application(args) => {

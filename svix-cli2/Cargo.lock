@@ -1350,6 +1350,7 @@ dependencies = [
  "clap_complete",
  "colored_json",
  "concolor-clap",
+ "http 1.2.0",
  "serde",
  "serde_json",
  "svix",
