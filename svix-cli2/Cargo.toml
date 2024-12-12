@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.94"
+chrono = "0.4.39"
 clap = { version = "4.5.23", features = ["derive"] }
 clap_complete = "4.5.38"
 colored_json = "5.0.0"
