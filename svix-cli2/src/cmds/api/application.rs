@@ -1,9 +1,11 @@
-use crate::cli_types::application::ApplicationListOptions;
-use crate::cli_types::PostOptions;
-use crate::json::JsonOf;
 use clap::{Args, Subcommand};
 use colored_json::ColorMode;
-use svix::api::ApplicationIn;
+use svix::api::{ApplicationIn, ApplicationPatch};
+
+use crate::{
+    cli_types::{application::ApplicationListOptions, PostOptions},
+    json::JsonOf,
+};
 
 #[derive(Args)]
 #[command(args_conflicts_with_subcommands = true)]
@@ -13,43 +15,43 @@ pub struct ApplicationArgs {
     pub command: ApplicationCommands,
 }
 
-// FIXME: build these via codegen from the spec, along with the rust lib.
 #[derive(Subcommand)]
 pub enum ApplicationCommands {
-    /// Creates a new application
+    /// List of all the organization's applications.
+    List {
+        #[clap(flatten)]
+        options: ApplicationListOptions,
+    },
+    /// Create a new application.
     Create {
         application_in: JsonOf<ApplicationIn>,
         #[clap(flatten)]
         post_options: Option<PostOptions>,
     },
-    /// Deletes an application by id
-    Delete { id: String },
-    /// Get an application by id
+    /// Get an application.
     Get { id: String },
-    /// List current applications
-    List(ApplicationListOptions),
-    /// Update an application by id
+    /// Update an application.
     Update {
         id: String,
         application_in: JsonOf<ApplicationIn>,
-        #[clap(flatten)]
-        post_options: Option<PostOptions>,
+    },
+    /// Delete an application.
+    Delete { id: String },
+    /// Partially update an application.
+    Patch {
+        id: String,
+        application_patch: JsonOf<ApplicationPatch>,
     },
 }
 
 impl ApplicationCommands {
-    // FIXME: codegen an exec() method that takes the args and a client and does the thing?
-    //   Not sure if we need to pass in a printer or how the output should work if we can't
-    //   have a typed return here.
-    //   This might not make sense but let's roll with it for now.
     pub async fn exec(self, client: &svix::api::Svix, color_mode: ColorMode) -> anyhow::Result<()> {
         match self {
-            ApplicationCommands::List(options) => {
+            Self::List { options } => {
                 let resp = client.application().list(Some(options.into())).await?;
-
                 crate::json::print_json_output(&resp, color_mode)?;
             }
-            ApplicationCommands::Create {
+            Self::Create {
                 application_in,
                 post_options,
             } => {
@@ -57,33 +59,34 @@ impl ApplicationCommands {
                     .application()
                     .create(application_in.into_inner(), post_options.map(Into::into))
                     .await?;
-
                 crate::json::print_json_output(&resp, color_mode)?;
             }
-            ApplicationCommands::Get { id } => {
+            Self::Get { id } => {
                 let resp = client.application().get(id).await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
-            ApplicationCommands::Update {
+            Self::Update { id, application_in } => {
+                let resp = client
+                    .application()
+                    .update(id, application_in.into_inner(), None)
+                    .await?;
+                crate::json::print_json_output(&resp, color_mode)?;
+            }
+            Self::Delete { id } => {
+                client.application().delete(id).await?;
+            }
+            Self::Patch {
                 id,
-                application_in,
-                post_options,
+                application_patch,
             } => {
                 let resp = client
                     .application()
-                    .update(
-                        id,
-                        application_in.into_inner(),
-                        post_options.map(Into::into),
-                    )
+                    .patch(id, application_patch.into_inner(), None)
                     .await?;
-
                 crate::json::print_json_output(&resp, color_mode)?;
             }
-            ApplicationCommands::Delete { id } => {
-                client.application().delete(id).await?;
-            }
         }
+
         Ok(())
     }
 }

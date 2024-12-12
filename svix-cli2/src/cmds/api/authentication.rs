@@ -1,8 +1,8 @@
-use crate::cli_types::PostOptions;
-use crate::config::Config;
-use crate::get_client_options;
 use clap::{Args, Subcommand};
 use colored_json::ColorMode;
+use svix::api::AppPortalAccessIn;
+
+use crate::{cli_types::PostOptions, config::Config, get_client_options, json::JsonOf};
 
 #[derive(Args)]
 #[command(args_conflicts_with_subcommands = true)]
@@ -14,15 +14,16 @@ pub struct AuthenticationArgs {
 
 #[derive(Subcommand)]
 pub enum AuthenticationCommands {
-    /// Get a dashboard URL for the given app.
-    /// Deprecated: use `app-portal` instead.
-    #[clap(alias = "dashboard")]
-    DashboardAccess {
+    /// Use this function to get magic links (and authentication codes) for connecting your users to the Consumer Application Portal.
+    AppPortalAccess {
         app_id: String,
+        app_portal_access_in: JsonOf<AppPortalAccessIn>,
         #[clap(flatten)]
         post_options: Option<PostOptions>,
     },
-    /// Invalidates the given dashboard key
+    /// Logout an app token.
+    ///
+    /// Trying to log out other tokens will fail.
     Logout {
         dashboard_auth_token: String,
         #[clap(flatten)]
@@ -38,15 +39,19 @@ impl AuthenticationCommands {
         cfg: &Config,
     ) -> anyhow::Result<()> {
         match self {
-            AuthenticationCommands::DashboardAccess {
+            Self::AppPortalAccess {
                 app_id,
+                app_portal_access_in,
                 post_options,
             } => {
                 let resp = client
                     .authentication()
-                    .dashboard_access(app_id, post_options.map(Into::into))
+                    .app_portal_access(
+                        app_id,
+                        app_portal_access_in.into_inner(),
+                        post_options.map(Into::into),
+                    )
                     .await?;
-
                 crate::json::print_json_output(&resp, color_mode)?;
             }
             AuthenticationCommands::Logout {
@@ -64,6 +69,7 @@ impl AuthenticationCommands {
                     .await?;
             }
         }
+
         Ok(())
     }
 }
