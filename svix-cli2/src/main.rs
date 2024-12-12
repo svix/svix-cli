@@ -1,5 +1,6 @@
 use crate::cmds::api::authentication::AuthenticationArgs;
 use crate::cmds::api::endpoint::EndpointArgs;
+use crate::config::Config;
 use crate::signature::SignatureArgs;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
@@ -9,10 +10,12 @@ use colored_json::{ColorMode, Output};
 use concolor_clap::{Color, ColorChoice};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
+const DEFAULT_SERVER_URL: &str = "https://api.svix.com";
 
 mod cli_types;
 mod cmds;
 mod completion;
+mod config;
 mod json;
 mod signature;
 
@@ -77,6 +80,11 @@ enum RootCommands {
 async fn main() -> Result<()> {
     let cli = Cli::parse();
     let color_mode = cli.color_mode();
+    // XXX: cfg can give an Err in certain situations.
+    // Assigning the variable here since several match arms need a `&Config` but the rest of them
+    // won't care/are still usable if the config doesn't exist.
+    // To this, the `?` is deferred until the point inside a given match arm needs the config value.
+    let cfg = Config::load();
     match cli.command {
         // Local-only things
         RootCommands::Version => println!("{VERSION}"),
@@ -84,16 +92,17 @@ async fn main() -> Result<()> {
         RootCommands::Open => todo!("Commands::Open"),
         // Remote API calls
         RootCommands::Application(args) => {
-            let client = get_client()?;
+            let client = get_client(&cfg?)?;
             args.command.exec(&client, color_mode).await?;
         }
         RootCommands::Authentication(args) => {
-            let client = get_client()?;
-            args.command.exec(&client, color_mode).await?;
+            let cfg = cfg?;
+            let client = get_client(&cfg)?;
+            args.command.exec(&client, color_mode, &cfg).await?;
         }
         RootCommands::EventType => todo!("Commands::EventType"),
         RootCommands::Endpoint(args) => {
-            let client = get_client()?;
+            let client = get_client(&cfg?)?;
             args.command.exec(&client, color_mode).await?;
         }
         RootCommands::Message => todo!("Commands::Message"),
@@ -113,24 +122,22 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn get_client() -> Result<svix::api::Svix> {
+fn get_client(cfg: &Config) -> Result<svix::api::Svix> {
     // XXX: Go client will exit if the token is not set. May need to rewrangle the flow.
-    // FIXME: read from config
-
-    // FIXME: don't hardcode ;)
-    let token = env!("LOCAL_CLOUD_TOKEN").to_string();
-    let opts = get_client_options()?;
+    let token = cfg.auth_token.clone().ok_or_else(|| {
+        anyhow::anyhow!("No auth token set; try running `svix-cli login` to get started")
+    })?;
+    let opts = get_client_options(&cfg)?;
     Ok(svix::api::Svix::new(token, Some(opts)))
 }
 
-fn get_client_options() -> Result<svix::api::SvixOptions> {
-    // FIXME: read options from config file
-    // FIXME: validate server url
-
+fn get_client_options(cfg: &Config) -> Result<svix::api::SvixOptions> {
     Ok(svix::api::SvixOptions {
         debug: false,
-        // FIXME: don't hardcode ;)
-        server_url: Some(env!("SVIX_ROOT").to_string()),
+        server_url: cfg
+            .server_url
+            .clone()
+            .or_else(|| Some(String::from(DEFAULT_SERVER_URL))),
         timeout: None,
     })
 }

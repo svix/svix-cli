@@ -1,4 +1,5 @@
 use crate::cli_types::PostOptions;
+use crate::config::Config;
 use crate::get_client_options;
 use clap::{Args, Subcommand};
 use colored_json::ColorMode;
@@ -30,7 +31,12 @@ pub enum AuthenticationCommands {
 }
 
 impl AuthenticationCommands {
-    pub async fn exec(self, client: &svix::api::Svix, color_mode: ColorMode) -> anyhow::Result<()> {
+    pub async fn exec(
+        self,
+        client: &svix::api::Svix,
+        color_mode: ColorMode,
+        cfg: &Config,
+    ) -> anyhow::Result<()> {
         match self {
             AuthenticationCommands::DashboardAccess {
                 app_id,
@@ -50,7 +56,7 @@ impl AuthenticationCommands {
                 // We're not using the client received by `exec()` here since the token is an
                 // arg, not whatever is configured for the cli otherwise.
                 let client =
-                    svix::api::Svix::new(dashboard_auth_token, Some(get_client_options()?));
+                    svix::api::Svix::new(dashboard_auth_token, Some(get_client_options(cfg)?));
 
                 client
                     .authentication()
