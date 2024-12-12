@@ -39,7 +39,6 @@ impl Cli {
 }
 
 // N.b Ordering matters here for how clap presents the help.
-// FIXME: double-check Go cli. Seems like cobra may sort the items in the help lexigraphically
 #[derive(Subcommand)]
 enum RootCommands {
     /// List, create & modify applications
@@ -52,6 +51,8 @@ enum RootCommands {
     EventType,
     /// Export data from your Svix Organization
     Export,
+    /// Outputs shell completions for a variety of shells
+    GenerateCompletions { shell: Shell },
     /// Import data to your Svix Organization
     Import,
     /// List integrations by app id
@@ -66,15 +67,10 @@ enum RootCommands {
     MessageAttempt,
     /// Quickly open Svix pages in your browser
     Open,
-    /// Signing and verifying webhooks
-    Signature(SignatureArgs),
+    /// Verifying and signing webhooks with the Svix signature scheme
+    SvixSignature(SignatureArgs),
     /// Get the version of the Svix CLI
     Version,
-
-    // Completions
-    Generate {
-        shell: Shell,
-    },
 }
 
 #[tokio::main]
@@ -84,7 +80,7 @@ async fn main() -> Result<()> {
     match cli.command {
         // Local-only things
         RootCommands::Version => println!("{VERSION}"),
-        RootCommands::Signature(args) => {
+        RootCommands::SvixSignature(args) => {
             args.command.exec(color_mode).await?;
         }
         RootCommands::Open => todo!("Commands::Open"),
@@ -111,7 +107,7 @@ async fn main() -> Result<()> {
         // FIXME: make login/listen play subcommands?
         RootCommands::Listen => todo!("Commands::Listen"),
         RootCommands::Login => todo!("Commands::Login"),
-        RootCommands::Generate { shell } => {
+        RootCommands::GenerateCompletions { shell } => {
             completion::generate(&shell)?;
         }
     }
