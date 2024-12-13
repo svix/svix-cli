@@ -13,15 +13,15 @@ use colored_json::{ColorMode, Output};
 use concolor_clap::{Color, ColorChoice};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
+const BIN_NAME: &str = env!("CARGO_PKG_NAME");
 const DEFAULT_SERVER_URL: &str = "https://api.svix.com";
-
 mod cli_types;
 mod cmds;
 mod config;
 mod json;
 
 #[derive(Parser)]
-#[command(version, about, long_about = None)]
+#[command(version, about, long_about = None, bin_name = BIN_NAME)]
 #[clap(color = concolor_clap::color_choice())]
 struct Cli {
     #[command(flatten)]
@@ -126,7 +126,7 @@ async fn main() -> Result<()> {
 
         RootCommands::Listen => todo!("Commands::Listen"),
         RootCommands::Login => cmds::login::prompt()?,
-        RootCommands::GenerateCompletions { shell } => cmds::completion::generate(&shell)?,
+        RootCommands::GenerateCompletions { shell } => cmds::completions::generate(&shell)?,
     }
 
     Ok(())
