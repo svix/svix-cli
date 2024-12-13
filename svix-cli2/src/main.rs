@@ -50,14 +50,14 @@ enum RootCommands {
     Application(ApplicationArgs),
     /// Manage authentication tasks such as getting dashboard URLs
     Authentication(AuthenticationArgs),
+    /// Generate the autocompletion script for the specified shell
+    Completion { shell: Shell },
     /// List, create & modify endpoints
     Endpoint(EndpointArgs),
     /// List, create & modify event types
     EventType(EventTypeArgs),
     /// Export data from your Svix Organization
     Export,
-    /// Outputs shell completions for a variety of shells
-    GenerateCompletions { shell: Shell },
     /// Import data to your Svix Organization
     Import,
     /// List integrations by app id
@@ -126,7 +126,7 @@ async fn main() -> Result<()> {
 
         RootCommands::Listen => todo!("Commands::Listen"),
         RootCommands::Login => cmds::login::prompt()?,
-        RootCommands::GenerateCompletions { shell } => cmds::completions::generate(&shell)?,
+        RootCommands::Completion { shell } => cmds::completion::generate(&shell)?,
     }
 
     Ok(())
