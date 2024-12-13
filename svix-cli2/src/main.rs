@@ -21,7 +21,8 @@ mod login;
 mod signature;
 
 #[derive(Parser)]
-#[clap(color = concolor_clap::color_choice(), bin_name="svix-cli")]
+#[command(version, about, long_about = None)]
+#[clap(color = concolor_clap::color_choice())]
 struct Cli {
     #[command(flatten)]
     color: Color,
@@ -123,9 +124,8 @@ async fn main() -> Result<()> {
 }
 
 fn get_client(cfg: &Config) -> Result<svix::api::Svix> {
-    // XXX: Go client will exit if the token is not set. May need to rewrangle the flow.
     let token = cfg.auth_token.clone().ok_or_else(|| {
-        anyhow::anyhow!("No auth token set; try running `svix-cli login` to get started")
+        anyhow::anyhow!("No auth token set. Try running `svix login` to get started.")
     })?;
     let opts = get_client_options(&cfg)?;
     Ok(svix::api::Svix::new(token, Some(opts)))

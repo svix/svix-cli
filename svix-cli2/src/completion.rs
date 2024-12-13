@@ -5,7 +5,7 @@ use clap_complete::{generate as generate_, Shell};
 
 pub fn generate(shell: &Shell) -> Result<()> {
     let mut writer = std::io::stdout().lock();
-    const BIN_NAME: &str = "svix-cli";
+    const BIN_NAME: &str = env!("CARGO_BIN_NAME");
     let mut cmd = crate::Cli::command();
     match shell {
         Shell::Bash => generate_(shells::Bash, &mut cmd, BIN_NAME, &mut writer),

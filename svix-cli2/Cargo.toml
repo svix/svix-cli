@@ -1,7 +1,12 @@
 [package]
 name = "svix-cli"
+description = "A CLI to interact with the Svix API."
 version = "0.1.0"
 edition = "2021"
+
+[[bin]]
+name = "svix"
+path = "src/main.rs"
 
 [dependencies]
 anyhow = "1.0.94"
