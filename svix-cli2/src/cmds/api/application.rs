@@ -68,7 +68,7 @@ impl ApplicationCommands {
             Self::Update { id, application_in } => {
                 let resp = client
                     .application()
-                    .update(id, application_in.into_inner(), None)
+                    .update(id, application_in.into_inner())
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
@@ -81,7 +81,7 @@ impl ApplicationCommands {
             } => {
                 let resp = client
                     .application()
-                    .patch(id, application_patch.into_inner(), None)
+                    .patch(id, application_patch.into_inner())
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }

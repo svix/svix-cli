@@ -109,7 +109,7 @@ impl EventTypeCommands {
             } => {
                 let resp = client
                     .event_type()
-                    .update(event_type_name, event_type_update.into_inner(), None)
+                    .update(event_type_name, event_type_update.into_inner())
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
@@ -122,7 +122,7 @@ impl EventTypeCommands {
             } => {
                 let resp = client
                     .event_type()
-                    .patch(event_type_name, event_type_patch.into_inner(), None)
+                    .patch(event_type_name, event_type_patch.into_inner())
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }

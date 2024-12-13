@@ -166,7 +166,7 @@ impl EndpointCommands {
             } => {
                 let resp = client
                     .endpoint()
-                    .update(app_id, id, endpoint_update.into_inner(), None)
+                    .update(app_id, id, endpoint_update.into_inner())
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
@@ -180,7 +180,7 @@ impl EndpointCommands {
             } => {
                 let resp = client
                     .endpoint()
-                    .patch(app_id, id, endpoint_patch.into_inner(), None)
+                    .patch(app_id, id, endpoint_patch.into_inner())
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }

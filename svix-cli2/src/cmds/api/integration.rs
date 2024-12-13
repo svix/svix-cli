@@ -86,7 +86,7 @@ impl IntegrationCommands {
             } => {
                 let resp = client
                     .integration()
-                    .update(app_id, id, integration_update.into_inner(), None)
+                    .update(app_id, id, integration_update.into_inner())
                     .await?;
                 crate::json::print_json_output(&resp, color_mode)?;
             }
