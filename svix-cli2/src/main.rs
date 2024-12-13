@@ -1,5 +1,8 @@
 use crate::cmds::api::authentication::AuthenticationArgs;
 use crate::cmds::api::endpoint::EndpointArgs;
+use crate::cmds::api::event_type::EventTypeArgs;
+use crate::cmds::api::integration::IntegrationArgs;
+use crate::cmds::api::message::MessageArgs;
 use crate::config::Config;
 use crate::signature::SignatureArgs;
 use anyhow::Result;
@@ -53,7 +56,7 @@ enum RootCommands {
     /// List, create & modify endpoints
     Endpoint(EndpointArgs),
     /// List, create & modify event types
-    EventType,
+    EventType(EventTypeArgs),
     /// Export data from your Svix Organization
     Export,
     /// Outputs shell completions for a variety of shells
@@ -61,14 +64,15 @@ enum RootCommands {
     /// Import data to your Svix Organization
     Import,
     /// List integrations by app id
-    Integration,
+    Integration(IntegrationArgs),
     /// Forward webhook requests to a local url
     Listen,
     /// Interactively configure your Svix API credentials
     Login,
     /// List & create messages
-    Message,
+    Message(MessageArgs),
     /// List, lookup & resend message attempts
+    // FIXME: need codegen for this
     MessageAttempt,
     /// Quickly open Svix pages in your browser
     Open,
@@ -102,22 +106,30 @@ async fn main() -> Result<()> {
             let client = get_client(&cfg)?;
             args.command.exec(&client, color_mode, &cfg).await?;
         }
-        RootCommands::EventType => todo!("Commands::EventType"),
+        RootCommands::EventType(args) => {
+            let client = get_client(&cfg?)?;
+            args.command.exec(&client, color_mode).await?;
+        }
         RootCommands::Endpoint(args) => {
             let client = get_client(&cfg?)?;
             args.command.exec(&client, color_mode).await?;
         }
-        RootCommands::Message => todo!("Commands::Message"),
+        RootCommands::Message(args) => {
+            let client = get_client(&cfg?)?;
+            args.command.exec(&client, color_mode).await?;
+        }
+        // FIXME: need codegen for this one
         RootCommands::MessageAttempt => todo!("Commands::MessageAttempt"),
         RootCommands::Import => todo!("Commands::Import"),
         RootCommands::Export => todo!("Commands::Export"),
-        RootCommands::Integration => todo!("Commands::Integration"),
+        RootCommands::Integration(args) => {
+            let client = get_client(&cfg?)?;
+            args.command.exec(&client, color_mode).await?;
+        }
 
         RootCommands::Listen => todo!("Commands::Listen"),
         RootCommands::Login => login::prompt()?,
-        RootCommands::GenerateCompletions { shell } => {
-            completion::generate(&shell)?;
-        }
+        RootCommands::GenerateCompletions { shell } => completion::generate(&shell)?,
     }
 
     Ok(())
