@@ -3,8 +3,8 @@ use crate::cmds::api::endpoint::EndpointArgs;
 use crate::cmds::api::event_type::EventTypeArgs;
 use crate::cmds::api::integration::IntegrationArgs;
 use crate::cmds::api::message::MessageArgs;
+use crate::cmds::signature::SignatureArgs;
 use crate::config::Config;
-use crate::signature::SignatureArgs;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
@@ -17,11 +17,8 @@ const DEFAULT_SERVER_URL: &str = "https://api.svix.com";
 
 mod cli_types;
 mod cmds;
-mod completion;
 mod config;
 mod json;
-mod login;
-mod signature;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -128,8 +125,8 @@ async fn main() -> Result<()> {
         }
 
         RootCommands::Listen => todo!("Commands::Listen"),
-        RootCommands::Login => login::prompt()?,
-        RootCommands::GenerateCompletions { shell } => completion::generate(&shell)?,
+        RootCommands::Login => cmds::login::prompt()?,
+        RootCommands::GenerateCompletions { shell } => cmds::completion::generate(&shell)?,
     }
 
     Ok(())
