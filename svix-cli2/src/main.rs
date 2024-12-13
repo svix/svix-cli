@@ -13,7 +13,7 @@ use colored_json::{ColorMode, Output};
 use concolor_clap::{Color, ColorChoice};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
-const BIN_NAME: &str = env!("CARGO_PKG_NAME");
+const BIN_NAME: &str = env!("CARGO_BIN_NAME");
 const DEFAULT_SERVER_URL: &str = "https://api.svix.com";
 mod cli_types;
 mod cmds;
