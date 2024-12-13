@@ -17,6 +17,7 @@ mod cmds;
 mod completion;
 mod config;
 mod json;
+mod login;
 mod signature;
 
 #[derive(Parser)]
@@ -111,9 +112,8 @@ async fn main() -> Result<()> {
         RootCommands::Export => todo!("Commands::Export"),
         RootCommands::Integration => todo!("Commands::Integration"),
 
-        // FIXME: make login/listen play subcommands?
         RootCommands::Listen => todo!("Commands::Listen"),
-        RootCommands::Login => todo!("Commands::Login"),
+        RootCommands::Login => login::prompt()?,
         RootCommands::GenerateCompletions { shell } => {
             completion::generate(&shell)?;
         }

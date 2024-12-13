@@ -6,7 +6,7 @@ use figment::{
 use serde::{Deserialize, Serialize};
 use std::io::Write;
 use std::os::unix::fs::OpenOptionsExt;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct Config {
@@ -22,6 +22,19 @@ impl Config {
             .merge(Env::prefixed("SVIX_"))
             .extract()?;
         Ok(config)
+    }
+
+    pub fn save_to_disk(&self, path: &Path) -> Result<()> {
+        let mut fh = std::fs::OpenOptions::new()
+            .create(true)
+            .truncate(true)
+            .write(true)
+            .mode(FILE_MODE)
+            .open(path)?;
+
+        let source = &toml::to_string_pretty(self)?;
+        fh.write(source.as_bytes())?;
+        Ok(())
     }
 }
 
@@ -46,16 +59,6 @@ fn get_folder() -> Result<PathBuf> {
     Ok(pb.join(".config").join("svix"))
 }
 
-fn write(settings: Config) -> Result<()> {
-    let cfg_path = get_folder()?;
-    let mut fh = std::fs::OpenOptions::new()
-        .create(true)
-        .truncate(true)
-        .write(true)
-        .mode(FILE_MODE)
-        .open(cfg_path)?;
-
-    let source = &toml::to_string_pretty(&settings)?;
-    fh.write(source.as_bytes())?;
-    Ok(())
+pub fn get_config_file_path() -> Result<PathBuf> {
+    Ok(get_folder()?.join(FILE_NAME))
 }
