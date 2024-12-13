@@ -33,7 +33,7 @@ impl Config {
             .open(path)?;
 
         let source = &toml::to_string_pretty(self)?;
-        fh.write(source.as_bytes())?;
+        fh.write_all(source.as_bytes())?;
         Ok(())
     }
 }
