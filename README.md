@@ -5,11 +5,9 @@
   </a>
 </h1>
 
-# Svix CLI
+# MOVED TO https://github.com/svix/svix-webhooks/tree/main/svix-cli
 
-[![GitHub release (latest by date)][release-img]][release]
-[![GolangCI][golangci-lint-img]][golangci-lint]
-[![Go Report Card][report-card-img]][report-card]
+This repo has been moved to https://github.com/svix/svix-webhooks/tree/main/svix-cli
 
 A CLI to interact with the Svix API.
 
